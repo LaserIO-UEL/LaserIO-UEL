@@ -7,7 +7,9 @@ import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -36,6 +38,8 @@ public class LaserIO {
         //modbus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
         // Register 'ClientSetup::init' to be called at mod setup time (client only)
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
+        // In the mod constructor with a ForgeConfigSpec CONFIG
+        Config.register();
     }
 
     /*public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {

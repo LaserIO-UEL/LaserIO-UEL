@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.setup;
 
+import com.direwolf20.laserio.common.Config;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorBE;
@@ -63,7 +64,6 @@ public class Registration {
     public static final RegistryObject<Block> LaserConnectorAdv = BLOCKS.register("laser_connector_advanced", LaserConnectorAdv::new);
     public static final RegistryObject<Item> LaserConnectorAdv_ITEM = ITEMS.register("laser_connector_advanced", () -> new BlockItem(LaserConnectorAdv.get(), new Item.Properties()));
 
-
     //BlockEntities (Not TileEntities - Honest)
     public static final RegistryObject<BlockEntityType<LaserNodeBE>> LaserNode_BE = BLOCK_ENTITIES.register("lasernode", () -> BlockEntityType.Builder.of(LaserNodeBE::new, LaserNode.get()).build(null));
     public static final RegistryObject<BlockEntityType<LaserConnectorBE>> LaserConnector_BE = BLOCK_ENTITIES.register("laserconnector", () -> BlockEntityType.Builder.of(LaserConnectorBE::new, LaserConnector.get()).build(null));
@@ -90,8 +90,21 @@ public class Registration {
     //Misc
     public static final RegistryObject<Item> Logic_Chip_Raw = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
     public static final RegistryObject<Item> Logic_Chip = ITEMS.register("logic_chip", LogicChip::new);
-    public static final RegistryObject<Item> Overclocker_Card = ITEMS.register("overclocker_card", OverclockerCard::new);
+
+    //Upgrades
+    public static final RegistryObject<Item> Overclocker_Card = ITEMS.register("overclocker_card", () -> new OverclockerCard(-1));
     public static final RegistryObject<Item> Overclocker_Node = ITEMS.register("overclocker_node", OverclockerNode::new);
+
+    //Energy OverClocks
+    public static final RegistryObject<Item> Stone_EOC = ITEMS.register("stone_eoc", () -> new OverclockerCard(0));
+    public static final RegistryObject<Item> Flint_EOC = ITEMS.register("flint_eoc", () -> new OverclockerCard(1));
+    public static final RegistryObject<Item> Copper_EOC = ITEMS.register("copper_eoc", () -> new OverclockerCard(2));
+    public static final RegistryObject<Item> Iron_EOC = ITEMS.register("iron_eoc", () -> new OverclockerCard(3));
+    public static final RegistryObject<Item> Gold_EOC = ITEMS.register("gold_eoc", () -> new OverclockerCard(4));
+    public static final RegistryObject<Item> Diamond_EOC = ITEMS.register("diamond_eoc", () -> new OverclockerCard(5));
+    public static final RegistryObject<Item> Netherite_EOC = ITEMS.register("netherite_eoc", () -> new OverclockerCard(6));
+    public static final RegistryObject<Item> NetherStar_EOC = ITEMS.register("netherstar_eoc", () -> new OverclockerCard(7));
+    public static final RegistryObject<Item> Max_EOC = ITEMS.register("max_eoc", () -> new OverclockerCard(8));
 
     //Containers
     public static final RegistryObject<MenuType<LaserNodeContainer>> LaserNode_Container = CONTAINERS.register("lasernode",
@@ -116,7 +129,7 @@ public class Registration {
             () -> IForgeMenuType.create((windowId, inv, data) -> new FilterNBTContainer(windowId, inv, inv.player, data)));
 
     // Conveniance function: Take a RegistryObject<Block> and make a corresponding RegistryObject<Item> from it
-    /*public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
-        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
-    }*/
+    //public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+    //    return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
+    //}
 }

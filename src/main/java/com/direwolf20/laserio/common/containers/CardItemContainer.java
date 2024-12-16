@@ -13,6 +13,7 @@ import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -189,7 +190,7 @@ public class CardItemContainer extends AbstractContainerMenu {
                 //No-Op
             } else { //From player inventory (or Card Holder) TO something
                 ItemStack currentStack = slot.getItem().copy();
-                if (slots.get(0).mayPlace(currentStack) || slots.get(1).mayPlace(currentStack)) {
+                if (slots.get(0).mayPlace(currentStack) || slots.get(1).mayPlace(currentStack) && slot.getItem().getItem() instanceof OverclockerCard card && card.getEnergyTier()<0) {
                     if (!this.moveItemStackTo(stack, 0, SLOTS, false)) {
                         return ItemStack.EMPTY;
                     }

@@ -3,7 +3,13 @@ package com.direwolf20.laserio.common.items.upgrades;
 import net.minecraft.world.item.Item;
 
 public class OverclockerCard extends Item {
-    public OverclockerCard() {
+    private int tier;
+    public OverclockerCard(int tier) {
         super(new Item.Properties());
+        this.tier = tier;
+    }
+
+    public int getEnergyTier() {
+        return tier;
     }
 }

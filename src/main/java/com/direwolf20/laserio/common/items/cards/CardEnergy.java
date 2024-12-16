@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.common.items.cards;
 
+import com.direwolf20.laserio.common.Config;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import net.minecraft.nbt.CompoundTag;
@@ -57,7 +58,7 @@ public class CardEnergy extends BaseCard {
     }
 
     public static int setEnergyExtractAmt(ItemStack card, int energyextractamt) {
-        if (energyextractamt == 1000)
+        if (energyextractamt == Config.BASE_FE_TICK.get())
             card.removeTagKey("energyextractamt");
         else
             card.getOrCreateTag().putInt("energyextractamt", energyextractamt);
@@ -66,7 +67,7 @@ public class CardEnergy extends BaseCard {
 
     public static int getEnergyExtractAmt(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("energyextractamt")) return 1000;
+        if (compound == null || !compound.contains("energyextractamt")) return Config.BASE_FE_TICK.get();
         return compound.getInt("energyextractamt");
     }
 

@@ -1,2 +1,2 @@
-# LaserIO
-Can't have DireWire without Wires!
+# LaserIO Unofficial
+"Can't have DireWire without Wires!" -Direwolf20... I think?

@@ -34,14 +34,16 @@ public class CardItemHandler extends ItemStackHandler {
         return stack.getItem() instanceof OverclockerCard;
     }
 
+
     @Override
     public int getSlotLimit(int slot) {
         if (this.stack.getItem() instanceof CardEnergy)
-            return 4;
+            return 1;
         if (slot == 0)
             return 1;
-        return 4;
+        return 1;
     }
+
 
     public void reSize(int size) {
         NonNullList<ItemStack> newStacks = NonNullList.withSize(size, ItemStack.EMPTY);
