@@ -25,23 +25,20 @@ public class CardItemHandler extends ItemStackHandler {
 
     }
 
-    @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (this.stack.getItem() instanceof CardEnergy)
-            return stack.getItem() instanceof OverclockerCard;
+                return stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()>0; //If in energy card, accept only energy upgrades
         if (slot == 0)
-            return stack.getItem() instanceof BaseFilter;
-        return stack.getItem() instanceof OverclockerCard;
+            return stack.getItem() instanceof BaseFilter; //Allow filter
+        return stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()<0; //Else allow item/fluid OC
     }
 
 
     @Override
     public int getSlotLimit(int slot) {
-        if (this.stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()>0)
+        if (slot == 0) //Setting filter AND energy tiers stack to 1
             return 1;
-        if (slot == 0)
-            return 1;
-        return 4;
+        return 4; //Else stack to 4 (Item/Fluid OC)
     }
 
 
