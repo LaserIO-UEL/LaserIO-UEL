@@ -1,9 +1,0 @@
-v0.1.3
-    -Added Tag Filter
-        -Allows player to filter by tags on items
-    -Switch UI's on Node
-        -Can access any side from within the node UI
-    -Shift RightClick an item card in a node to jump straight to the filter
-        -Saves you a click
-    -Misc bug fixes
-        -ToolType on blocks
