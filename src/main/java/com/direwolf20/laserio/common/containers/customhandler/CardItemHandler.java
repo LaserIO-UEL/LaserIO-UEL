@@ -37,11 +37,11 @@ public class CardItemHandler extends ItemStackHandler {
 
     @Override
     public int getSlotLimit(int slot) {
-        if (this.stack.getItem() instanceof CardEnergy)
+        if (this.stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()>0)
             return 1;
         if (slot == 0)
             return 1;
-        return 1;
+        return 4;
     }
 
 

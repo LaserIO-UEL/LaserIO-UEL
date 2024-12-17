@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "laserio",
+  "key": {
+    "g": {
+      "tag": "forge:nuggets/gold"
+    },
+    "p": {
+      "item": "laserio:flint_eoc"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "t": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    "rtr",
+    "rpr",
+    "ggg"
+  ],
+  "result": {
+    "item": "laserio:copper_eoc"
+  },
+  "show_notification": true
+}
