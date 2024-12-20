@@ -98,6 +98,15 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
         add("message.laserio.wrenchrange", "Connection exceeds maximum range of %d");
+        add("message.laserio.cloner.cardcount", "Insufficient materials");
+        add("message.laserio.cloner.nodata", "Nothing to paste");
+        add("message.laserio.cloner.noholder", "No Card Holder to send excess");
+
+        //Card Cloner Tooltips
+        add("laserio.tooltip.item.cloner.card.header", "Saved Card: ");
+        add("laserio.tooltip.item.cloner.node.position", "Pos: ");
+        add("laserio.tooltip.item.cloner.node.header", "Saved Node: ");
+        add("laserio.tooltip.item.cloner.node.dimension", "Dim: ");
 
         //Card Tooltips
         add("laserio.tooltip.item.show_settings", "Hold shift to show settings");

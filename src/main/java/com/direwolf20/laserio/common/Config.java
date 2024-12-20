@@ -1,6 +1,9 @@
 package com.direwolf20.laserio.common;
 
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
+import com.direwolf20.laserio.setup.Registration;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -23,6 +26,7 @@ public class Config {
     public static final String CATEGORY_CARD = "card";
     //public static final String SUBCATEGORY_FLUID = "fluid_card";
     public static final String SUBCATEGORY_ENERGY = "energy_card";
+    public static ForgeConfigSpec COMMON_CONFIG;
     //public static final String SUBCATEGORY_CHEMICAL = "chemical_card";
     public static List<? extends Integer> OC_FE_DEFAULT = List.of(2048,8192,32768,131072,524288,2097152,8388602,134217728,Integer.MAX_VALUE);
 
@@ -70,7 +74,6 @@ public class Config {
                 .defineInRange("max_fe_tick", 1000000, 0, Integer.MAX_VALUE);
 
         OC_FE = COMMON_BUILDER.comment("OverClock Values")
-                .worldRestart()
                 .defineListAllowEmpty("max_fe_octier", OC_FE_DEFAULT, Config::validateNum);
         COMMON_BUILDER.pop();
 
@@ -89,6 +92,16 @@ public class Config {
         Boolean bool = true;
         for (int i = 0; i < OC_FE.get().size(); i++) {if (OC_FE.get().get(i) < 0) {bool = false; break;}}
         return bool;
+    }
+
+    public static void loadConfig(ForgeConfigSpec spec, java.nio.file.Path path) {
+        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
+                .sync()
+                .autosave()
+                .writingMode(WritingMode.REPLACE)
+                .build();
+        configData.load();
+        spec.setConfig(configData);
     }
 
     //Create map and add values

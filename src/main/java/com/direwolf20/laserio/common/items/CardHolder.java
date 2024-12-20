@@ -26,9 +26,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CardHolder extends Item {
     public CardHolder() {
@@ -79,6 +77,19 @@ public class CardHolder extends Item {
         }
     }
 
+    public static Map<Item, Integer> getHolderCardCounts(ItemStack cardHolder){
+        IItemHandler handler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
+        Map<Item, Integer> cardCounts = new HashMap<Item, Integer>();
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack card = handler.getStackInSlot(slot);
+            if (card.isEmpty()) continue;
+            int currentCardCount = cardCounts.getOrDefault(card.getItem(), 0);
+            cardCounts.put(card.getItem(), currentCardCount + card.getCount());
+            BaseCard.getCardContents(card).forEach((k, v) -> cardCounts.merge(k, v, Integer::sum));
+        }
+        return cardCounts;
+    }
+
     public static ItemStack addCardToInventory(ItemStack cardHolder, ItemStack card) {
         if (card.getItem() instanceof BaseFilter && card.hasTag())
             return card;
@@ -105,6 +116,22 @@ public class CardHolder extends Item {
         if (emptySlots.isEmpty()) return card;
         handler.insertItem(emptySlots.get(0), card.split(card.getCount()), false);
         return card;
+    }
+
+    public static ItemStack requestCardFromInventory(ItemStack cardHolder, ItemStack request) {
+        IItemHandler handler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
+        int toRetrieve = request.getCount();
+        for (int i = handler.getSlots()-1; i >= 0; i--) {
+            ItemStack stackInSlot = handler.getStackInSlot(i);
+            if (ItemStack.isSameItem(stackInSlot, request)){
+                int retreiveCount = Math.min(stackInSlot.getCount(), toRetrieve);
+                toRetrieve -= retreiveCount;
+                stackInSlot.shrink(retreiveCount);
+            }
+            if (toRetrieve == 0) return request;
+        }
+        request.shrink(toRetrieve);
+        return request;
     }
 
     public static UUID getUUID(ItemStack stack) {

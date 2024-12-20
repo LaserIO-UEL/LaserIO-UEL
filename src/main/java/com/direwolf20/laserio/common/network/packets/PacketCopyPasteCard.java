@@ -40,7 +40,7 @@ public class PacketCopyPasteCard {
         return new PacketCopyPasteCard(buffer.readInt(), buffer.readBoolean());
     }
 
-    public static void playSound(ServerPlayer player, Holder<SoundEvent> soundEventHolder) {
+    public static void playSound(ServerPlayer player, Holder<SoundEvent> soundEventHolder, float volume) {
         // Get player's position
         double x = player.getX();
         double y = player.getY();
@@ -51,13 +51,17 @@ public class PacketCopyPasteCard {
                 soundEventHolder, // The sound event
                 SoundSource.MASTER, // The sound category
                 x, y, z, // The sound location
-                1, // The volume, 1 is normal, higher is louder
+                volume, // The volume, 1 is normal, higher is louder
                 1, // The pitch, 1 is normal, higher is higher pitch
                 1 // A random for some reason? (Some sounds have different variants, like the enchanting table success
         );
 
         // Send the packet to the player
         player.connection.send(packet);
+    }
+
+    public static void playSound(ServerPlayer player, Holder<SoundEvent> soundEventHolder) {
+        playSound(player, soundEventHolder, 1f);
     }
 
     public static boolean returnItemToholder(LaserNodeContainer container, ItemStack itemStack, boolean simulate) {

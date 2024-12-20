@@ -105,6 +105,7 @@ public class Registration {
     public static final RegistryObject<Item> Netherite_EOC = ITEMS.register("netherite_eoc", () -> new OverclockerCard(6));
     public static final RegistryObject<Item> NetherStar_EOC = ITEMS.register("netherstar_eoc", () -> new OverclockerCard(7));
     public static final RegistryObject<Item> Max_EOC = ITEMS.register("max_eoc", () -> new OverclockerCard(8));
+    public static final RegistryObject<Item> Test = ITEMS.register("test", () -> new OverclockerCard(Config.OC_FE.get().get(3)));
 
     //Containers
     public static final RegistryObject<MenuType<LaserNodeContainer>> LaserNode_Container = CONTAINERS.register("lasernode",
