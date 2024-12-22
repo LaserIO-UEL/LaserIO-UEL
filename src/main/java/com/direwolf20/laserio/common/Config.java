@@ -4,17 +4,13 @@ import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.setup.Registration;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = LaserIO.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 
@@ -28,12 +24,14 @@ public class Config {
     public static final String SUBCATEGORY_ENERGY = "energy_card";
     public static ForgeConfigSpec COMMON_CONFIG;
     //public static final String SUBCATEGORY_CHEMICAL = "chemical_card";
-    public static List<? extends Integer> OC_FE_DEFAULT = List.of(2048,8192,32768,131072,524288,2097152,8388602,134217728,Integer.MAX_VALUE);
+    public static List<? extends Integer> ENERGYTIERS_MAXFE_DEFAULT = List.of();
+    public static List<? extends String> ENERGYTIERS_PATH_DEFAULT = List.of();
 
     //public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_FLUID;
     //public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
-    public static ForgeConfigSpec.IntValue BASE_FE_TICK;
-    public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> OC_FE;
+    public static ForgeConfigSpec.IntValue ENERGYCARD_MAXFE;
+    public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> ENERGYTIERS_MAXFE;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> ENERGYTIERS_PATH;
 
     //public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_CHEMICAL;
     //public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_CHEMICAL;
@@ -70,11 +68,18 @@ public class Config {
         //COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Energy Card").push(SUBCATEGORY_ENERGY);
-        BASE_FE_TICK = COMMON_BUILDER.comment("Base Maximum FE/T for Energy Cards")
-                .defineInRange("max_fe_tick", 1000000, 0, Integer.MAX_VALUE);
+        ENERGYCARD_MAXFE = COMMON_BUILDER.comment("Maximum FE/t for Energy Cards")
+                .defineInRange("energycard_max_fe", 1000000, 0, Integer.MAX_VALUE);
 
-        OC_FE = COMMON_BUILDER.comment("OverClock Values")
-                .defineListAllowEmpty("max_fe_octier", OC_FE_DEFAULT, Config::validateNum);
+        ENERGYTIERS_PATH = COMMON_BUILDER.comment("Energy over clock tier path names")
+                .comment("Regular path rules apply: ONLY lowercase and no spaces")
+                .comment("You may put as many as you wish, example: ['exampleoverclock','iron_overclock','gold_over_clock']")
+                .defineListAllowEmpty("energytiers_name", ENERGYTIERS_PATH_DEFAULT, Config::validatePath);
+
+        ENERGYTIERS_MAXFE = COMMON_BUILDER.comment("Energy over clock tier maximum FE/t")
+                .comment("The first value in the list is linked to the first path name... etc")
+                .comment("You may put as many as you did path names, example: [512,1000,2000]")
+                .defineListAllowEmpty("energytiers_max_fe", ENERGYTIERS_MAXFE_DEFAULT, Config::validateFE);
         COMMON_BUILDER.pop();
 
         //For gas cards (NYI)
@@ -85,13 +90,17 @@ public class Config {
                 .defineInRange("multiplier_milli_buckets_chemical", 60000, 0, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
         */
+
     }
 
     //If value is less than 0, clear
-    public static boolean validateNum(final Object objj) {
+    public static boolean validateFE(final Object objj) {
         Boolean bool = true;
-        for (int i = 0; i < OC_FE.get().size(); i++) {if (OC_FE.get().get(i) < 0) {bool = false; break;}}
+        for (int i = 0; i < ENERGYTIERS_MAXFE.get().size(); i++) {if (ENERGYTIERS_MAXFE.get().get(i) < 0) {bool = false; break;}}
         return bool;
+    }
+    public static boolean validatePath(final Object obj) {
+        return true;
     }
 
     public static void loadConfig(ForgeConfigSpec spec, java.nio.file.Path path) {
@@ -104,11 +113,18 @@ public class Config {
         spec.setConfig(configData);
     }
 
-    //Create map and add values
-    //Item OverclockerCard createCardFeMap(String name, Integer value ) {
-    //    Map<String, Integer> map = new HashMap<>();
-    //    map.put(name, value);
-    //}
+    public static Config OCRegister(String display, int tier) {
+        OverclockerCard material;
+        material = new OverclockerCard(tier);
+        return null;
+    }
 
+    /*
+    //Create map and add values
+    Item OverclockerCard createCardFeMap(String name, Integer value ) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(name, value);
+    }
+    */
 
 }

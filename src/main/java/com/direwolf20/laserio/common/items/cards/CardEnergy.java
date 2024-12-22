@@ -58,7 +58,7 @@ public class CardEnergy extends BaseCard {
     }
 
     public static int setEnergyExtractAmt(ItemStack card, int energyextractamt) {
-        if (energyextractamt == Config.BASE_FE_TICK.get())
+        if (energyextractamt == Config.ENERGYCARD_MAXFE.get())
             card.removeTagKey("energyextractamt");
         else
             card.getOrCreateTag().putInt("energyextractamt", energyextractamt);
@@ -67,7 +67,7 @@ public class CardEnergy extends BaseCard {
 
     public static int getEnergyExtractAmt(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("energyextractamt")) return Config.BASE_FE_TICK.get();
+        if (compound == null || !compound.contains("energyextractamt")) return Config.ENERGYCARD_MAXFE.get();
         return compound.getInt("energyextractamt");
     }
 

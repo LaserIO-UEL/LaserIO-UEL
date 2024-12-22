@@ -1,6 +1,5 @@
 package com.direwolf20.laserio.setup;
 
-import com.direwolf20.laserio.common.Config;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorBE;
@@ -18,9 +17,11 @@ import com.direwolf20.laserio.common.items.filters.*;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
+import com.electronwill.nightconfig.core.Config;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,7 +32,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
+
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
+import static com.direwolf20.laserio.common.Config.ENERGYTIERS_PATH;
 import static com.direwolf20.laserio.common.LaserIO.MODID;
 
 public class Registration {
@@ -53,7 +57,7 @@ public class Registration {
         RECIPE_SERIALIZERS.register(bus);
     }
 
-    // Some common properties for our blocks and items
+    //Some common properties for our blocks and items
     //public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
 
     //Blocks
@@ -94,18 +98,18 @@ public class Registration {
     //Upgrades
     public static final RegistryObject<Item> Overclocker_Card = ITEMS.register("overclocker_card", () -> new OverclockerCard(-1));
     public static final RegistryObject<Item> Overclocker_Node = ITEMS.register("overclocker_node", OverclockerNode::new);
+    //public static final RegistryObject<Item> overwrite = ITEMS.register("Test1",() -> new OverclockerCard(1) );
+    //public static final RegistryObject<Item> overwrite = ITEMS.register("Test2",() -> new OverclockerCard(1) );
+    //public static final RegistryObject<List<? extends Item>> list = ITEMS.register(ITEMS.("Test1",() -> new OverclockerCard(1)), ITEMS.register("Test2",() -> new OverclockerCard(1));
+    //public static final RegistryObject<List<Item>> OC_LIST = List.of();
+    //public static final String yes = "ohn";
 
-    //Energy OverClocks
-    public static final RegistryObject<Item> Stone_EOC = ITEMS.register("stone_eoc", () -> new OverclockerCard(0));
-    public static final RegistryObject<Item> Flint_EOC = ITEMS.register("flint_eoc", () -> new OverclockerCard(1));
-    public static final RegistryObject<Item> Copper_EOC = ITEMS.register("copper_eoc", () -> new OverclockerCard(2));
-    public static final RegistryObject<Item> Iron_EOC = ITEMS.register("iron_eoc", () -> new OverclockerCard(3));
-    public static final RegistryObject<Item> Gold_EOC = ITEMS.register("gold_eoc", () -> new OverclockerCard(4));
-    public static final RegistryObject<Item> Diamond_EOC = ITEMS.register("diamond_eoc", () -> new OverclockerCard(5));
-    public static final RegistryObject<Item> Netherite_EOC = ITEMS.register("netherite_eoc", () -> new OverclockerCard(6));
-    public static final RegistryObject<Item> NetherStar_EOC = ITEMS.register("netherstar_eoc", () -> new OverclockerCard(7));
-    public static final RegistryObject<Item> Max_EOC = ITEMS.register("max_eoc", () -> new OverclockerCard(8));
-    public static final RegistryObject<Item> Test = ITEMS.register("test", () -> new OverclockerCard(Config.OC_FE.get().get(3)));
+    /*
+    public static RegistryObject<Item> TEMP_TIERS;
+    public void initEnergyTiers(int i) {
+        int J extends Item item = 5;
+        TEMP_TIERS = ITEMS.register(ENERGYTIERS_PATH.get().get(i), () -> new OverclockerCard(J));}
+    */
 
     //Containers
     public static final RegistryObject<MenuType<LaserNodeContainer>> LaserNode_Container = CONTAINERS.register("lasernode",

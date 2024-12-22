@@ -35,17 +35,6 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add(Registration.Overclocker_Node.get(), "Node Overclocker");
         add(Registration.Card_Cloner.get(), "Card Cloner");
 
-        //Energy OverClocks
-        add(Registration.Stone_EOC.get(), "Stone Energy OverClock");
-        add(Registration.Flint_EOC.get(), "Flint Energy OverClock");
-        add(Registration.Copper_EOC.get(), "Copper Energy OverClock");
-        add(Registration.Iron_EOC.get(), "Iron Energy OverClock");
-        add(Registration.Gold_EOC.get(), "Gold Energy OverClock");
-        add(Registration.Diamond_EOC.get(), "Diamond Energy OverClock");
-        add(Registration.Netherite_EOC.get(), "Netherite Energy OverClock");
-        add(Registration.NetherStar_EOC.get(), "Nether Star Energy OverClock");
-        add(Registration.Max_EOC.get(), "Max Energy OverClock");
-
         add("screen.laserio.extractamt", "Transfer Amount");
         add("screen.laserio.tickSpeed", "Speed (Ticks)");
 

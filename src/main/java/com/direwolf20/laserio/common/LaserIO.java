@@ -24,7 +24,7 @@ public class LaserIO {
     public LaserIO() {
         // In the mod constructor with a ForgeConfigSpec CONFIG
         Config.register();
-        Config.loadConfig(Config.COMMON_BUILDER.build(), FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
+        //Config.loadConfig(Config.COMMON_BUILDER.build(), FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
 
         // Register the deferred registry
         Registration.init();

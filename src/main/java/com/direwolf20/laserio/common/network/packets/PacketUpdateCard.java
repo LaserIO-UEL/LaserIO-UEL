@@ -112,9 +112,9 @@ public class PacketUpdateCard {
                             ticks = (short) Math.max(20 - overClockerCount * 5, 1);
                         BaseCard.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardEnergy) {
-                        int max = Config.BASE_FE_TICK.get();
+                        int max = Config.ENERGYCARD_MAXFE.get();
                         if (container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
-                            max = Config.OC_FE.get().get(card.getEnergyTier());
+                            max = Config.ENERGYTIERS_MAXFE.get().get(card.getEnergyTier());
                         }
                         if (extractAmt > max || extractAmt < 0) {
                             extractAmt = max;

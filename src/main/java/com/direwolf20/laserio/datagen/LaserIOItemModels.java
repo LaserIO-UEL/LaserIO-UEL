@@ -34,16 +34,5 @@ public class LaserIOItemModels extends ItemModelProvider {
         singleTexture(Registration.Overclocker_Card.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
         singleTexture(Registration.Overclocker_Node.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_node"));
         singleTexture(Registration.Card_Cloner.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_cloner"));
-
-        //Energy OverClocks
-        singleTexture(Registration.Stone_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Flint_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Copper_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Iron_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Gold_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Diamond_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Netherite_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.NetherStar_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
-        singleTexture(Registration.Max_EOC.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
     }
 }
