@@ -50,6 +50,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
 import static com.direwolf20.laserio.common.LaserIO.MODID;
 import static com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.MekanismModParticles.PARTICLE_TYPES_MEKANISM;
@@ -65,6 +69,11 @@ public class Registration {
     public static final DeferredRegister<Item> ITEMS_MEKANISM = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
     public static void init() {
+        IntStream.range(1, Config.MAX_FE_TICK_TIERS.get().size() + 1)
+            .forEach(i -> Energy_Overclocker_Cards.add(
+                    ITEMS.register("energy_overclocker_card_tier_" + i, () -> new OverclockerCard(i))
+            ));
+
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
@@ -88,7 +97,6 @@ public class Registration {
     public static final RegistryObject<Item> LaserNode_ITEM = ITEMS.register("laser_node", () -> new BlockItem(LaserNode.get(), new Item.Properties()));
     public static final RegistryObject<Block> LaserConnectorAdv = BLOCKS.register("laser_connector_advanced", LaserConnectorAdv::new);
     public static final RegistryObject<Item> LaserConnectorAdv_ITEM = ITEMS.register("laser_connector_advanced", () -> new BlockItem(LaserConnectorAdv.get(), new Item.Properties()));
-
 
     //BlockEntities (Not TileEntities - Honest)
     public static final RegistryObject<BlockEntityType<LaserNodeBE>> LaserNode_BE = BLOCK_ENTITIES.register("lasernode", () -> BlockEntityType.Builder.of(LaserNodeBE::new, LaserNode.get()).build(null));
@@ -117,10 +125,13 @@ public class Registration {
     public static final RegistryObject<Item> Filter_NBT = ITEMS.register("filter_nbt", FilterNBT::new);
 
     //Misc
-    public static final RegistryObject<Item> Logic_Chip_Raw = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
     public static final RegistryObject<Item> Logic_Chip = ITEMS.register("logic_chip", LogicChip::new);
-    public static final RegistryObject<Item> Overclocker_Card = ITEMS.register("overclocker_card", OverclockerCard::new);
+    public static final RegistryObject<Item> Logic_Chip_Raw = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
     public static final RegistryObject<Item> Overclocker_Node = ITEMS.register("overclocker_node", OverclockerNode::new);
+    public static final RegistryObject<Item> Logistic_Overclocker_Card = ITEMS.register("logistic_overclocker_card", () -> new OverclockerCard(-1));
+
+    //Energy Overclocker Cards (used if tiers are added using config)
+    public static final List<RegistryObject<Item>> Energy_Overclocker_Cards = new ArrayList<>();
 
     //Containers
     public static final RegistryObject<MenuType<LaserNodeContainer>> LaserNode_Container = CONTAINERS.register("lasernode",

@@ -1,7 +1,7 @@
 {
   "name": "Node Overclocker",
   "icon": "laserio:overclocker_node",
-  "sortnum": 3,
+  "sortnum": 2,
   "category": "laserio:items",
   "pages": [
     {

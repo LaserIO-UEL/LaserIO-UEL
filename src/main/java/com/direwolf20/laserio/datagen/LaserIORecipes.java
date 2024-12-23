@@ -80,7 +80,6 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .unlockedBy("has_logic_connector", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.LaserConnector.get()))
                 .save(consumer);
 
-
         //Misc Items
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Laser_Wrench.get(), 1)
                 .pattern("i i")
@@ -111,6 +110,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .group("laserio")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
+
         //Cards
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Item.get(), 1)
                 .pattern("rlr")
@@ -216,16 +216,6 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .save(consumer);
 
         //Upgrades
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Overclocker_Card.get(), 1)
-                .pattern(" g ")
-                .pattern("rpr")
-                .pattern("ggg")
-                .define('r', Tags.Items.DUSTS_REDSTONE)
-                .define('p', Registration.Logic_Chip.get())
-                .define('g', Tags.Items.INGOTS_GOLD)
-                .group("laserio")
-                .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
-                .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Overclocker_Node.get(), 1)
                 .pattern(" g ")
                 .pattern("rpr")
@@ -236,8 +226,18 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .group("laserio")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Logistic_Overclocker_Card.get(), 1)
+                .pattern(" g ")
+                .pattern("rpr")
+                .pattern("ggg")
+                .define('r', Tags.Items.DUSTS_REDSTONE)
+                .define('p', Registration.Logic_Chip.get())
+                .define('g', Tags.Items.INGOTS_GOLD)
+                .group("laserio")
+                .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
+                .save(consumer);
 
-        //NBT Clearing Recipes
+        //Cards NBT Clearing Recipes
         CardClearRecipeBuilder.shapeless(Registration.Card_Item.get())
                 .requires(Registration.Card_Item.get())
                 .group("laserio")
@@ -271,6 +271,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .generateAdvancement(new ResourceLocation(LaserIO.MODID, "recipes/misc/" + Registration.Card_Chemical.getId().getPath() + "_nbtclear"))
                 .build(consumer, Registration.Card_Chemical.getId().withSuffix("_nbtclear"));
 
+        //Filters NBT Clearing Recipes
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Basic.get())
                 .requires(Registration.Filter_Basic.get())
                 .group("laserio")
@@ -296,6 +297,5 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .group("laserio")
                 .unlockedBy("has_filter_mod", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Mod.get()))
                 .save(consumer, Registration.Filter_Mod.getId() + "_nbtclear");
-
     }
 }

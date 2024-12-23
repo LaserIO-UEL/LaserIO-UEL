@@ -21,6 +21,7 @@ public class LaserIOItemModels extends ItemModelProvider {
         //Item items
         singleTexture(Registration.Laser_Wrench.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/laser_wrench"));
         singleTexture(Registration.Card_Holder.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_holder"));
+        singleTexture(Registration.Card_Cloner.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_cloner"));
         //singleTexture(Registration.Card_Item.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_item"));
         //singleTexture(Registration.Card_Fluid.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_fluid"));
         //singleTexture(Registration.Card_Energy.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_energy"));
@@ -31,8 +32,7 @@ public class LaserIOItemModels extends ItemModelProvider {
         singleTexture(Registration.Filter_NBT.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/filter_nbt"));
         singleTexture(Registration.Logic_Chip.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/logic_chip"));
         singleTexture(Registration.Logic_Chip_Raw.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/logic_chip_raw"));
-        singleTexture(Registration.Overclocker_Card.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_card"));
         singleTexture(Registration.Overclocker_Node.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/overclocker_node"));
-        singleTexture(Registration.Card_Cloner.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_cloner"));
+        singleTexture(Registration.Logistic_Overclocker_Card.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/logistic_overclocker_card"));
     }
 }

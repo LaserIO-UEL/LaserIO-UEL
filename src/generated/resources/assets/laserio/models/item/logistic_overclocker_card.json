@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "laserio:item/overclocker_card"
+    "layer0": "laserio:item/logistic_overclocker_card"
   }
 }

@@ -112,7 +112,7 @@ public class PacketUpdateCard {
                             ticks = (short) Math.max(20 - overClockerCount * 5, 1);
                         BaseCard.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardEnergy) {
-                        int max = Config.MAX_FE_TICK.get();
+                        int max = Config.MAX_FE_TICK_NO_TIERS.get();
                         if (extractAmt > max) {
                             extractAmt = max;
                         }

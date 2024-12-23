@@ -20,6 +20,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add(Registration.LaserNode.get(), "Laser Node");
         add(Registration.Laser_Wrench.get(), "Laser Wrench");
         add(Registration.Card_Holder.get(), "Card Holder");
+        add(Registration.Card_Cloner.get(), "Card Cloner");
         add(Registration.Card_Item.get(), "Item Card");
         add(Registration.Card_Fluid.get(), "Fluid Card");
         add(Registration.Card_Energy.get(), "Energy Card");
@@ -32,9 +33,8 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add(Registration.Filter_NBT.get(), "NBT Filter");
         add(Registration.Logic_Chip.get(), "Logic Chip");
         add(Registration.Logic_Chip_Raw.get(), "Raw Logic Chip");
-        add(Registration.Overclocker_Card.get(), "Card Overclocker");
         add(Registration.Overclocker_Node.get(), "Node Overclocker");
-        add(Registration.Card_Cloner.get(), "Card Cloner");
+        add(Registration.Logistic_Overclocker_Card.get(), "Logistic Overclocker");
 
         add("screen.laserio.extractamt", "Transfer Amount");
         add("screen.laserio.tickSpeed", "Speed (Ticks)");
