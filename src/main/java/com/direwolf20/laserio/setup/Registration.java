@@ -32,7 +32,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
 import static com.direwolf20.laserio.common.Config.ENERGYTIERS_PATH;
@@ -48,6 +50,10 @@ public class Registration {
     public static final RegistryObject<CardClearRecipe.Serializer> CARD_CLEAR_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("cardclear", CardClearRecipe.Serializer::new);
 
     public static void init() {
+        IntStream.range(0, Config.ENERGYTIERS_PATH.get().size())
+                .forEach(i -> Energy_Overclocker_Cards.add(
+                        ITEMS.register(ENERGYTIERS_PATH.get().get(i), () -> new OverclockerCard(i))
+                ));
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
@@ -102,7 +108,10 @@ public class Registration {
     //public static final RegistryObject<Item> overwrite = ITEMS.register("Test2",() -> new OverclockerCard(1) );
     //public static final RegistryObject<List<? extends Item>> list = ITEMS.register(ITEMS.("Test1",() -> new OverclockerCard(1)), ITEMS.register("Test2",() -> new OverclockerCard(1));
     //public static final RegistryObject<List<Item>> OC_LIST = List.of();
-    public static final RegistryObject<Item> Test = ITEMS.register(ENERGYTIERS_PATH.get().get(0), () -> new OverclockerCard(0));
+    //public static final RegistryObject<Item> Test = ITEMS.register(ENERGYTIERS_PATH.get().get(0), () -> new OverclockerCard(0));
+
+    public static final List<RegistryObject<Item>> Energy_Overclocker_Cards = new ArrayList<>();
+
 
     //public static final String yes = "ohn";
 
