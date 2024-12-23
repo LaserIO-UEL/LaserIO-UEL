@@ -14,6 +14,7 @@ out
 .idea
 
 # gradle
+src/generated/resources/.cache
 build
 .gradle
 
@@ -23,6 +24,8 @@ run
 
 # Files from Forge MDK
 forge*changelog.txt
-
-.vscode
-/extra-mods/
+server
+Minecraft
+changelog.txt
+CREDITS.txt
+/.apt_generated_tests/
