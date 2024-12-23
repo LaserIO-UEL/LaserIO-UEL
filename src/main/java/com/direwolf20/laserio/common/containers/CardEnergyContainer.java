@@ -93,7 +93,7 @@ public class CardEnergyContainer extends AbstractContainerMenu {
                 slot.onQuickCraft(stack, itemstack);
             } else { //From player inventory TO something
                 ItemStack currentStack = slot.getItem().copy();
-                if (slots.get(0).mayPlace(currentStack) && slot.getItem().getItem() instanceof OverclockerCard card && card.getEnergyTier()>0) {
+                if (slots.get(0).mayPlace(currentStack) && slot.getItem().getItem() instanceof OverclockerCard card && card.getEnergyTier()>=0) {
                     if (!this.moveItemStackTo(stack, 0, SLOTS, false)) {
                         return ItemStack.EMPTY;
                     }

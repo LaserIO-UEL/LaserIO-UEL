@@ -24,8 +24,8 @@ public class Config {
     public static final String SUBCATEGORY_ENERGY = "energy_card";
     public static ForgeConfigSpec COMMON_CONFIG;
     //public static final String SUBCATEGORY_CHEMICAL = "chemical_card";
-    public static List<? extends Integer> ENERGYTIERS_MAXFE_DEFAULT = List.of();
-    public static List<? extends String> ENERGYTIERS_PATH_DEFAULT = List.of();
+    public static List<? extends Integer> ENERGYTIERS_MAXFE_DEFAULT = List.of(500);
+    public static List<? extends String> ENERGYTIERS_PATH_DEFAULT = List.of("test1");
 
     //public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_FLUID;
     //public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
@@ -90,7 +90,6 @@ public class Config {
                 .defineInRange("multiplier_milli_buckets_chemical", 60000, 0, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
         */
-
     }
 
     //If value is less than 0, clear
@@ -111,12 +110,6 @@ public class Config {
                 .build();
         configData.load();
         spec.setConfig(configData);
-    }
-
-    public static Config OCRegister(String display, int tier) {
-        OverclockerCard material;
-        material = new OverclockerCard(tier);
-        return null;
     }
 
     /*

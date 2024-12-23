@@ -27,7 +27,7 @@ public class CardItemHandler extends ItemStackHandler {
 
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (this.stack.getItem() instanceof CardEnergy)
-                return stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()>0; //If in energy card, accept only energy upgrades
+                return stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()>=0; //If in energy card, accept only energy upgrades
         if (slot == 0)
             return stack.getItem() instanceof BaseFilter; //Allow filter
         return stack.getItem() instanceof OverclockerCard card && card.getEnergyTier()<0; //Else allow item/fluid OC

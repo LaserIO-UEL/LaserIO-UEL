@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.setup;
 
+import com.direwolf20.laserio.common.Config;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorBE;
@@ -17,7 +18,6 @@ import com.direwolf20.laserio.common.items.filters.*;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
-import com.electronwill.nightconfig.core.Config;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -102,6 +102,8 @@ public class Registration {
     //public static final RegistryObject<Item> overwrite = ITEMS.register("Test2",() -> new OverclockerCard(1) );
     //public static final RegistryObject<List<? extends Item>> list = ITEMS.register(ITEMS.("Test1",() -> new OverclockerCard(1)), ITEMS.register("Test2",() -> new OverclockerCard(1));
     //public static final RegistryObject<List<Item>> OC_LIST = List.of();
+    public static final RegistryObject<Item> Test = ITEMS.register(ENERGYTIERS_PATH.get().get(0), () -> new OverclockerCard(0));
+
     //public static final String yes = "ohn";
 
     /*
