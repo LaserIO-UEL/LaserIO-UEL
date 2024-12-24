@@ -6,6 +6,7 @@ import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.items.cards.CardItem;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.integration.mekanism.CardChemical;
 import com.direwolf20.laserio.setup.Config;
 import net.minecraft.network.FriendlyByteBuf;
@@ -112,7 +113,10 @@ public class PacketUpdateCard {
                             ticks = (short) Math.max(20 - overClockerCount * 5, 1);
                         BaseCard.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardEnergy) {
-                        int max = Config.MAX_FE_TICK_NO_TIERS.get();
+                        int max = Config.MAX_FE_NO_TIERS.get();
+                        if (CardEnergyContainer.SLOTS == 1 && container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
+                            max = Config.MAX_FE_TIERS.get().get(card.getEnergyTier() - 1);
+                        }
                         if (extractAmt > max) {
                             extractAmt = max;
                         }

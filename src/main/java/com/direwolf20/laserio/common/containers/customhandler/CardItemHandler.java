@@ -20,26 +20,32 @@ public class CardItemHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(int slot) {
-        if (!stack.isEmpty())
+        if (!stack.isEmpty()) {
             BaseCard.setInventory(stack, this);
-
+        }
     }
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        if (this.stack.getItem() instanceof CardEnergy)
-            return stack.getItem() instanceof OverclockerCard;
-        if (slot == 0)
+        if (this.stack.getItem() instanceof CardEnergy) {
+            //If in energy card, accept only Energy Overclockers
+            return (stack.getItem() instanceof OverclockerCard card && card.getEnergyTier() > 0);
+        }
+        if (slot == 0) {
+            //Allow filter for cards different from Energy
             return stack.getItem() instanceof BaseFilter;
-        return stack.getItem() instanceof OverclockerCard;
+        }
+        //Else allow Logistic Overclocker
+        return (stack.getItem() instanceof OverclockerCard card && card.getEnergyTier() < 0);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        if (this.stack.getItem() instanceof CardEnergy)
-            return 4;
-        if (slot == 0)
+        //Filters and Energy Overclockers stack to 1
+        if (slot == 0) {
             return 1;
+        }
+        //Logistic Overclockers stack to 4
         return 4;
     }
 

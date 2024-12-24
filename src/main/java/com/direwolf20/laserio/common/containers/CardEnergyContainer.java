@@ -1,6 +1,11 @@
 package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
+import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
+import com.direwolf20.laserio.common.items.cards.CardEnergy;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,6 +26,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import javax.annotation.Nullable;
 
 public class CardEnergyContainer extends AbstractContainerMenu {
+    public static final int SLOTS = (Config.MAX_FE_TIERS.get().isEmpty()) ? 0 : 1;
+    public CardItemHandler handler;
     public ItemStack cardItem;
     public Player playerEntity;
     protected IItemHandler playerInventory;
@@ -39,9 +46,13 @@ public class CardEnergyContainer extends AbstractContainerMenu {
     public CardEnergyContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
         super(Registration.CardEnergy_Container.get(), windowId);
         playerEntity = player;
+        if (SLOTS == 1)
+            this.handler = CardEnergy.getInventory(cardItem);
         this.playerInventory = new InvWrapper(playerInventory);
         this.cardItem = cardItem;
-
+        if (handler != null) {
+            addSlotRange(handler, 0, 153, 5, 1, 18);
+        }
         layoutPlayerInventorySlots(8, 84);
     }
 
@@ -73,6 +84,24 @@ public class CardEnergyContainer extends AbstractContainerMenu {
             itemstack = stack.copy();
             if (ItemHandlerHelper.canItemStacksStack(itemstack, cardItem)) return ItemStack.EMPTY;
 
+            if (SLOTS == 1) {
+                if (index < SLOTS) {
+                    if (!this.moveItemStackTo(stack, SLOTS, 36 + SLOTS, true)) {
+                        return ItemStack.EMPTY;
+                    }
+                    slot.onQuickCraft(stack, itemstack);
+                } else { //From player inventory TO something
+                    ItemStack currentStack = slot.getItem().copy();
+                    if (slots.get(0).mayPlace(currentStack) && currentStack.getItem() instanceof OverclockerCard card && card.getEnergyTier() > 0) {
+                        if (!this.moveItemStackTo(stack, 0, SLOTS, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    }
+                    if (!playerIn.level().isClientSide())
+                        CardEnergy.setInventory(cardItem, handler);
+                }
+            }
+
             if (stack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
@@ -91,7 +120,10 @@ public class CardEnergyContainer extends AbstractContainerMenu {
 
     protected int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            addSlot(new SlotItemHandler(handler, index, x, y));
+            if (handler instanceof CardItemHandler && index == 0)
+                addSlot(new CardOverclockSlot(handler, index, x, y));
+            else
+                addSlot(new SlotItemHandler(handler, index, x, y));
             x += dx;
             index++;
         }
@@ -119,6 +151,8 @@ public class CardEnergyContainer extends AbstractContainerMenu {
     public void removed(Player playerIn) {
         Level world = playerIn.level();
         if (!world.isClientSide) {
+            if (SLOTS == 1)
+                CardEnergy.setInventory(cardItem, handler);
             if (!sourceContainer.equals(BlockPos.ZERO)) {
                 BlockEntity blockEntity = world.getBlockEntity(sourceContainer);
                 if (blockEntity instanceof LaserNodeBE)

@@ -69,7 +69,7 @@ public class Registration {
     public static final DeferredRegister<Item> ITEMS_MEKANISM = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
     public static void init() {
-        IntStream.range(1, Config.MAX_FE_TICK_TIERS.get().size() + 1)
+        IntStream.range(1, Config.MAX_FE_TIERS.get().size() + 1)
             .forEach(i -> Energy_Overclocker_Cards.add(
                     ITEMS.register("energy_overclocker_card_tier_" + i, () -> new OverclockerCard(i))
             ));

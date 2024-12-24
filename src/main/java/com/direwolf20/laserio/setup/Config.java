@@ -17,10 +17,11 @@ public class Config {
     public static final String SUBCATEGORY_ENERGY = "energy_card";
     public static final String SUBCATEGORY_CHEMICAL = "chemical_card";
 
+    public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_FLUID;
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
-    public static ForgeConfigSpec.IntValue MAX_FE_TICK_NO_TIERS;
-    public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MAX_FE_TICK_TIERS;
+    public static ForgeConfigSpec.IntValue MAX_FE_NO_TIERS;
+    public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MAX_FE_TIERS;
     public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_CHEMICAL;
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_CHEMICAL;
 
@@ -42,12 +43,12 @@ public class Config {
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Energy Card").push(SUBCATEGORY_ENERGY);
-        MAX_FE_TICK_NO_TIERS = COMMON_BUILDER.comment("Maximum FE/t for Energy Cards (this value is used only if the Energy Overclocker Card Tiers' list is empty)")
-                .defineInRange("max_fe_tick_no_tiers", 1000000, 0, Integer.MAX_VALUE);
-        MAX_FE_TICK_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclockers will be generated (1 tier for each value).")
+        MAX_FE_NO_TIERS = COMMON_BUILDER.comment("Maximum FE/t for Energy Cards (if Energy Overclockers are defined, this value is used if no overclocker is in the card)")
+                .defineInRange("max_fe_no_tiers", 1000000, 0, Integer.MAX_VALUE);
+        MAX_FE_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclockers will be generated (1 tier for each value).")
                 .comment("The maximum FE/t for each tier is specified using this list.")
                 .comment("Note: this is a feature meant for pack developers, so default recipes won't be generated")
-                .defineListAllowEmpty("max_fe_tick_tiers", List.of(), Config::maxFeTickValidator);
+                .defineListAllowEmpty("max_fe_tiers", List.of(), Config::maxFeTickValidator);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Chemical Card").push(SUBCATEGORY_CHEMICAL);
@@ -58,6 +59,8 @@ public class Config {
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop();
+
+        COMMON_CONFIG = COMMON_BUILDER.build();
     }
 
     public static void loadConfig(ForgeConfigSpec spec, java.nio.file.Path path) {

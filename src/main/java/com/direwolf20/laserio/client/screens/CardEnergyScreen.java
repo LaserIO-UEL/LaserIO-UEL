@@ -8,6 +8,7 @@ import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/energycard.png");
+    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/energycard_" + ((CardEnergyContainer.SLOTS == 0) ? "no_" : "") + "slot.png");
 
     protected final CardEnergyContainer container;
     protected byte currentMode;
@@ -333,7 +334,11 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     public void changeAmount(int change) {
         if (Screen.hasShiftDown()) change *= 10;
         if (Screen.hasControlDown()) change *= 100;
-        int max = Config.MAX_FE_TICK_NO_TIERS.get();
+        if (Screen.hasAltDown()) change *= 1000;
+        int max = Config.MAX_FE_NO_TIERS.get();
+        if (CardEnergyContainer.SLOTS == 1 && container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
+            max = Config.MAX_FE_TIERS.get().get(card.getEnergyTier() - 1);
+        }
         if (change < 0) {
             if (currentMode == 0) {
                 currentPriority = (short) (Math.max(currentPriority + change, -4096));
