@@ -67,6 +67,7 @@ public class Config {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()
+                .preserveInsertionOrder()
                 .writingMode(WritingMode.REPLACE)
                 .build();
         configData.load();
