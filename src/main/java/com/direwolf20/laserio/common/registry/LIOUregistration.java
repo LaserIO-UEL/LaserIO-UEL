@@ -7,7 +7,7 @@ public class LIOUregistration {
     public static final LIOURegistrate REGISTRATE = LIOURegistrate.create("LIOUnoffical");
     static {
 
-        LIOUregistration.REGISTRATE.defaultCreativeTab((ResourceKey< CreativeModeTab>);
+        LIOUregistration.REGISTRATE.defaultCreativeTab((ResourceKey< CreativeModeTab>) null);
 
     }
 
