@@ -1,6 +1,8 @@
 package com.direwolf20.laserio.datagen;
 
 import com.direwolf20.laserio.common.LaserIO;
+import com.direwolf20.laserio.common.registry.LIOUregistration;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -36,6 +38,7 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new LaserIOBlockStates(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new LaserIOItemModels(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new LaserIOLanguageProvider(packOutput, "en_us"));
+        LIOUregistration.REGISTRATE.addDataGenerator(ProviderType.LANG, langHandler::init);
         //}
     }
 }
