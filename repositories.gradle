@@ -3,7 +3,6 @@ def extraModsDir = "extra-mods"
 def extraAPIDir = "extra-api"
 
 repositories {
-    mavenLocal()
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -16,7 +15,7 @@ repositories {
         name "extra-mods"
         dir file(extraModsDir)
     }
-
+    
     flatDir {
         name "extra-api"
         dir file(extraAPIDir)
@@ -34,13 +33,6 @@ repositories {
         url = 'https://modmaven.dev/'
         content {
             includeGroup "mekanism"
-        }
-    }
-    maven {
-        url = "https://maven.tterrag.com/"
-        content {
-            // need to be specific here due to version overlaps
-            includeGroup("com.tterrag.registrate")
         }
     }
 }

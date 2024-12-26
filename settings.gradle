@@ -1,6 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        mavenCentral()
         maven {
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
@@ -8,6 +9,10 @@ pluginManagement {
         maven {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org' 
+        }
+        maven {
+            name = 'Sponge'
+            url = 'https://repo.spongepowered.org/repository/maven-public'
         }
     }
 }
