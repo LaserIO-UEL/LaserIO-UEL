@@ -111,6 +111,9 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.card.Overclockers", "Overclockers: ");
         add("laserio.tooltip.item.card.None", "None");
 
+        //Energy Overclockers
+        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/t");
+
         //Filter Tooltips
         add("laserio.tooltip.item.filter.type", "Type: ");
         add("laserio.tooltip.item.filter.type.allow", "Allow");
