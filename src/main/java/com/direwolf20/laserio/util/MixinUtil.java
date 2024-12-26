@@ -1,10 +1,13 @@
 package com.direwolf20.laserio.util;
 
 import com.direwolf20.laserio.common.LaserIO;
+import com.direwolf20.laserio.setup.Config;
+import com.direwolf20.laserio.setup.Registration;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 //Taken with permission from Create-Powerlines
 public class MixinUtil {
@@ -45,6 +48,14 @@ public class MixinUtil {
             return NativeImage.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void fillLangTable(Map<String, String> table) {
+        String prefix = "item." + LaserIO.MODID + ".";
+        for (int i = 0; i < Registration.Energy_Overclocker_Cards.size(); i++) {
+            String name = (i < Config.NAME_TIERS.get().size()) ? Config.NAME_TIERS.get().get(i) : ("Energy Overclocker Tier " + (i + 1));
+            table.put(prefix + Registration.Energy_Overclocker_Cards.get(i).getId().getPath(), name);
         }
     }
 }

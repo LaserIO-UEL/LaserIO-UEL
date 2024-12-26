@@ -15,6 +15,7 @@ public class Config {
     public static final String CATEGORY_CARD = "card";
     public static final String SUBCATEGORY_FLUID = "fluid_card";
     public static final String SUBCATEGORY_ENERGY = "energy_card";
+    public static final String SUBCATEGORY_ENERGY_OVERCLOCKER_CARDS = "energy_overclockers";
     public static final String SUBCATEGORY_CHEMICAL = "chemical_card";
 
     public static ForgeConfigSpec COMMON_CONFIG;
@@ -22,13 +23,33 @@ public class Config {
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
     public static ForgeConfigSpec.IntValue MAX_FE_NO_TIERS;
     public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MAX_FE_TIERS;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> NAME_TIERS;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> COLOR_TIERS;
     public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_CHEMICAL;
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_CHEMICAL;
 
-    private static boolean maxFeTickValidator(Object obj) {
-        if (obj instanceof Integer maxFeTick)
-            return (maxFeTick > 0);
+    private static boolean maxFeValidator(Object obj) {
+        if (obj instanceof Integer maxFe) {
+            return (maxFe > 0);
+        }
+        return false;
+    }
 
+    private static boolean nameValidator(Object obj) {
+        if (obj instanceof String) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean colorValidator(Object obj) {
+        if (obj instanceof String color) {
+            try {
+                Integer.decode(color);
+                return true;
+            } catch(NumberFormatException e) {
+            }
+        }
         return false;
     }
 
@@ -45,20 +66,28 @@ public class Config {
         COMMON_BUILDER.comment("Energy Card").push(SUBCATEGORY_ENERGY);
         MAX_FE_NO_TIERS = COMMON_BUILDER.comment("Maximum FE/t for Energy Cards (if Energy Overclockers are defined, this value is used if no overclocker is in the card)")
                 .defineInRange("max_fe_no_tiers", 1000000, 0, Integer.MAX_VALUE);
+
+        COMMON_BUILDER.comment("Energy Overclocker Card Tiers").push(SUBCATEGORY_ENERGY_OVERCLOCKER_CARDS);
         MAX_FE_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclockers will be generated (1 tier for each value).")
                 .comment("The maximum FE/t for each tier is specified using this list.")
                 .comment("Note: this is a feature meant for pack developers, so default recipes won't be generated")
-                .defineListAllowEmpty("max_fe_tiers", List.of(), Config::maxFeTickValidator);
-        COMMON_BUILDER.pop();
+                .defineListAllowEmpty("max_fe_tiers", List.of(), Config::maxFeValidator);
+        NAME_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclockers' name can be chosen (1 value for each tier).")
+                .comment("Each name must be provided as a string, so it must be contained within quotation marks.")
+                .comment("Note: if this list is empty/doesn't contain enough elements, the missing names will be replaced with the default ones")
+                .defineListAllowEmpty("name_tiers", List.of(), Config::nameValidator);
+        COLOR_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclockers' color can be chosen (1 value for each tier).")
+                .comment("Each color must be provided as a string using either its decimal, octal or hexadecimal representation.")
+                .comment("Note: if this list is empty/doesn't contain enough elements, the missing colors will be replaced with the default ones")
+                .defineListAllowEmpty("color_tiers", List.of(), Config::colorValidator);
+        COMMON_BUILDER.pop(2);
 
         COMMON_BUILDER.comment("Chemical Card").push(SUBCATEGORY_CHEMICAL);
         BASE_MILLI_BUCKETS_CHEMICAL = COMMON_BUILDER.comment("Millibuckets for Chemical Cards without Overclockers installed (only if Mekanism is installed)")
                 .defineInRange("base_milli_buckets_chemical", 15000, 0, Integer.MAX_VALUE);
         MULTIPLIER_MILLI_BUCKETS_CHEMICAL = COMMON_BUILDER.comment("Multiplier for Overclocker Cards - Number of Overclockers * this value = max millibuckets  (only if Mekanism is installed)")
                 .defineInRange("multiplier_milli_buckets_chemical", 60000, 0, Integer.MAX_VALUE);
-        COMMON_BUILDER.pop();
-
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(2);
 
         COMMON_CONFIG = COMMON_BUILDER.build();
     }

@@ -1,7 +1,7 @@
 package com.direwolf20.laserio.mixins;
 
 import com.direwolf20.laserio.common.LaserIO;
-import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.MixinUtil;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -13,8 +13,6 @@ import net.minecraft.client.resources.metadata.animation.AnimationMetadataSectio
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.RegistryObject;
 
 import org.jline.utils.Colors;
 import org.lwjgl.system.MemoryUtil;
@@ -26,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.IntBuffer;
+import java.util.stream.IntStream;
 
 //Taken with permission from Create-Powerlines
 @Mixin(DirectoryLister.class)
@@ -37,27 +36,27 @@ public class DirectorySpriteSourceMixin {
     @Inject(method = "run", require = 1, at = @At("HEAD"))
     private void laserio$load(ResourceManager resMgr, SpriteSource.Output out, CallbackInfo ci) {
         if (sourcePath.equals("block")) {
-            for (RegistryObject<Item> energyOverclocker : Registration.Energy_Overclocker_Cards) {
-                String id = energyOverclocker.getId().getPath();
-                int energyTier = ((OverclockerCard) energyOverclocker.get()).getEnergyTier();
-                ResourceLocation loc = new ResourceLocation(LaserIO.MODID, "item/" + id);
-                out.add(loc, new SpriteSource.SpriteSupplier() {
-                    public SpriteContents get() {
-                        NativeImage base = MixinUtil.loadNativeImage("item/energy_overclocker_card");
-                        NativeImage overlay = MixinUtil.loadNativeImage("template/energy_overclocker_card_overlay");
-                        long basePixels = MixinUtil.getPixels(base);
-                        long overlayPixels = MixinUtil.getPixels(overlay);
-                        IntBuffer baseBuffer = MemoryUtil.memIntBuffer(basePixels, 256);
-                        IntBuffer overlayBuffer = MemoryUtil.memIntBuffer(overlayPixels, 256);
-                        int color = Colors.DEFAULT_COLORS_256[energyTier % 256];
-                        for (int i = 0; i < 256; i++) {
-                            baseBuffer.put(i, MixinUtil.blendColor(baseBuffer.get(i), MixinUtil.tintColor(overlayBuffer.get(i), color)));
+            IntStream.range(0, Registration.Energy_Overclocker_Cards.size())
+                .forEach(i -> {
+                    String id = Registration.Energy_Overclocker_Cards.get(i).getId().getPath();
+                    ResourceLocation loc = new ResourceLocation(LaserIO.MODID, "item/" + id);
+                    out.add(loc, new SpriteSource.SpriteSupplier() {
+                        public SpriteContents get() {
+                            NativeImage base = MixinUtil.loadNativeImage("item/energy_overclocker_card");
+                            NativeImage overlay = MixinUtil.loadNativeImage("template/energy_overclocker_card_overlay");
+                            long basePixels = MixinUtil.getPixels(base);
+                            long overlayPixels = MixinUtil.getPixels(overlay);
+                            IntBuffer baseBuffer = MemoryUtil.memIntBuffer(basePixels, 256);
+                            IntBuffer overlayBuffer = MemoryUtil.memIntBuffer(overlayPixels, 256);
+                            int color = (i < Config.COLOR_TIERS.get().size()) ? Integer.decode(Config.COLOR_TIERS.get().get(i)) : Colors.DEFAULT_COLORS_256[i % 256];
+                            for (int j = 0; j < 256; j++) {
+                                baseBuffer.put(j, MixinUtil.blendColor(baseBuffer.get(j), MixinUtil.tintColor(overlayBuffer.get(j), color)));
+                            }
+                            overlay.close();
+                            return new SpriteContents(loc, new FrameSize(16, 16), base, AnimationMetadataSection.EMPTY, null);
                         }
-                        overlay.close();
-                        return new SpriteContents(loc, new FrameSize(16, 16), base, AnimationMetadataSection.EMPTY, null);
-                    }
+                    });
                 });
-            }
         }
     }
 }
