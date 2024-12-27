@@ -7,19 +7,12 @@ body:
       value: |
         To help us help you, please provide as much information as you can, this helps us with debugging and reproducting the issue.
   - type: input
-    id: laserio-version
+    id: laserio_uel-version
     attributes:
-      label: LaserIO version
+      label: LaserIO UEL version
       description: |
         You can find the version of the mod in the mods file name or in-game in the mods button on the main menu.
-      placeholder: 3.4.0
-    validations:
-      required: true
-  - type: input
-    id: mc-version
-    attributes:
-      label: Minecraft Version
-      placeholder: 1.18.2
+      placeholder: 1.0.0
     validations:
       required: true
   - type: input
@@ -28,7 +21,7 @@ body:
       label: Forge Version
       description: |
         You can get this from the main menu screen in the bottom left corner of the screen.
-      placeholder: 40.1.20
+      placeholder: 47.3.0
     validations:
       required: false
   - type: input
@@ -37,7 +30,6 @@ body:
       label: Modpack & Version
       description: |
         If you are running a Modpack, please provide the name and version of the pack.
-      placeholder: Direwolf20 - 1.16 (2.4)
     validations:
       required: false
   - type: dropdown
