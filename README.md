@@ -1,2 +1,2 @@
 # LaserIO Unofficial Extended Life
-Can't have DireWire without Wires!
+Can't have DireWire without Wires! -Direwolf20
