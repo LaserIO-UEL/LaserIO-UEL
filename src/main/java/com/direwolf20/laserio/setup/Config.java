@@ -80,7 +80,7 @@ public class Config {
                 .defineListAllowEmpty("name_tiers", List.of(), Config::nameValidator);
         COLOR_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclocker(s') color(s) can be chosen (1 value for each tier).")
                 .comment("Each color must be provided as a string using its  octal, decimal, or hexadecimal representation.")
-                .comment("Example with tier 1 as blue, 2 as red, and 3 as green: [\"0377\", \"16711680\", \"#00FF00\"],")
+                .comment("Example with tier 1 as blue, 2 as red, and 3 as green: [\"0377\", \"16711680\", \"#00FF00\"]")
                 .comment("Note: Default colors will be generated if this list is empty/doesn't contain enough elements")
                 .defineListAllowEmpty("color_tiers", List.of(), Config::colorValidator);
         COMMON_BUILDER.pop(2);
