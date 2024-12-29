@@ -21,7 +21,6 @@ import com.direwolf20.laserio.integration.mekanism.MekanismCache;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
-import com.direwolf20.laserio.util.BaseCardCache;
 import com.direwolf20.laserio.util.CardRender;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.ExtractorCardCache;
@@ -184,7 +183,7 @@ public class LaserNodeBE extends BaseLaserBE {
         for (Direction direction : Direction.values()) {
             final int j = direction.ordinal();
             com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler tempHandler = new com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler(LaserNodeContainer.SLOTS, this);
-            nodeSideCaches[j] = new NodeSideCache(tempHandler, LazyOptional.of(() -> tempHandler), 0, new LaserEnergyStorage(direction));
+            nodeSideCaches[j] = new NodeSideCache(tempHandler, LazyOptional.of(() -> tempHandler), 0);
         }
     }
 
@@ -420,7 +419,6 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         for (Direction direction : Direction.values()) {
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
-            nodeSideCache.invalidateEnergy();
             for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
                 boolean tempEnabled = extractorCardCache.enabled;
                 extractorCardCache.setEnabled();
@@ -1180,78 +1178,6 @@ public class LaserNodeBE extends BaseLaserBE {
         return false;
     }
 
-    public int receiveEnergy(Direction direction, int receiveAmt, boolean simulate) {
-        int totalAmtNeeded = receiveAmt;
-        int totalAmtSent = 0;
-
-        NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
-        int countCardsHandled = 0;
-        for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
-            if (!extractorCardCache.enabled) continue;
-            if (countCardsHandled > nodeSideCache.overClocker) return totalAmtSent;
-            if (extractorCardCache instanceof StockerCardCache) {
-                //No-Op
-            } else {
-                if (extractorCardCache.cardType.equals(BaseCard.CardType.ENERGY)) {
-                    int amtSent = sendReceivedEnergy(extractorCardCache, totalAmtNeeded, simulate);
-                    if (amtSent > 0)
-                        countCardsHandled++;
-                    totalAmtNeeded -= amtSent;
-                    totalAmtSent += amtSent;
-                    if (totalAmtNeeded <= 0) break;
-                }
-            }
-        }
-        return totalAmtSent;
-    }
-
-    public int sendReceivedEnergy(ExtractorCardCache extractorCardCache, int receiveAmt, boolean simulate) {
-        int totalAmtNeeded = Math.min(extractorCardCache.extractAmt, receiveAmt);
-        int totalFit = 0;
-        List<InserterCardCache> inserterCardCaches = getChannelMatchInserters(extractorCardCache);
-        int roundRobin = -1;
-        if (extractorCardCache.roundRobin != 0) {
-            roundRobin = getRR(extractorCardCache);
-            inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
-        }
-
-        for (InserterCardCache inserterCardCache : inserterCardCaches) {
-            LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
-            if (laserNodeEnergyHandler == null) continue;
-            BlockEntity targetBE = level.getBlockEntity(laserNodeEnergyHandler.be.getBlockPos().relative(inserterCardCache.direction));
-            if (targetBE instanceof LaserNodeBE)
-                continue; //Don't let laser nodes insert into other laser nodes in this way.
-            IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
-            int desired;
-            if (inserterCardCache.insertLimit != 100)
-                desired = (int) (energyStorage.getMaxEnergyStored() * ((float) inserterCardCache.insertLimit / 100)) - energyStorage.getEnergyStored();
-            else
-                desired = receiveAmt;
-            if (desired <= 0) continue;
-            int amtToTry = Math.min(desired, totalAmtNeeded);
-            int amtFit = energyStorage.receiveEnergy(amtToTry, true); //Simulate Insert Energy
-            if (amtFit == 0) { //Next inserter if nothing went in -- return false if enforcing round robin
-                if (extractorCardCache.roundRobin == 2) {
-                    return totalFit;
-                }
-                if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
-                continue;
-            }
-            //int amtDrained = fromEnergyTank.extractEnergy(amtFit, false); //Remove some energy from the extract tank
-            //if (amtDrained == 0) continue; //If we didn't get anything, like the energy storage is empty
-            //foundAnything = true;
-            totalAmtNeeded -= amtFit; //If we removed 100 and wanted to remove 1000, keep looking for other nodes to insert into
-            totalFit += amtFit;
-            if (!simulate)
-                energyStorage.receiveEnergy(amtFit, false); //Insert the amount we removed from the source
-            //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
-
-            if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
-            if (totalAmtNeeded == 0) return totalFit;
-        }
-        return totalFit;
-    }
-
     public boolean extractEnergy(ExtractorCardCache extractorCardCache, IEnergyStorage fromEnergyTank, int extractAmt) {
         int totalAmtNeeded = extractAmt;
         List<InserterCardCache> inserterCardCaches = getChannelMatchInserters(extractorCardCache);
@@ -1351,9 +1277,9 @@ public class LaserNodeBE extends BaseLaserBE {
         BlockPos adjacentPos = getBlockPos().relative(extractorCardCache.direction);
         assert level != null;
         if (!level.isLoaded(adjacentPos)) return false;
-        Optional<IEnergyStorage> adjacentEnergyOptional = getAttachedEnergyTank(extractorCardCache.direction, extractorCardCache.sneaky).resolve();
-        if (adjacentEnergyOptional.isEmpty()) return false;
-        IEnergyStorage adjacentEnergy = adjacentEnergyOptional.get();
+        LazyOptional<IEnergyStorage> adjacentEnergyOptional = getAttachedEnergyTank(extractorCardCache.direction, extractorCardCache.sneaky);
+        if (!adjacentEnergyOptional.isPresent()) return false;
+        IEnergyStorage adjacentEnergy = adjacentEnergyOptional.resolve().get();
         int desired = (int) (adjacentEnergy.getMaxEnergyStored() * ((float) extractorCardCache.extractLimit / 100));
         int extractAmt = Math.min(extractorCardCache.extractAmt, adjacentEnergy.getEnergyStored() - desired);
         if (extractAmt <= 0) return false;
@@ -2029,7 +1955,6 @@ public class LaserNodeBE extends BaseLaserBE {
         markDirtyClient();
         findMyExtractors();
         updateOverclockers();
-        Arrays.stream(nodeSideCaches).forEach(NodeSideCache::invalidateEnergy);
         //updateRedstoneOutputs();
     }
 
@@ -2440,22 +2365,6 @@ public class LaserNodeBE extends BaseLaserBE {
         if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
             return nodeSideCaches[side.ordinal()].handlerLazyOptional.cast();
         }
-        if (cap == ForgeCapabilities.ENERGY) {
-            if (side == null) {
-                return LazyOptional.empty();
-            } else {
-                NodeSideCache nodeSideCache = nodeSideCaches[side.ordinal()];
-                for (int slot = 0; slot < LaserNodeContainer.CARDSLOTS; slot++) {
-                    ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
-                    if (card.getItem() instanceof CardEnergy) {
-                        BaseCardCache baseCardCache = new BaseCardCache(side, card, slot, this);
-                        if (baseCardCache.enabled)
-                            return nodeSideCaches[side.ordinal()].laserEnergyStorage.cast();
-                    }
-                }
-                return LazyOptional.empty();
-            }
-        }
         return super.getCapability(cap, side);
     }
 
@@ -2519,44 +2428,5 @@ public class LaserNodeBE extends BaseLaserBE {
     public void setRemoved() {
         super.setRemoved();
         Arrays.stream(nodeSideCaches).forEach(e -> e.handlerLazyOptional.invalidate());
-        Arrays.stream(nodeSideCaches).forEach(e -> e.laserEnergyStorage.invalidate());
-    }
-
-    public class LaserEnergyStorage implements IEnergyStorage {
-        private final Direction facing;
-
-        public LaserEnergyStorage(Direction facing) {
-            this.facing = facing;
-        }
-
-        @Override
-        public int receiveEnergy(int maxReceive, boolean simulate) {
-            return LaserNodeBE.this.receiveEnergy(facing, maxReceive, simulate);
-        }
-
-        @Override
-        public int extractEnergy(int maxExtract, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int getEnergyStored() {
-            return 0;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            return 0;
-        }
-
-        @Override
-        public boolean canExtract() {
-            return false;
-        }
-
-        @Override
-        public boolean canReceive() {
-            return true;
-        }
     }
 }
