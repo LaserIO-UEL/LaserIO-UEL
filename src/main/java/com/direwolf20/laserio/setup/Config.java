@@ -69,18 +69,18 @@ public class Config {
         MAX_FE_NO_TIERS = COMMON_BUILDER.comment("Maximum FE/t for Energy Cards (without Overclockers, if they are defined)")
                 .defineInRange("max_fe_no_tiers", 1000000, 0, Integer.MAX_VALUE);
 
-        COMMON_BUILDER.comment("Energy Overclocker Card Tiers (For Pack Developers)").push(SUBCATEGORY_ENERGY_OVERCLOCKER_CARDS);
+        COMMON_BUILDER.comment("Energy Overclocker Card Tiers (for pack developers)").push(SUBCATEGORY_ENERGY_OVERCLOCKER_CARDS);
         MAX_FE_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclocker(s') will be generated (1 tier for each value).")
                 .comment("The maximum FE/t for each tier is specified using this list. Ex: [512, 2000, 51873]")
                 .comment("Note: Since this is a feature meant for pack developers, no recipes will be generated")
                 .defineListAllowEmpty("max_fe_tiers", List.of(), Config::maxFeValidator);
         NAME_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclocker(s') name(s) can be chosen (1 value for each tier).")
                 .comment("Normal string rules apply. Ex: [\"name\", \"longer name\", \"NaME wiTh CapiTAL lETters\"]")
-                .comment("Note: Default names will be generated if this list is empty/doesn't contain enough elements.")
+                .comment("Note: Default names will be generated if this list is empty/doesn't contain enough elements")
                 .defineListAllowEmpty("name_tiers", List.of(), Config::nameValidator);
         COLOR_TIERS = COMMON_BUILDER.comment("By adding values to this list, Energy Overclocker(s') color(s) can be chosen (1 value for each tier).")
-                .comment("Each color must be provided as a string using its  octal, decimal, or hexadecimal representation.")
-                .comment("Example with tier 1 as blue, 2 as red, and 3 as green: [\"0377\", \"16711680\", \"#00FF00\"]")
+                .comment("Each color must be provided as a string using its octal, decimal, or hexadecimal representation.")
+                .comment("Example with tier 1 as blue, 2 as green, and 3 as red: [\"0377\", \"65280\", \"#ff0000\"]")
                 .comment("Note: Default colors will be generated if this list is empty/doesn't contain enough elements")
                 .defineListAllowEmpty("color_tiers", List.of(), Config::colorValidator);
         COMMON_BUILDER.pop(2);
