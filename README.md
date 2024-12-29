@@ -8,12 +8,12 @@ As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!
 
 # Basic Features:
 - Chemical Cards for use with Mekanism gasses (if Mekanism is installed)
-- Energy Cards Max FE/t is now configurable via config (Default 1,000,000 FE/t)
-- Removal of Overclockers from Energy Cards
+- Energy Cards max FE/t is now configurable via config (default: 1,000,000 FE/t)
+- Removal of standard Overclockers from Energy Cards
 - Updated Guide book
 
 # Advanced Features:
-- Energy Overclocker tier(s) meant to help pack developers better gate energy transportation
+- Optional Energy Overclocker tier(s) meant to help pack developers better gate energy transportation
 - These tiers come with: configurable names, max energy values (tooltips will change to reflect these values), and colors - all controllable from the config!
 - General cleanup and optimizations
 
@@ -25,4 +25,4 @@ A very special thanks to:
 - Direwolf20 and all contributors to the original LaserIO
 - Spicierspace153 for the help with some parts of the code and tips
 - Create-Powerlines devs for the mixin part
-- All future contributors (We will update this as time passes)
+- All future contributors (we will update this as time passes)
