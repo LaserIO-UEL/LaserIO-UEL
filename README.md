@@ -10,7 +10,7 @@ As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!
 - Chemical Cards for use with Mekanism gasses (if Mekanism is installed)
 - Energy Cards max FE/t is now configurable via config (default: 1,000,000 FE/t)
 - Removal of standard Overclockers from Energy Cards
-- Updated Guide book
+- Updated guide book
 
 # Advanced Features:
 - Optional Energy Overclocker tier(s) meant to help pack developers better gate energy transportation
