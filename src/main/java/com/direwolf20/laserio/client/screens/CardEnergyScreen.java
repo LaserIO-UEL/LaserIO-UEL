@@ -337,7 +337,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     public void changeAmount(int change) {
         if (Screen.hasShiftDown()) change *= 10;
         if (Screen.hasControlDown()) change *= 100;
-        if (hasAltDown()) change *= 1000;
+        if (Screen.hasAltDown()) change *= 1000;
         int max = Config.MAX_FE_NO_TIERS.get();
         if (CardEnergyContainer.SLOTS == 1 && container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
             max = Config.MAX_FE_TIERS.get().get(card.getEnergyTier() - 1);
