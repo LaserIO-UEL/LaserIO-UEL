@@ -128,7 +128,7 @@ public class Registration {
     public static final RegistryObject<Item> Logic_Chip = ITEMS.register("logic_chip", LogicChip::new);
     public static final RegistryObject<Item> Logic_Chip_Raw = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
     public static final RegistryObject<Item> Overclocker_Node = ITEMS.register("overclocker_node", OverclockerNode::new);
-    public static final RegistryObject<Item> Logistic_Overclocker_Card = ITEMS.register("logistic_overclocker_card", () -> new OverclockerCard(-1));
+    public static final RegistryObject<Item> Overclocker_Card = ITEMS.register("overclocker_card", () -> new OverclockerCard(-1));
 
     //Energy Overclocker Cards (used if tiers are added using config)
     public static final List<RegistryObject<Item>> Energy_Overclocker_Cards = new ArrayList<>();

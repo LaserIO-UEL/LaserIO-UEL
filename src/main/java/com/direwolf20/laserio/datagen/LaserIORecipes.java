@@ -226,7 +226,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .group("laserio")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Logistic_Overclocker_Card.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Overclocker_Card.get(), 1)
                 .pattern(" g ")
                 .pattern("rpr")
                 .pattern("ggg")

@@ -34,7 +34,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add(Registration.Logic_Chip.get(), "Logic Chip");
         add(Registration.Logic_Chip_Raw.get(), "Raw Logic Chip");
         add(Registration.Overclocker_Node.get(), "Node Overclocker");
-        add(Registration.Logistic_Overclocker_Card.get(), "Logistic Overclocker");
+        add(Registration.Overclocker_Card.get(), "Logistic Overclocker");
 
         add("screen.laserio.extractamt", "Transfer Amount");
         add("screen.laserio.tickSpeed", "Speed (Ticks)");
