@@ -22,6 +22,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -143,10 +145,11 @@ public class CardFluidScreen extends CardItemScreen {
 
     @Override
     public void setExtract(NumberButton amountButton, int btn) {
+        int change = currentMode == 0 ? 1 : 100;
         if (btn == 0)
-            changeAmount(1);
+            changeAmount(change);
         else if (btn == 1)
-            changeAmount(-1);
+            changeAmount(change * -1);
         amountButton.setValue(currentMode == 0 ? currentPriority : currentFluidExtractAmt);
         amountButton.playDownSound(Minecraft.getInstance().getSoundManager());
     }
@@ -168,5 +171,21 @@ public class CardFluidScreen extends CardItemScreen {
         if (showFilter)
             PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
         PacketHandler.sendToServer(new PacketUpdateCard(currentMode, currentChannel, currentFluidExtractAmt, currentPriority, currentSneaky, (short) currentTicks, currentExact, currentRegulate, (byte) currentRoundRobin, 0, 0, currentRedstoneMode, currentRedstoneChannel, currentAndMode));
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
+        super.superSlotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
+        if (currentMode == 0)
+            return;
+
+        int newOverclockerCount = container.getSlot(1).getItem().getCount();
+        if (newOverclockerCount == lastOverclockerCount) {
+            return;
+        }
+
+        currentFluidExtractAmt = Math.max(newOverclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
+        ((NumberButton) buttons.get("amount")).setValue(currentFluidExtractAmt);
+        lastOverclockerCount = newOverclockerCount;
     }
 }

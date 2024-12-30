@@ -23,6 +23,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.doesItemStackHoldChemicals;
@@ -157,7 +159,23 @@ public class CardChemicalScreen extends CardItemScreen {
     @Override
     public void saveSettings() {
         if (showFilter)
-        	PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
+            PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
         PacketHandler.sendToServer(new PacketUpdateCard(currentMode, currentChannel, currentChemicalExtractAmt, currentPriority, currentSneaky, (short) currentTicks, currentExact, currentRegulate, (byte) currentRoundRobin, 0, 0, currentRedstoneMode, currentRedstoneChannel, currentAndMode));
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
+        super.superSlotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
+        if (currentMode == 0)
+            return;
+
+        int newOverclockerCount = container.getSlot(1).getItem().getCount();
+        if (newOverclockerCount == lastOverclockerCount) {
+            return;
+        }
+
+        currentChemicalExtractAmt = Math.max(newOverclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
+        ((NumberButton) buttons.get("amount")).setValue(currentChemicalExtractAmt);
+        lastOverclockerCount = newOverclockerCount;
     }
 }

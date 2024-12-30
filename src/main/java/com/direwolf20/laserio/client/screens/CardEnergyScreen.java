@@ -27,6 +27,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 
@@ -52,6 +54,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     protected final ItemStack card;
     protected Map<String, Button> buttons = new HashMap<>();
     protected byte currentRedstoneMode;
+    protected ItemStack lastOverclocker;
 
     protected final String[] sneakyNames = {
             "screen.laserio.default",
@@ -213,6 +216,9 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         currentInsertLimitPercent = CardEnergy.getInsertLimitPercent(card);
         currentRedstoneMode = CardEnergy.getRedstoneMode(card);
         currentRedstoneChannel = BaseCard.getRedstoneChannel(card);
+
+        if (CardEnergyContainer.SLOTS == 1)
+            lastOverclocker = container.getSlot(0).getItem();
 
         addAmtButton();
         addLimitButton();
@@ -430,10 +436,8 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         InputConstants.Key mouseKey = InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_);
         if (p_keyPressed_1_ == 256 || minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
             onClose();
-
             return true;
         }
-
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
@@ -520,7 +524,6 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             setLimitExtract(limitButton, btn);
             return true;
         }
-
         NumberButton speedButton = ((NumberButton) buttons.get("speed"));
         if (MiscTools.inBounds(speedButton.getX(), speedButton.getY(), speedButton.getWidth(), speedButton.getHeight(), x, y)) {
             if (btn == 0)
@@ -531,7 +534,27 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             speedButton.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }
-
         return super.mouseClicked(x, y, btn);
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
+        super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
+        if (CardEnergyContainer.SLOTS != 1 || currentMode == 0)
+            return;
+
+        ItemStack newOverclocker = container.getSlot(0).getItem();
+        if (ItemStack.isSameItem(newOverclocker, lastOverclocker)) {
+            return;
+        }
+
+        int max = Config.MAX_FE_NO_TIERS.get();
+        if (!newOverclocker.isEmpty()) {
+            int energyTier = ((OverclockerCard) newOverclocker.getItem()).getEnergyTier();
+            max = Config.MAX_FE_TIERS.get().get(energyTier - 1);
+        }
+        currentEnergyExtractAmt = max;
+        ((NumberButton) buttons.get("amount")).setValue(currentEnergyExtractAmt);
+        lastOverclocker = newOverclocker.copy();
     }
 }

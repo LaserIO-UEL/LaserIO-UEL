@@ -40,6 +40,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
@@ -76,6 +77,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     protected boolean renderFluids = false;
     protected boolean renderChemicals = false;
     private boolean showCardHolderUI;
+    protected int lastOverclockerCount;
 
     protected final String[] sneakyNames = {
             "screen.laserio.default",
@@ -301,6 +303,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         currentRedstoneMode = BaseCard.getRedstoneMode(card);
         currentRedstoneChannel = BaseCard.getRedstoneChannel(card);
         currentAndMode = BaseCard.getAnd(card);
+        lastOverclockerCount = container.getSlot(1).getItem().getCount();
 
         showFilter = !(filter == null) && !filter.isEmpty() && !(filter.getItem() instanceof FilterTag);
         if (showFilter) {
@@ -822,5 +825,25 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             }
         }
         return super.mouseClicked(x, y, btn);
+    }
+
+    protected void superSlotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
+        super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
+        super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
+        if (currentMode == 0)
+            return;
+
+        int newOverclockerCount = container.getSlot(1).getItem().getCount();
+        if (newOverclockerCount == lastOverclockerCount) {
+            return;
+        }
+
+        currentItemExtractAmt = (byte) Math.max(newOverclockerCount * 16, 8);
+        ((NumberButton) buttons.get("amount")).setValue(currentItemExtractAmt);
+        lastOverclockerCount = newOverclockerCount;
     }
 }
