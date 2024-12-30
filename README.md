@@ -1,7 +1,7 @@
 # LaserIO Unofficial Extended Life
 A fork of LaserIO which aims to:
 - Add new features
-- Support the 1.20.1 version of LaserIO
+- Be compatible with and support the 1.20.1 version of LaserIO
 - Cleanup and optimize
 
 As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!"... We think?
