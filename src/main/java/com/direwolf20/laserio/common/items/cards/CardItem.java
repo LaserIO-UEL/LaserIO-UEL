@@ -34,7 +34,7 @@ public class CardItem extends BaseCard {
     }
 
     public static byte setItemExtractAmt(ItemStack card, byte itemextractamt) {
-        if (itemextractamt == 1)
+        if (itemextractamt == 8)
             card.removeTagKey("itemextractamt");
         else
             card.getOrCreateTag().putByte("itemextractamt", itemextractamt);
@@ -43,7 +43,7 @@ public class CardItem extends BaseCard {
 
     public static byte getItemExtractAmt(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("itemextractamt")) return (byte) 1;
+        if (compound == null || !compound.contains("itemextractamt")) return (byte) 8;
         return compound.getByte("itemextractamt");
     }
 }

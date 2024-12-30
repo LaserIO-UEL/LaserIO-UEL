@@ -33,6 +33,8 @@ import net.minecraftforge.client.gui.widget.ExtendedButton;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.minecraft.client.gui.screens.Screen.hasAltDown;
+
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
     private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/energycard_" + ((CardEnergyContainer.SLOTS == 0) ? "no_" : "") + "slot.png");
 
@@ -52,6 +54,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     protected final ItemStack card;
     protected Map<String, Button> buttons = new HashMap<>();
     protected byte currentRedstoneMode;
+    protected ItemStack last = ItemStack.EMPTY;
 
     protected final String[] sneakyNames = {
             "screen.laserio.default",
@@ -334,11 +337,12 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     public void changeAmount(int change) {
         if (Screen.hasShiftDown()) change *= 10;
         if (Screen.hasControlDown()) change *= 100;
-        if (Screen.hasAltDown()) change *= 1000;
+        if (hasAltDown()) change *= 1000;
         int max = Config.MAX_FE_NO_TIERS.get();
         if (CardEnergyContainer.SLOTS == 1 && container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
             max = Config.MAX_FE_TIERS.get().get(card.getEnergyTier() - 1);
         }
+
         if (change < 0) {
             if (currentMode == 0) {
                 currentPriority = (short) (Math.max(currentPriority + change, -4096));
@@ -533,5 +537,42 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         }
 
         return super.mouseClicked(x, y, btn);
+    }
+
+    /*
+    public void setOCMax() {
+        int max = Config.MAX_FE_NO_TIERS.get();
+        if (container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
+            max = Config.MAX_FE_TIERS.get().get(card.getEnergyTier() - 1);
+        }
+        currentEnergyExtractAmt = max;
+    }
+        //A way to auto set OC to max
+        //if (currentEnergyExtractAmt == Config.MAX_FE_NO_TIERS.get()) {currentEnergyExtractAmt = max;}
+        //for (int i=0; i<Config.MAX_FE_TIERS.get().size(); i++) {
+        //    if (currentEnergyExtractAmt == Config.MAX_FE_TIERS.get().get(i)) {
+        //        currentEnergyExtractAmt = max;
+        //        break;
+        //    }}}
+
+
+     */
+    public void tickOC() {
+        if (CardEnergyContainer.SLOTS == 1) {
+            ItemStack itemstack = this.container.getSlot(0).getItem();
+            if (!ItemStack.matches(itemstack, this.last)) {
+                last = itemstack;
+                int max = Config.MAX_FE_NO_TIERS.get();
+                    if (!itemstack.isEmpty()) {
+                    int energyTier = ((OverclockerCard) itemstack.getItem()).getEnergyTier();
+                    max = Config.MAX_FE_TIERS.get().get(energyTier - 1);
+                }
+                currentEnergyExtractAmt = max;
+                ((NumberButton) buttons.get("amount")).setValue(currentEnergyExtractAmt);
+            }}}
+
+    public void containerTick() {
+        super.containerTick();
+        this.tickOC();
     }
 }
