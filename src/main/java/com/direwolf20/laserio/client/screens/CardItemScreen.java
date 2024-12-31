@@ -827,15 +827,12 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         return super.mouseClicked(x, y, btn);
     }
 
-    protected void superSlotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
-        super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
-    }
-
     @Override
     protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
         super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
-        if (currentMode == 0)
+        if (!(card.getItem() instanceof CardItem)) {
             return;
+        }
 
         int newOverclockerCount = container.getSlot(1).getItem().getCount();
         if (newOverclockerCount == lastOverclockerCount) {
@@ -843,7 +840,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         }
 
         currentItemExtractAmt = (byte) Math.max(newOverclockerCount * 16, 8);
-        ((NumberButton) buttons.get("amount")).setValue(currentItemExtractAmt);
         lastOverclockerCount = newOverclockerCount;
+        if (currentMode != 0) {
+            ((NumberButton) buttons.get("amount")).setValue(currentItemExtractAmt);
+        }
     }
 }

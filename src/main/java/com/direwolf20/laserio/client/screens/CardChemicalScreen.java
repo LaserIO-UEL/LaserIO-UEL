@@ -165,9 +165,7 @@ public class CardChemicalScreen extends CardItemScreen {
 
     @Override
     protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
-        super.superSlotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
-        if (currentMode == 0)
-            return;
+        super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
 
         int newOverclockerCount = container.getSlot(1).getItem().getCount();
         if (newOverclockerCount == lastOverclockerCount) {
@@ -175,7 +173,9 @@ public class CardChemicalScreen extends CardItemScreen {
         }
 
         currentChemicalExtractAmt = Math.max(newOverclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
-        ((NumberButton) buttons.get("amount")).setValue(currentChemicalExtractAmt);
         lastOverclockerCount = newOverclockerCount;
+        if (currentMode != 0) {
+            ((NumberButton) buttons.get("amount")).setValue(currentChemicalExtractAmt);
+        }
     }
 }

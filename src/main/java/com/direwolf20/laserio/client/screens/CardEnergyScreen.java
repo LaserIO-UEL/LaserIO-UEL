@@ -540,8 +540,9 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     @Override
     protected void slotClicked(Slot slot, int inventorySlotIndex, int depositedAmount, ClickType clickType) {
         super.slotClicked(slot, inventorySlotIndex, depositedAmount, clickType);
-        if (CardEnergyContainer.SLOTS != 1 || currentMode == 0)
+        if (CardEnergyContainer.SLOTS != 1) {
             return;
+        }
 
         ItemStack newOverclocker = container.getSlot(0).getItem();
         if (ItemStack.isSameItem(newOverclocker, lastOverclocker)) {
@@ -554,7 +555,9 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             max = Config.MAX_FE_TIERS.get().get(energyTier - 1);
         }
         currentEnergyExtractAmt = max;
-        ((NumberButton) buttons.get("amount")).setValue(currentEnergyExtractAmt);
         lastOverclocker = newOverclocker.copy();
+        if (currentMode != 0) {
+            ((NumberButton) buttons.get("amount")).setValue(currentEnergyExtractAmt);
+        }
     }
 }
