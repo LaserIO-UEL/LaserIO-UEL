@@ -7,7 +7,7 @@
   ],
   "client": [
     "ClientLanguageMixin",
-    "ModelManagerMixin",
+    "ModelBakeryMixin",
     "DirectorySpriteSourceMixin"
   ],
   "minVersion": "0.8.5",
