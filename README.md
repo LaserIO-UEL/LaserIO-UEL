@@ -28,11 +28,10 @@ Existing blocks and items will not disappear, for the most part (only Overclocke
 - Node cloning
 - Tick settings related to Logistic Overclockers configurable from config
 
-
 ## Credits
 A very special thanks to:
 - Direwolf20 and all contributors to the original LaserIO
 - Spicierspace153 for the help with some parts of the code and tips
-- Create-Powerlines devs for the mixin part
+- Create-Powerlines devs and embeddedt for the mixin part
 - Blackalf for testing the changes and giving suggestions on how to improve the mod
 - All future contributors (we will update this as time passes)
