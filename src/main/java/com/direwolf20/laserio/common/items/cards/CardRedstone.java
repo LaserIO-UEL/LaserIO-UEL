@@ -53,4 +53,18 @@ public class CardRedstone extends BaseCard {
             stack.getOrCreateTag().putBoolean("redstonestrong", strong);
         return strong;
     }
+
+    public static boolean getInvert(ItemStack stack) {
+        CompoundTag compound = stack.getTag();
+        if (compound == null || !compound.contains("redstoneinvert")) return false;
+        return compound.getBoolean("redstoneinvert");
+    }
+
+    public static boolean setInvert(ItemStack stack, boolean strong) {
+        if (!strong)
+            stack.removeTagKey("redstoneinvert");
+        else
+            stack.getOrCreateTag().putBoolean("redstoneinvert", strong);
+        return strong;
+    }
 }

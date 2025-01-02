@@ -47,6 +47,9 @@ dependencies {
     // at runtime, use the full JEI jar for Forge
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
+    //Jade
+    implementation fg.deobf("curse.maven:jade-324717:5876199")
+
     //Mekanism
     compileOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:api")
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// Mekanism

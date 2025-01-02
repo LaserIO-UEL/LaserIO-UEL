@@ -14,21 +14,24 @@ public class PacketUpdateRedstoneCard {
     byte mode;
     byte channel;
     boolean strong;
+    boolean invert;
 
-    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong) {
+    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong, boolean invert) {
         this.mode = mode;
         this.channel = channel;
         this.strong = strong;
+        this.invert = invert;
     }
 
     public static void encode(PacketUpdateRedstoneCard msg, FriendlyByteBuf buffer) {
         buffer.writeByte(msg.mode);
         buffer.writeByte(msg.channel);
         buffer.writeBoolean(msg.strong);
+        buffer.writeBoolean(msg.invert);
     }
 
     public static PacketUpdateRedstoneCard decode(FriendlyByteBuf buffer) {
-        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean());
+        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean(), buffer.readBoolean());
     }
 
     public static class Handler {
@@ -50,6 +53,7 @@ public class PacketUpdateRedstoneCard {
                 CardRedstone.setTransferMode(stack, msg.mode);
                 CardRedstone.setRedstoneChannel(stack, msg.channel);
                 CardRedstone.setStrong(stack, msg.strong);
+                CardRedstone.setInvert(stack, msg.invert);
             });
 
             ctx.get().setPacketHandled(true);

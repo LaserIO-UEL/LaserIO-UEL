@@ -34,6 +34,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     protected byte currentMode;
     protected byte currentRedstoneChannel;
     protected boolean currentStrong;
+    protected boolean currentInvert;
     protected final ItemStack card;
     protected Map<String, Button> buttons = new HashMap<>();
 
@@ -98,15 +99,27 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         }));
     }
 
+    public void addInvertButton() {
+        ResourceLocation[] invertTextures = new ResourceLocation[2];
+        invertTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png");
+        invertTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png");
+        buttons.put("invert", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, invertTextures, currentInvert ? 1 : 0, (button) -> {
+            currentInvert = !currentInvert;
+        ((ToggleButton) button).setTexturePosition(currentInvert ? 1 : 0);
+        }));
+    }
+
     @Override
     public void init() {
         super.init();
         currentMode = CardRedstone.getTransferMode(card);
         currentRedstoneChannel = CardRedstone.getRedstoneChannel(card);
         currentStrong = CardRedstone.getStrong(card);
+        currentInvert = CardRedstone.getInvert(card);
         addModeButton();
         addChannelButton();
         addStrongButton();
+        addInvertButton();
 
         if (container.direction != -1) {
             buttons.put("return", new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
@@ -123,11 +136,15 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
 
     public void modeChange() {
         Button strongButton = buttons.get("strong");
+        Button invertButton = buttons.get("invert");
         if (currentMode == 0) {
             removeWidget(strongButton);
+            removeWidget(invertButton);
         } else if (currentMode == 1) { //extract
             if (!renderables.contains(strongButton))
                 addRenderableWidget(strongButton);
+            if (!renderables.contains(invertButton))
+                addRenderableWidget(invertButton);
         }
     }
 
@@ -187,7 +204,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void saveSettings() {
-        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong));
+        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong, currentInvert));
     }
 
     public void openNode() {
