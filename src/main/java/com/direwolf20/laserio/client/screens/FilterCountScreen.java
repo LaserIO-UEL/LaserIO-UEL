@@ -179,6 +179,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
         slotStack.grow(amt);
 
         PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
+        container.handler.setStackInSlotSave(hoveredSlot.index, slotStack); //We do this for continuity between client/server -- not needed in cardItemScreen
         return true;
     }
 }

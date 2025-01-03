@@ -728,7 +728,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         if (Screen.hasControlDown()) amt *= 64;
         if (amt + slotStack.getCount() > 4096) amt = 4096 - slotStack.getCount();
 
-
         PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount() + amt));
         return true;
     }
