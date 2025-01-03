@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.client.screens;
 
 import com.direwolf20.laserio.client.screens.widgets.ChannelButton;
+import com.direwolf20.laserio.client.screens.widgets.NumberButton;
 import com.direwolf20.laserio.client.screens.widgets.ToggleButton;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.containers.CardRedstoneContainer;
@@ -14,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -35,6 +37,9 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     protected byte currentRedstoneChannel;
     protected boolean currentStrong;
     protected boolean currentInvert;
+    protected boolean currentThreshold;
+    protected byte currentThresholdLimit;
+    protected byte currentThresholdOutput;
     protected final ItemStack card;
     protected Map<String, Button> buttons = new HashMap<>();
 
@@ -109,6 +114,65 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         }));
     }
 
+    public void addThresholdToggleButton() {
+        ResourceLocation[] thresholdTextures = new ResourceLocation[2];
+        thresholdTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png");
+        thresholdTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png");
+        buttons.put("thresholdtoggle", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, thresholdTextures, currentThreshold ? 1 : 0, (button) -> {
+            currentThreshold = !currentThreshold;
+            thresholdChange();
+            ((ToggleButton) button).setTexturePosition(currentThreshold ? 1 : 0);
+        }));
+    }
+
+    public void addThresholdLimitButton() {
+        buttons.put("thresholdlimit", new NumberButton(getGuiLeft() + 135, getGuiTop() + 25, 16, 16, currentThresholdLimit, (button) -> {
+           changeThresholdLimit(-1);
+        }));
+    }
+
+    public void addThresholdOutputButton() {
+        buttons.put("thresholdoutput", new NumberButton(getGuiLeft() + 115, getGuiTop() + 25, 16, 16, currentThresholdOutput, (button) -> {
+            changeThresholdOutput(-1);
+        }));
+    }
+
+    protected void changeThresholdLimit(int change) {
+        if (Screen.hasShiftDown()) change *= 15;
+        if (currentMode == 0 && currentThreshold) {
+            if (change <= 0) {
+                currentThresholdLimit = (byte) (Math.max(currentThresholdLimit + change, 0));
+            } else {
+                currentThresholdLimit = (byte) (Math.min(currentThresholdLimit + change, 15));
+            }}}
+
+    protected void changeThresholdOutput(int change) {
+        if (Screen.hasShiftDown()) change *= 15;
+        if (currentMode == 0 && currentThreshold) {
+        if (change <= 0) {
+                currentThresholdOutput = (byte) (Math.max(currentThresholdOutput + change, 0));
+            } else {
+                currentThresholdOutput = (byte) (Math.min(currentThresholdOutput + change, 15));
+            }}}
+
+    protected void setThresholdLimit(NumberButton button, int btn) {
+        if (btn == 0)
+            changeThresholdLimit(1);
+        else if (btn == 1)
+            changeThresholdLimit(-1);
+        button.setValue(currentThresholdLimit);
+        button.playDownSound(Minecraft.getInstance().getSoundManager());
+    }
+
+    protected void setThresholdOutput(NumberButton button, int btn) {
+        if (btn == 0)
+            changeThresholdOutput(1);
+        else if (btn == 1)
+            changeThresholdOutput(-1);
+        button.setValue(currentThresholdOutput);
+        button.playDownSound(Minecraft.getInstance().getSoundManager());
+    }
+
     @Override
     public void init() {
         super.init();
@@ -116,10 +180,16 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         currentRedstoneChannel = CardRedstone.getRedstoneChannel(card);
         currentStrong = CardRedstone.getStrong(card);
         currentInvert = CardRedstone.getInvert(card);
+        currentThreshold = CardRedstone.getThreshold(card);
+        currentThresholdLimit = CardRedstone.getThresholdLimit(card);
+        currentThresholdOutput = CardRedstone.getThresholdOutput(card);
         addModeButton();
         addChannelButton();
         addStrongButton();
         addInvertButton();
+        addThresholdToggleButton();
+        addThresholdLimitButton();
+        addThresholdOutputButton();
 
         if (container.direction != -1) {
             buttons.put("return", new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
@@ -137,16 +207,43 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     public void modeChange() {
         Button strongButton = buttons.get("strong");
         Button invertButton = buttons.get("invert");
-        if (currentMode == 0) {
+        Button thresholdToggle = buttons.get("thresholdtoggle");
+        Button thresholdLimit = buttons.get("thresholdlimit");
+        Button thresholdOutput = buttons.get("thresholdoutput");
+        if (currentMode == 0) { //Input
+            if (!renderables.contains(invertButton))
+                addRenderableWidget(invertButton);
+            if (!renderables.contains(thresholdToggle))
+                addRenderableWidget(thresholdToggle);
             removeWidget(strongButton);
-            removeWidget(invertButton);
-        } else if (currentMode == 1) { //extract
+            thresholdChange();
+        } else if (currentMode == 1) { //output
             if (!renderables.contains(strongButton))
                 addRenderableWidget(strongButton);
             if (!renderables.contains(invertButton))
                 addRenderableWidget(invertButton);
+            if (!renderables.contains(thresholdToggle))
+                addRenderableWidget(thresholdToggle);
+            removeWidget(invertButton);
+            removeWidget(thresholdToggle);
+            removeWidget(thresholdLimit);
+            removeWidget(thresholdOutput);
         }
+
     }
+
+    public void thresholdChange() {
+        Button thresholdLimit = buttons.get("thresholdlimit");
+        Button thresholdOutput = buttons.get("thresholdoutput");
+        if (currentThreshold) {
+            if (!renderables.contains(thresholdLimit))
+                addRenderableWidget(thresholdLimit);
+            if (!renderables.contains(thresholdOutput))
+                addRenderableWidget(thresholdOutput);
+        } else {
+            removeWidget(thresholdLimit);
+            removeWidget(thresholdOutput);
+        }}
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -204,7 +301,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void saveSettings() {
-        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong, currentInvert));
+        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong, currentInvert, currentThreshold, currentThresholdLimit, currentThresholdOutput));
     }
 
     public void openNode() {
@@ -223,6 +320,17 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 currentRedstoneChannel = CardRedstone.previousRedstoneChannel(card);
             channelButton.setChannel(currentRedstoneChannel);
             channelButton.playDownSound(Minecraft.getInstance().getSoundManager());
+            return true;
+        }
+        NumberButton thresholdLimitButton = ((NumberButton) buttons.get("thresholdlimit"));
+        if (MiscTools.inBounds(thresholdLimitButton.getX(), thresholdLimitButton.getY(), thresholdLimitButton.getWidth(), thresholdLimitButton.getHeight(), x, y)) {
+            setThresholdLimit(thresholdLimitButton, btn);
+            return true;
+        }
+
+        NumberButton thresholdOutputButton = ((NumberButton) buttons.get("thresholdoutput"));
+        if (MiscTools.inBounds(thresholdOutputButton.getX(), thresholdOutputButton.getY(), thresholdOutputButton.getWidth(), thresholdOutputButton.getHeight(), x, y)) {
+            setThresholdOutput(thresholdOutputButton, btn);
             return true;
         }
 

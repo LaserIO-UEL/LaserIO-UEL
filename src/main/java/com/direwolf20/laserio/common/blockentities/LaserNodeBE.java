@@ -357,6 +357,10 @@ public class LaserNodeBE extends BaseLaserBE {
                 ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
                 if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and input mode
                     int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                    if (CardRedstone.getInvert(card)) {redstoneStrength = (byte)(15 - redstoneStrength);}
+                    if (CardRedstone.getThreshold(card)) {
+                        redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;}
+
                     //System.out.println("Input: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
                     if (redstoneStrength >= 0) {
                         byte redstoneChannel = BaseCard.getRedstoneChannel(card);
@@ -487,10 +491,7 @@ public class LaserNodeBE extends BaseLaserBE {
                         byte redstoneStrength = redstoneNetwork.get(cardChannel);
                         //System.out.println("Output: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
 
-                        if (redstoneStrength >= 0) {
-                            if (CardRedstone.getInvert(card))
-                                redstoneStrength = (byte)(15 - redstoneStrength);
-
+                        if (redstoneStrength > 0) {
                             if (CardRedstone.getStrong(card))
                                 redstoneStrength += 15;
 

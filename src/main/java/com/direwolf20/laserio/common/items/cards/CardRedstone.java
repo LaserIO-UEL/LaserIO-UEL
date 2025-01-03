@@ -60,11 +60,53 @@ public class CardRedstone extends BaseCard {
         return compound.getBoolean("redstoneinvert");
     }
 
-    public static boolean setInvert(ItemStack stack, boolean strong) {
-        if (!strong)
+    public static boolean setInvert(ItemStack stack, boolean invert) {
+        if (!invert)
             stack.removeTagKey("redstoneinvert");
         else
-            stack.getOrCreateTag().putBoolean("redstoneinvert", strong);
-        return strong;
+            stack.getOrCreateTag().putBoolean("redstoneinvert", invert);
+        return invert;
+    }
+
+    public static boolean getThreshold(ItemStack stack) {
+        CompoundTag compound = stack.getTag();
+        if (compound == null || !compound.contains("redstonethreshold")) return false;
+        return compound.getBoolean("redstonethreshold");
+    }
+
+    public static boolean setThreshold(ItemStack stack, boolean threshold) {
+        if (!threshold)
+            stack.removeTagKey("redstonethreshold");
+        else
+            stack.getOrCreateTag().putBoolean("redstonethreshold", threshold);
+        return threshold;
+    }
+
+    public static byte setThresholdLimit(ItemStack card, byte limit) {
+        if (limit == 0)
+            card.removeTagKey("thresholdlimit");
+        else
+            card.getOrCreateTag().putByte("thresholdlimit", limit);
+        return limit;
+    }
+
+    public static byte getThresholdLimit(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("thresholdlimit")) return (byte) 0;
+        return compound.getByte("thresholdlimit");
+    }
+
+    public static byte setThresholdOutput(ItemStack card, byte output) {
+        if (output == 15)
+            card.removeTagKey("thresholdoutput");
+        else
+            card.getOrCreateTag().putByte("thresholdoutput", output);
+        return output;
+    }
+
+    public static byte getThresholdOutput(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("thresholdoutput")) return (byte) 15;
+        return compound.getByte("thresholdoutput");
     }
 }
