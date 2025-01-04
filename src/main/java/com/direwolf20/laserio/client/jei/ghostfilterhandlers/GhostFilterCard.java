@@ -40,7 +40,7 @@ public class GhostFilterCard implements IGhostIngredientHandler<CardItemScreen> 
                         PacketHandler.sendToServer(new PacketGhostSlot(slot.index, itemStack, itemStack.getCount()));
                     }
                 });
-            } else if (ingredient instanceof FluidStack && (slot instanceof FilterBasicSlot)) {
+            } else if (ingredient.getIngredient() instanceof FluidStack && (slot instanceof FilterBasicSlot)) {
                 targets.add(new Target<I>() {
                     @Override
                     public Rect2i getArea() {
