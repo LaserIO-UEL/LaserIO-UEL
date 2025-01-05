@@ -693,7 +693,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             return super.mouseScrolled(mouseX, mouseY, delta);
         if (hoveredSlot instanceof FilterBasicSlot) {
             if (filter.getItem() instanceof FilterCount) {
-                filterSlot(delta == 1d ? 0 : -1); //This just matches the logic of buttonClick where button 0 is +1 and any other button is -1
+                filterSlot((delta == 1d) ? 0 : -1, true); //This just matches the logic of buttonClick where button 0 is +1 and any other button is -1
                 return true;
             }
         }
@@ -715,7 +715,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         PacketHandler.sendToServer(new PacketUpdateCard(currentMode, currentChannel, currentItemExtractAmt, currentPriority, currentSneaky, (short) currentTicks, currentExact, currentRegulate, (byte) currentRoundRobin, 0, 0, currentRedstoneMode, currentRedstoneChannel, currentAndMode));
     }
 
-    public boolean filterSlot(int btn) {
+    public boolean filterSlot(int btn, boolean isScrollWheel) {
         ItemStack slotStack = hoveredSlot.getItem();
         if (slotStack.isEmpty()) return true;
         if (btn == 2) {
@@ -726,9 +726,11 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         int amt = (btn == 0) ? 1 : -1;
         if (Screen.hasShiftDown()) amt *= 10;
         if (Screen.hasControlDown()) amt *= 64;
-        if (amt + slotStack.getCount() > 4096) amt = 4096 - slotStack.getCount();
+        int newCount = slotStack.getCount() + amt;
+        if (newCount > 4096) newCount = 4096;
+        if (newCount < 0) newCount = (isScrollWheel) ? 1 : 0;
 
-        PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount() + amt));
+        PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, newCount));
         return true;
     }
 
@@ -807,7 +809,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
                     hoveredSlot.set(stack); // Temporarily update the client for continuity purposes
                     PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, stack, stack.getCount()));
                 } else {
-                    filterSlot(btn);
+                    filterSlot(btn, false);
                 }
             }
             return true;

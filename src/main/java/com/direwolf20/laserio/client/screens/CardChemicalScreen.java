@@ -111,10 +111,10 @@ public class CardChemicalScreen extends CardItemScreen {
     }
 
     @Override
-    public boolean filterSlot(int btn) {
+    public boolean filterSlot(int btn, boolean isScrollWheel) {
         ItemStack slotStack = hoveredSlot.getItem();
         if (!doesItemStackHoldChemicals(slotStack))
-            return super.filterSlot(btn);
+            return super.filterSlot(btn, isScrollWheel);
         if (slotStack.isEmpty()) return true;
         if (btn == 2) {
             slotStack.setCount(0);
@@ -126,9 +126,11 @@ public class CardChemicalScreen extends CardItemScreen {
         int currentMBAmt = FilterCount.getSlotAmount(filter, filterSlot);
         if (Screen.hasShiftDown()) amt *= 10;
         if (Screen.hasControlDown()) amt *= 100;
+        if (Screen.hasAltDown()) amt *= 1000;
         int newMBAmt = currentMBAmt + amt;
-        if (newMBAmt < 0) newMBAmt = 0;
         if (newMBAmt > 4096000) newMBAmt = 4096000;
+        if (newMBAmt <= 0) newMBAmt = (isScrollWheel) ? 1 : 0;
+
         PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount(), newMBAmt));
         return true;
     }

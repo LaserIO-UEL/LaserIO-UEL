@@ -145,7 +145,6 @@ public class LaserNodeContainer extends AbstractContainerMenu {
                 ++i;
             }
         }
-        //}
 
         if (!itemStack.isEmpty()) {
             if (p_38907_) {
@@ -184,7 +183,6 @@ public class LaserNodeContainer extends AbstractContainerMenu {
                 }
             }
         }
-
         return flag;
     }
 
@@ -300,7 +298,6 @@ public class LaserNodeContainer extends AbstractContainerMenu {
         }
         return ItemStack.EMPTY;
     }
-
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {

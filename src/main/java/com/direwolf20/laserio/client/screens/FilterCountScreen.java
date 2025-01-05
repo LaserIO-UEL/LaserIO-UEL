@@ -125,6 +125,26 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
+    public boolean filterSlot(int btn, boolean isScrollWheel) {
+        ItemStack slotStack = hoveredSlot.getItem();
+        if (slotStack.isEmpty()) return true;
+        if (btn == 2) {
+            slotStack.setCount(0);
+            PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
+            return true;
+        }
+        int amt = (btn == 0) ? 1 : -1;
+        if (Screen.hasShiftDown()) amt *= 10;
+        if (Screen.hasControlDown()) amt *= 64;
+        if (amt + slotStack.getCount() > 4096) amt = 4096 - slotStack.getCount();
+        if (isScrollWheel && (slotStack.getCount() + amt) <= 0) amt = (slotStack.getCount() * -1) + 1;
+        slotStack.grow(amt);
+
+        PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
+        container.handler.setStackInSlotSave(hoveredSlot.index, slotStack); //We do this for continuity between client/server -- not needed in cardItemScreen
+        return true;
+    }
+
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         if (hoveredSlot == null || !(hoveredSlot instanceof FilterBasicSlot))
@@ -139,21 +159,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
             PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, stack, stack.getCount()));
             container.handler.setStackInSlotSave(hoveredSlot.index, stack); //We do this for continuity between client/server -- not needed in cardItemScreen
         } else {
-            ItemStack slotStack = hoveredSlot.getItem();
-            if (slotStack.isEmpty()) return true;
-            if (btn == 2) {
-                slotStack.setCount(0);
-                PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
-                return true;
-            }
-            int amt = (btn == 0) ? 1 : -1;
-            if (Screen.hasShiftDown()) amt *= 10;
-            if (Screen.hasControlDown()) amt *= 64;
-            if (amt + slotStack.getCount() > 4096) amt = 4096 - slotStack.getCount();
-            slotStack.grow(amt);
-
-            PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
-            container.handler.setStackInSlotSave(hoveredSlot.index, slotStack); //We do this for continuity between client/server -- not needed in cardItemScreen
+            filterSlot(btn, false);
         }
 
         return true;
@@ -168,18 +174,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
         if (hoveredSlot == null || !(hoveredSlot instanceof FilterBasicSlot))
             return super.mouseScrolled(mouseX, mouseY, delta);
 
-        ItemStack slotStack = hoveredSlot.getItem();
-        if (slotStack.isEmpty()) return true;
-        int amt = (int) delta;
-        if (Screen.hasShiftDown()) amt *= 10;
-        if (Screen.hasControlDown()) amt *= 64;
-        if (amt + slotStack.getCount() > 4096) amt = 4096 - slotStack.getCount();
-        if (slotStack.getCount() + amt <= 0)
-            amt = (slotStack.getCount() * -1) + 1;
-        slotStack.grow(amt);
-
-        PacketHandler.sendToServer(new PacketGhostSlot(hoveredSlot.index, slotStack, slotStack.getCount()));
-        container.handler.setStackInSlotSave(hoveredSlot.index, slotStack); //We do this for continuity between client/server -- not needed in cardItemScreen
+        filterSlot((delta == 1d) ? 0 : -1, true); //This just matches the logic of buttonClick where button 0 is +1 and any other button is -1
         return true;
     }
 }
