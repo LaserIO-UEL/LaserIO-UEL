@@ -5,6 +5,7 @@ import com.direwolf20.laserio.client.screens.FilterCountScreen;
 import com.direwolf20.laserio.common.containers.customslot.FilterBasicSlot;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketGhostSlot;
+import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler.Target;
 import mezz.jei.api.ingredients.ITypedIngredient;
@@ -69,7 +70,7 @@ public class JEIIntegrationUtil {
                         PacketHandler.sendToServer(new PacketGhostSlot(slot.index, itemStack, itemStack.getCount()));
                     }
                 });
-            } else if (ingredient.getIngredient() instanceof ChemicalStack<?> && (slot instanceof FilterBasicSlot)) {
+            } else if (MekanismIntegration.isLoaded() && ingredient.getIngredient() instanceof ChemicalStack<?> && (slot instanceof FilterBasicSlot)) {
                 targets.add(new Target<I>() {
                     @Override
                     public Rect2i getArea() {
