@@ -382,7 +382,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         if (Screen.hasShiftDown()) change *= 10;
         if (Screen.hasControlDown()) change *= 64;
         if (change < 0) {
-            currentTicks = (Math.max(currentTicks + change, 1));
+            currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_ENERGY.get()));
         } else {
             currentTicks = (Math.min(currentTicks + change, 1200));
         }

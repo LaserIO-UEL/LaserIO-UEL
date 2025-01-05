@@ -3,6 +3,7 @@ package com.direwolf20.laserio.common.items;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
 import com.direwolf20.laserio.common.blocks.baseblocks.BaseLaserBlock;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.VectorHelper;
 import net.minecraft.core.BlockPos;
@@ -19,8 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class LaserWrench extends Item {
-    public static int maxDistance = 8;
-
     public LaserWrench() {
         super(new Item.Properties()
                 .stacksTo(1));
@@ -44,9 +43,8 @@ public class LaserWrench extends Item {
         if (level.isClientSide()) //No client
             return InteractionResultHolder.success(wrench);
 
-        int range = 10; // How far away you can click on blocks from
-        BlockHitResult lookingAt = VectorHelper.getLookingAt(player, ClipContext.Fluid.NONE, range);
-        if (lookingAt == null || !((level.getBlockState(VectorHelper.getLookingAt(player, wrench, range).getBlockPos()).getBlock() instanceof BaseLaserBlock))) {
+        BlockHitResult lookingAt = VectorHelper.getLookingAt(player, ClipContext.Fluid.NONE, Config.MAX_INTERACTION_RANGE.get());
+        if (lookingAt == null || !((level.getBlockState(VectorHelper.getLookingAt(player, wrench, Config.MAX_INTERACTION_RANGE.get()).getBlockPos()).getBlock() instanceof BaseLaserBlock))) {
             if (player.isShiftKeyDown()) {
                 storeConnectionPos(wrench, level, BlockPos.ZERO);
                 return InteractionResultHolder.pass(wrench);
@@ -82,8 +80,8 @@ public class LaserWrench extends Item {
                 return InteractionResultHolder.success(wrench);
             }
             //If we're too far away - send an error to the client
-            if (!targetPos.closerThan(sourceDimPos.blockPos, maxDistance) || !level.equals(sourceDimPos.getLevel(level.getServer()))) {
-                player.displayClientMessage(Component.translatable("message.laserio.wrenchrange", maxDistance), true);
+            if (!targetPos.closerThan(sourceDimPos.blockPos, Config.MAX_NODES_DISTANCE.get()) || !level.equals(sourceDimPos.getLevel(level.getServer()))) {
+                player.displayClientMessage(Component.translatable("message.laserio.wrenchrange", Config.MAX_NODES_DISTANCE.get()), true);
                 return InteractionResultHolder.pass(wrench);
             }
             //Connect or disconnect the nodes, depending on current state

@@ -75,43 +75,46 @@ public class PacketUpdateCard {
         public static void handle(PacketUpdateCard msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer player = ctx.get().getSender();
-                if (player == null)
+                if (player == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = player.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
+                }
                 if (container instanceof CardItemContainer || container instanceof CardEnergyContainer) {
                     ItemStack stack;
-                    if (container instanceof CardEnergyContainer)
+                    if (container instanceof CardEnergyContainer) {
                         stack = ((CardEnergyContainer) container).cardItem;
-                    else
+                    } else {
                         stack = ((CardItemContainer) container).cardItem;
+                    }
                     BaseCard.setTransferMode(stack, msg.mode);
                     BaseCard.setChannel(stack, msg.channel);
                     int extractAmt = msg.extractAmt;
-                    int overClockerCount = 0;
+                    int overclockersCount = 0;
                     if (stack.getItem() instanceof CardItem) {
-                        overClockerCount = container.getSlot(1).getItem().getCount();
-                        if (extractAmt > Math.max(overClockerCount * 16, 8)) {
-                            extractAmt = (byte) Math.max(overClockerCount * 16, 8);
+                        overclockersCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockersCount * 16, 8)) {
+                            extractAmt = (byte) Math.max(overclockersCount * 16, 8);
                         }
                         CardItem.setItemExtractAmt(stack, (byte) extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < Math.max(20 - overClockerCount * 5, 1))
-                            ticks = (short) Math.max(20 - overClockerCount * 5, 1);
-                        BaseCard.setExtractSpeed(stack, ticks);
+                        if (ticks < Config.MIN_TICKS_ITEM.get().get(overclockersCount)) {
+                            ticks = Config.MIN_TICKS_ITEM.get().get(overclockersCount).shortValue();
+                        }
+                        CardItem.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardFluid) {
-                        overClockerCount = container.getSlot(1).getItem().getCount();
-                        if (extractAmt > Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get())) {
-                            extractAmt = Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
+                        overclockersCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get())) {
+                            extractAmt = Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
                         }
                         CardFluid.setFluidExtractAmt(stack, extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < Math.max(20 - overClockerCount * 5, 1))
-                            ticks = (short) Math.max(20 - overClockerCount * 5, 1);
-                        BaseCard.setExtractSpeed(stack, ticks);
+                        if (ticks < Config.MIN_TICKS_FLUID.get().get(overclockersCount)) {
+                            ticks = Config.MIN_TICKS_FLUID.get().get(overclockersCount).shortValue();
+                        }
+                        CardFluid.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardEnergy) {
                         int max = Config.MAX_FE_NO_TIERS.get();
                         if (CardEnergyContainer.SLOTS == 1 && container.getSlot(0).hasItem() && container.getSlot(0).getItem().getItem() instanceof OverclockerCard card) {
@@ -122,21 +125,23 @@ public class PacketUpdateCard {
                         }
                         CardEnergy.setEnergyExtractAmt(stack, extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < 1)
-                            ticks = (short) 1;
+                        if (ticks < Config.MIN_TICKS_ENERGY.get()) {
+                            ticks = Config.MIN_TICKS_ENERGY.get().shortValue();
+                        }
                         CardEnergy.setExtractSpeed(stack, ticks);
                         CardEnergy.setExtractLimitPercent(stack, msg.extractLimit);
                         CardEnergy.setInsertLimitPercent(stack, msg.insertLimit);
                     } else if (stack.getItem() instanceof CardChemical) {
-                            overClockerCount = container.getSlot(1).getItem().getCount();
-                            if (extractAmt > Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get())) {
-                                extractAmt = Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
-                            }
-                            CardChemical.setChemicalExtractAmt(stack, extractAmt);
-                            short ticks = msg.ticks;
-                            if (ticks < Math.max(20 - overClockerCount * 5, 1))
-                                ticks = (short) Math.max(20 - overClockerCount * 5, 1);
-                            BaseCard.setExtractSpeed(stack, ticks);
+                        overclockersCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get())) {
+                            extractAmt = Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
+                        }
+                        CardChemical.setChemicalExtractAmt(stack, extractAmt);
+                        short ticks = msg.ticks;
+                        if (ticks < Config.MIN_TICKS_CHEMICAL.get().get(overclockersCount)) {
+                            ticks = Config.MIN_TICKS_CHEMICAL.get().get(overclockersCount).shortValue();
+                        }
+                        CardChemical.setExtractSpeed(stack, ticks);
                     }
 
                     BaseCard.setPriority(stack, msg.priority);

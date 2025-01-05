@@ -1,6 +1,8 @@
 package com.direwolf20.laserio.common.items.cards;
 
 import com.direwolf20.laserio.common.containers.CardItemContainer;
+import com.direwolf20.laserio.setup.Config;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +33,20 @@ public class CardItem extends BaseCard {
         }));
 
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+    }
+
+    public static int setExtractSpeed(ItemStack card, int itemextractspeed) {
+        if (itemextractspeed == Config.MIN_TICKS_ITEM.get().get(0))
+            card.removeTagKey("itemextractspeed");
+        else
+            card.getOrCreateTag().putInt("itemextractspeed", itemextractspeed);
+        return itemextractspeed;
+    }
+
+    public static int getExtractSpeed(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("itemextractspeed")) return Config.MIN_TICKS_ITEM.get().get(0);
+        return compound.getInt("itemextractspeed");
     }
 
     public static byte setItemExtractAmt(ItemStack card, byte itemextractamt) {

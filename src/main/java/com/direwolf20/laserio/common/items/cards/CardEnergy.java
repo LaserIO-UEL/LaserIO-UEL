@@ -71,7 +71,7 @@ public class CardEnergy extends BaseCard {
     }
 
     public static int setExtractSpeed(ItemStack card, int itemextractspeed) {
-        if (itemextractspeed == 1)
+        if (itemextractspeed == Config.MIN_TICKS_ENERGY.get())
             card.removeTagKey("itemextractspeed");
         else
             card.getOrCreateTag().putInt("itemextractspeed", itemextractspeed);
@@ -80,7 +80,7 @@ public class CardEnergy extends BaseCard {
 
     public static int getExtractSpeed(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("itemextractspeed")) return 1;
+        if (compound == null || !compound.contains("itemextractspeed")) return Config.MIN_TICKS_ENERGY.get();
         return compound.getInt("itemextractspeed");
     }
 

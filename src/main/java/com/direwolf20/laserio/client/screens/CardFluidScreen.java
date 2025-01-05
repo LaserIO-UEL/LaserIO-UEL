@@ -48,6 +48,7 @@ public class CardFluidScreen extends CardItemScreen {
 
     @Override
     public void init() {
+        this.currentTicks = CardFluid.getExtractSpeed(card);
         this.currentFluidExtractAmt = CardFluid.getFluidExtractAmt(card);
         super.init();
         this.renderFluids = true;
@@ -117,6 +118,17 @@ public class CardFluidScreen extends CardItemScreen {
             } else {
                 currentFluidExtractAmt = (Math.min(currentFluidExtractAmt + change, Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get())));
             }
+        }
+    }
+
+    @Override
+    public void changeTick(int change) {
+        if (Screen.hasShiftDown()) change *= 10;
+        if (Screen.hasControlDown()) change *= 64;
+        if (change < 0) {
+            currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_FLUID.get().get(container.getSlot(1).getItem().getCount())));
+        } else {
+            currentTicks = (Math.min(currentTicks + change, 1200));
         }
     }
 

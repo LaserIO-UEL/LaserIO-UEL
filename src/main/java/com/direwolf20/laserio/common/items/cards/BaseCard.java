@@ -208,20 +208,6 @@ public class BaseCard extends Item {
         return setChannel(card, (byte) (k == 0 ? 15 : k - 1));
     }
 
-    public static int setExtractSpeed(ItemStack card, int itemextractspeed) {
-        if (itemextractspeed == 20)
-            card.removeTagKey("itemextractspeed");
-        else
-            card.getOrCreateTag().putInt("itemextractspeed", itemextractspeed);
-        return itemextractspeed;
-    }
-
-    public static int getExtractSpeed(ItemStack card) {
-        CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("itemextractspeed")) return 20;
-        return compound.getInt("itemextractspeed");
-    }
-
     public static short setPriority(ItemStack card, short priority) {
         if (priority == 0)
             card.removeTagKey("priority");

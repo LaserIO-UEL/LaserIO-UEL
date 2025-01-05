@@ -35,6 +35,20 @@ public class CardChemical extends BaseCard {
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
     }
 
+    public static int setExtractSpeed(ItemStack card, int itemextractspeed) {
+        if (itemextractspeed == Config.MIN_TICKS_CHEMICAL.get().get(0))
+            card.removeTagKey("itemextractspeed");
+        else
+            card.getOrCreateTag().putInt("itemextractspeed", itemextractspeed);
+        return itemextractspeed;
+    }
+
+    public static int getExtractSpeed(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("itemextractspeed")) return Config.MIN_TICKS_CHEMICAL.get().get(0);
+        return compound.getInt("itemextractspeed");
+    }
+
     public static int setChemicalExtractAmt(ItemStack card, int chemicalextractamt) {
         if (chemicalextractamt == Config.BASE_MILLI_BUCKETS_CHEMICAL.get())
             card.removeTagKey("chemicalextractamt");

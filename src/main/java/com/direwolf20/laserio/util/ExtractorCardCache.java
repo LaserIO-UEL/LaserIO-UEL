@@ -18,20 +18,23 @@ public class ExtractorCardCache extends BaseCardCache {
 
     public ExtractorCardCache(Direction direction, ItemStack cardItem, int cardSlot, LaserNodeBE be) {
         super(direction, cardItem, cardSlot, be);
-        if (cardType.equals(BaseCard.CardType.ITEM))
+        if (cardType == BaseCard.CardType.ITEM) {
             this.extractAmt = CardItem.getItemExtractAmt(cardItem);
-        else if (cardType.equals(BaseCard.CardType.FLUID))
+            this.tickSpeed = CardItem.getExtractSpeed(cardItem);
+        } else if (cardType == BaseCard.CardType.FLUID) {
             this.extractAmt = CardFluid.getFluidExtractAmt(cardItem);
-        else if (cardType.equals(BaseCard.CardType.ENERGY))
+            this.tickSpeed = CardFluid.getExtractSpeed(cardItem);
+        } else if (cardType == BaseCard.CardType.ENERGY) {
             this.extractAmt = CardEnergy.getEnergyExtractAmt(cardItem);
-        else if (cardType.equals(BaseCard.CardType.CHEMICAL))
-            this.extractAmt = CardChemical.getChemicalExtractAmt(cardItem);
-        else
-            this.extractAmt = 0;
-        if (cardItem.getItem() instanceof CardEnergy)
             this.tickSpeed = CardEnergy.getExtractSpeed(cardItem);
-        else
-            this.tickSpeed = BaseCard.getExtractSpeed(cardItem);
+        } else if (cardType == BaseCard.CardType.CHEMICAL) {
+            this.extractAmt = CardChemical.getChemicalExtractAmt(cardItem);
+            this.tickSpeed = CardChemical.getExtractSpeed(cardItem);
+        } else {
+            this.extractAmt = 0;
+            this.tickSpeed = 1200;
+        }
+
         this.exact = BaseCard.getExact(cardItem);
         this.roundRobin = BaseCard.getRoundRobin(cardItem);
     }

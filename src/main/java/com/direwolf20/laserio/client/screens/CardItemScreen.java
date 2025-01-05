@@ -26,6 +26,7 @@ import com.direwolf20.laserio.common.network.packets.PacketOpenFilter;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -296,7 +297,8 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         currentItemExtractAmt = CardItem.getItemExtractAmt(card);
         currentPriority = BaseCard.getPriority(card);
         currentSneaky = BaseCard.getSneaky(card);
-        currentTicks = BaseCard.getExtractSpeed(card);
+        if (card.getItem() instanceof CardItem)
+            currentTicks = CardItem.getExtractSpeed(card);
         currentExact = BaseCard.getExact(card);
         currentRoundRobin = BaseCard.getRoundRobin(card);
         currentRegulate = BaseCard.getRegulate(card);
@@ -531,9 +533,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         if (Screen.hasShiftDown()) change *= 10;
         if (Screen.hasControlDown()) change *= 64;
         if (change < 0) {
-            currentTicks = (Math.max(currentTicks + change, Math.max(20 - container.getSlot(1).getItem().getCount() * 5, 1)));
+            currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_ITEM.get().get(container.getSlot(1).getItem().getCount())));
         } else {
-            currentTicks = (Math.min(currentTicks + change, 1200));//Math.max(container.getSlot(1).getItem().getCount() * 16, 1)));
+            currentTicks = (Math.min(currentTicks + change, 1200));
         }
     }
 

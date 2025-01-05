@@ -47,6 +47,7 @@ public class CardChemicalScreen extends CardItemScreen {
 
     @Override
     public void init() {
+        this.currentTicks = CardChemical.getExtractSpeed(card);
         this.currentChemicalExtractAmt = CardChemical.getChemicalExtractAmt(card);
         super.init();
         this.renderChemicals = true;
@@ -107,6 +108,17 @@ public class CardChemicalScreen extends CardItemScreen {
             } else {
                 currentChemicalExtractAmt = (Math.min(currentChemicalExtractAmt + change, Math.max(overClockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get())));
             }
+        }
+    }
+
+    @Override
+    public void changeTick(int change) {
+        if (Screen.hasShiftDown()) change *= 10;
+        if (Screen.hasControlDown()) change *= 64;
+        if (change < 0) {
+            currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_CHEMICAL.get().get(container.getSlot(1).getItem().getCount())));
+        } else {
+            currentTicks = (Math.min(currentTicks + change, 1200));
         }
     }
 
