@@ -225,7 +225,6 @@ public class CardItemContainer extends AbstractContainerMenu {
 
             slot.onTake(playerIn, stack);
         }
-
         return itemstack;
     }
 

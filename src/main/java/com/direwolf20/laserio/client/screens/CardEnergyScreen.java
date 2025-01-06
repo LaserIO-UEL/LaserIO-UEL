@@ -5,6 +5,8 @@ import com.direwolf20.laserio.client.screens.widgets.NumberButton;
 import com.direwolf20.laserio.client.screens.widgets.ToggleButton;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
+import com.direwolf20.laserio.common.containers.customslot.CardItemSlot;
+import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
@@ -282,6 +284,17 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
 
         for (Map.Entry<String, Button> button : buttons.entrySet()) {
             addRenderableWidget(button.getValue());
+        }
+
+        if (card.getCount() > 1) {
+            for (int i = 0; i < CardEnergyContainer.SLOTS; i++) {
+                if (i >= container.slots.size()) continue;
+                Slot slot = container.getSlot(i);
+                if (slot instanceof CardItemSlot cardItemSlot)
+                    cardItemSlot.setEnabled(false);
+                if (slot instanceof CardOverclockSlot cardOverclockSlot)
+                    cardOverclockSlot.setEnabled(false);
+            }
         }
 
         modeChange();

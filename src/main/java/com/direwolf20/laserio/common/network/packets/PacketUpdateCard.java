@@ -92,27 +92,27 @@ public class PacketUpdateCard {
                     BaseCard.setTransferMode(stack, msg.mode);
                     BaseCard.setChannel(stack, msg.channel);
                     int extractAmt = msg.extractAmt;
-                    int overclockersCount = 0;
+                    int overclockerCount = 0;
                     if (stack.getItem() instanceof CardItem) {
-                        overclockersCount = container.getSlot(1).getItem().getCount();
-                        if (extractAmt > Math.max(overclockersCount * 16, 8)) {
-                            extractAmt = (byte) Math.max(overclockersCount * 16, 8);
+                        overclockerCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockerCount * 16, 8)) {
+                            extractAmt = (byte) Math.max(overclockerCount * 16, 8);
                         }
                         CardItem.setItemExtractAmt(stack, (byte) extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < Config.MIN_TICKS_ITEM.get().get(overclockersCount)) {
-                            ticks = Config.MIN_TICKS_ITEM.get().get(overclockersCount).shortValue();
+                        if (ticks < Config.MIN_TICKS_ITEM.get().get(overclockerCount)) {
+                            ticks = Config.MIN_TICKS_ITEM.get().get(overclockerCount).shortValue();
                         }
                         CardItem.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardFluid) {
-                        overclockersCount = container.getSlot(1).getItem().getCount();
-                        if (extractAmt > Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get())) {
-                            extractAmt = Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
+                        overclockerCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get())) {
+                            extractAmt = Math.max(overclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
                         }
                         CardFluid.setFluidExtractAmt(stack, extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < Config.MIN_TICKS_FLUID.get().get(overclockersCount)) {
-                            ticks = Config.MIN_TICKS_FLUID.get().get(overclockersCount).shortValue();
+                        if (ticks < Config.MIN_TICKS_FLUID.get().get(overclockerCount)) {
+                            ticks = Config.MIN_TICKS_FLUID.get().get(overclockerCount).shortValue();
                         }
                         CardFluid.setExtractSpeed(stack, ticks);
                     } else if (stack.getItem() instanceof CardEnergy) {
@@ -132,14 +132,14 @@ public class PacketUpdateCard {
                         CardEnergy.setExtractLimitPercent(stack, msg.extractLimit);
                         CardEnergy.setInsertLimitPercent(stack, msg.insertLimit);
                     } else if (stack.getItem() instanceof CardChemical) {
-                        overclockersCount = container.getSlot(1).getItem().getCount();
-                        if (extractAmt > Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get())) {
-                            extractAmt = Math.max(overclockersCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
+                        overclockerCount = container.getSlot(1).getItem().getCount();
+                        if (extractAmt > Math.max(overclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get())) {
+                            extractAmt = Math.max(overclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
                         }
                         CardChemical.setChemicalExtractAmt(stack, extractAmt);
                         short ticks = msg.ticks;
-                        if (ticks < Config.MIN_TICKS_CHEMICAL.get().get(overclockersCount)) {
-                            ticks = Config.MIN_TICKS_CHEMICAL.get().get(overclockersCount).shortValue();
+                        if (ticks < Config.MIN_TICKS_CHEMICAL.get().get(overclockerCount)) {
+                            ticks = Config.MIN_TICKS_CHEMICAL.get().get(overclockerCount).shortValue();
                         }
                         CardChemical.setExtractSpeed(stack, ticks);
                     }

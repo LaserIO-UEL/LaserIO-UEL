@@ -680,7 +680,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
 
             return true;
         }
-
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
