@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Logic Chips are the primary crafting ingredient in LaserIO. $(br2)They are the only item crafted with 'vanilla' materials, and all subsequent items use a chip in one way or another."
+      "text": "Logic Chips are the primary crafting ingredient in LaserIO.$(br2)They are the only item crafted with 'vanilla' materials, and all subsequent items use a chip in one way or another."
     },
     {
       "type": "patchouli:crafting",

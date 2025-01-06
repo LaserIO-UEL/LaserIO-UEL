@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Item/T values (max) for Overclockers:$(br2)$(li)0 Overclockers: 8 Items/20t$(li)1 Overclocker:  16 Items/15t$(li)2 Overclockers: 32 Items/10t$(li)3 Overclockers: 48 Items/5t$(li)4 Overclockers: 64 Items/1t"
+      "text": "Items/t values (max) for Overclockers:$(br2)$(li)0 Overclockers: 8 Items/20t$(li)1 Overclocker: 16 Items/16t$(li)2 Overclockers: 32 Items/12t$(li)3 Overclockers: 48 Items/8t$(li)4 Overclockers: 64 Items/4t"
     },
     {
       "type": "patchouli:crafting",
