@@ -150,11 +150,10 @@ public class CardChemicalScreen extends CardItemScreen {
 
     @Override
     public void setExtract(NumberButton amountButton, int btn) {
-    	int change = currentMode == 0 ? 1 : 100;
         if (btn == 0)
-            changeAmount(change);
+            changeAmount(1);
         else if (btn == 1)
-            changeAmount(change * -1);
+            changeAmount(-1);
         amountButton.setValue(currentMode == 0 ? currentPriority : currentChemicalExtractAmt);
         amountButton.playDownSound(Minecraft.getInstance().getSoundManager());
     }
