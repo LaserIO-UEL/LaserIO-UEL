@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,28 +50,18 @@ public class CardRedstoneContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        if (slotId >= 0) {
+            ItemStack stackInSlot = slots.get(slotId).getItem();
+            if (stackInSlot.getItem() instanceof BaseCard && stackInSlot == player.getMainHandItem()) {
+                return;
+            }
+        }
         super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        /*Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack currentStack = slot.getItem().copy();
-            currentStack.setCount(1);
-            //Only do this if we click from the players inventory
-            if (index >= SLOTS) {
-                for (int i = 0; i < SLOTS; i++) { //Loop through slots
-                    handler.setStackInSlot(i, ItemStack.EMPTY); //Clear the current slots
-                }
-                if (!this.moveItemStackTo(currentStack, 0, SLOTS, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-        }*/
-        // No Op
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {

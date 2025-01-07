@@ -5,6 +5,7 @@ import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.containers.customhandler.FilterBasicHandler;
 import com.direwolf20.laserio.common.containers.customslot.FilterBasicSlot;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -60,9 +61,11 @@ public class FilterNBTContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (slotId >= 0 && slotId < SLOTS) {
-            //System.out.println("Skipping!");
-            return;
+        if (slotId >= 0) {
+            ItemStack stackInSlot = slots.get(slotId).getItem();
+            if (stackInSlot.getItem() instanceof BaseFilter && stackInSlot == player.getMainHandItem() || slotId < SLOTS) {
+                return;
+            }
         }
         super.clicked(slotId, dragType, clickTypeIn, player);
     }

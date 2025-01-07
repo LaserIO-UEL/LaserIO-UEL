@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
+import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,12 +43,18 @@ public class CardHolderContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (slotId >= 0 && slotId < SLOTS && slots.get(slotId) instanceof CardHolderSlot) {
-            ItemStack carriedItem = getCarried();
-            ItemStack stackInSlot = slots.get(slotId).getItem();
-            if (stackInSlot.getMaxStackSize() == 1 && stackInSlot.getCount() > 1) {
-                if (!carriedItem.isEmpty() && !stackInSlot.isEmpty() && !ItemStack.isSameItemSameTags(carriedItem, stackInSlot))
-                    return;
+        if (slotId >= 0) {
+            Slot slot = slots.get(slotId);
+            ItemStack stackInSlot = slot.getItem();
+            if (slotId < SLOTS && slot instanceof CardHolderSlot) {
+                if (stackInSlot.getMaxStackSize() == 1 && stackInSlot.getCount() > 1) {
+                    ItemStack carriedItem = getCarried();
+                    if (!carriedItem.isEmpty() && !stackInSlot.isEmpty() && !ItemStack.isSameItemSameTags(carriedItem, stackInSlot)) {
+                        return;
+                    }
+                }
+            } else if (stackInSlot.getItem() instanceof CardHolder && stackInSlot == player.getMainHandItem()) {
+                return;
             }
         }
         super.clicked(slotId, dragType, clickTypeIn, player);

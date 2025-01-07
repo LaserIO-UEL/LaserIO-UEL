@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.containers.customhandler.FilterBasicHandler;
 import com.direwolf20.laserio.common.containers.customhandler.FilterCountHandler;
@@ -23,6 +24,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,8 +38,6 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import javax.annotation.Nullable;
 
 import java.util.UUID;
-
-import static com.direwolf20.laserio.common.blocks.LaserNode.findCardHolders;
 
 public class CardItemContainer extends AbstractContainerMenu {
     public static final int SLOTS = 2;
@@ -60,12 +60,12 @@ public class CardItemContainer extends AbstractContainerMenu {
     public CardItemContainer(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, extraData.readItem());
         this.direction = extraData.readByte();
-        cardHolder = findCardHolders(player);
+        cardHolder = LaserNode.findCardHolders(player);
     }
 
     public CardItemContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
         super(Registration.CardItem_Container.get(), windowId);
-        playerEntity = player;
+        this.playerEntity = player;
         this.handler = BaseCard.getInventory(cardItem);
         this.playerInventory = new InvWrapper(playerInventory);
         this.cardItem = cardItem;
@@ -75,7 +75,7 @@ public class CardItemContainer extends AbstractContainerMenu {
             addSlotBox(filterHandler, 0, 44, 25, 5, 18, 3, 18);
             toggleFilterSlots();
         }
-        cardHolder = findCardHolders(player);
+        cardHolder = LaserNode.findCardHolders(player);
         if (!cardHolder.isEmpty()) {
             this.cardHolderHandler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
             addSlotBox(cardHolderHandler, 0, -92, 32, 5, 18, 3, 18);
@@ -96,17 +96,20 @@ public class CardItemContainer extends AbstractContainerMenu {
             return;
         }
         if (slotId >= 0) {
-            if (slots.get(slotId) instanceof CardHolderSlot) {
+            Slot slot = slots.get(slotId);
+            ItemStack stackInSlot = slot.getItem();
+            if (slot instanceof CardHolderSlot) {
                 ItemStack carriedItem = getCarried();
-                ItemStack stackInSlot = slots.get(slotId).getItem();
                 if (stackInSlot.getMaxStackSize() == 1 && stackInSlot.getCount() > 1) {
-                    if (!carriedItem.isEmpty() && !stackInSlot.isEmpty() && !ItemStack.isSameItemSameTags(carriedItem, stackInSlot))
+                    if (!carriedItem.isEmpty() && !stackInSlot.isEmpty() && !ItemStack.isSameItemSameTags(carriedItem, stackInSlot)) {
                         return;
+                    }
                 }
             } else {
-                ItemStack slotItem = slots.get(slotId).getItem();
-                if (slotItem.getItem() instanceof CardHolder)
+                Item slotItem = stackInSlot.getItem();
+                if (slotItem instanceof BaseCard && stackInSlot == player.getMainHandItem() || slotItem instanceof CardHolder) {
                     return;
+                }
             }
         }
         super.clicked(slotId, dragType, clickTypeIn, player);
@@ -142,8 +145,9 @@ public class CardItemContainer extends AbstractContainerMenu {
                 }
             }
         }
-        if (sourceContainer.equals(BlockPos.ZERO))
+        if (sourceContainer.equals(BlockPos.ZERO)) {
             return playerIn.getMainHandItem().equals(cardItem) || playerIn.getOffhandItem().equals(cardItem);
+        }
         return true;
     }
 
@@ -157,20 +161,21 @@ public class CardItemContainer extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof CardHolderSlot)
+        if (slot instanceof CardHolderSlot) {
             return false;
+        }
         return true;
     }
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        if (cardItem.getCount() > 1) return ItemStack.EMPTY; // Don't let quickMove happen in multistack cards
-        ItemStack itemstack = ItemStack.EMPTY;
+        if (cardItem.getCount() > 1) return ItemStack.EMPTY; //Don't let quickMove happen in multistack cards
+        ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (ItemHandlerHelper.canItemStacksStack(itemstack, cardItem)) return ItemStack.EMPTY;
+            itemStack = stack.copy();
+            if (ItemHandlerHelper.canItemStacksStack(itemStack, cardItem)) return ItemStack.EMPTY;
             //If its one of the 3 slots at the top try to move it into your inventory
             if (index < SLOTS) {
                 if (!cardHolder.isEmpty()) { //Do the below set of logic if we have a card holder, otherwise just try to move to inventory
@@ -180,13 +185,12 @@ public class CardItemContainer extends AbstractContainerMenu {
                     if (!this.moveItemStackTo(stack, SLOTS + FILTERSLOTS + CardHolderContainer.SLOTS, 36 + SLOTS + FILTERSLOTS + CardHolderContainer.SLOTS, true)) {
                         return ItemStack.EMPTY;
                     }
-                } else { //If no card holder, the slot targets are different.
+                } else { //If no card holder, the slot targets are different
                     if (!this.moveItemStackTo(stack, SLOTS + FILTERSLOTS, 36 + SLOTS + FILTERSLOTS, true)) {
                         return ItemStack.EMPTY;
                     }
                 }
-
-                slot.onQuickCraft(stack, itemstack);
+                slot.onQuickCraft(stack, itemStack);
             } else if (index >= SLOTS && index < SLOTS + FILTERSLOTS) {
                 //No-Op
             } else { //From player inventory (or Card Holder) TO something
@@ -206,8 +210,9 @@ public class CardItemContainer extends AbstractContainerMenu {
                         return ItemStack.EMPTY;
                     }
                 }
-                if (!playerIn.level().isClientSide())
+                if (!playerIn.level().isClientSide()) {
                     BaseCard.setInventory(cardItem, handler);
+                }
                 if (filterHandler instanceof FilterCountHandler) {
                     ((FilterCountHandler) filterHandler).syncSlots();
                 }
@@ -219,13 +224,13 @@ public class CardItemContainer extends AbstractContainerMenu {
                 slot.setChanged();
             }
 
-            if (stack.getCount() == itemstack.getCount()) {
+            if (stack.getCount() == itemStack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
             slot.onTake(playerIn, stack);
         }
-        return itemstack;
+        return itemStack;
     }
 
     protected void updateFilterSlots(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {

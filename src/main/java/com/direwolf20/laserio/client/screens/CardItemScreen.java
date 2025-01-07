@@ -94,8 +94,8 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         super(container, inv, name);
         this.container = container;
         this.card = container.cardItem;
-        filter = container.slots.get(0).getItem();
-        showCardHolderUI = container.cardHolder.isEmpty();
+        this.filter = container.slots.get(0).getItem();
+        this.showCardHolderUI = container.cardHolder.isEmpty();
     }
 
     @Override
@@ -228,7 +228,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     }
 
     public void toggleHolderSlots() {
-        for (int i = 17; i < 17 + CardHolderContainer.SLOTS; i++) {
+        for (int i = (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (!(slot instanceof CardHolderSlot)) continue;
@@ -238,8 +238,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
 
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-        if (showCardHolderUI)
+        if (showCardHolderUI) {
             return mouseX < (double) guiLeftIn - 100 || mouseY < (double) guiTopIn || mouseX >= (double) (guiLeftIn + this.imageWidth) || mouseY >= (double) (guiTopIn + this.imageHeight);
+        }
         return super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
     }
 
@@ -422,7 +423,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         if (!showNBT) removeWidget(buttons.get("nbt"));
         if (!showAllow) removeWidget(buttons.get("allowList"));
 
-
         if (card.getCount() > 1) {
             for (int i = 0; i < CardItemContainer.SLOTS; i++) {
                 if (i >= container.slots.size()) continue;
@@ -597,7 +597,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
                 removeWidget(exactButton);
             }
         }
-        for (int i = CardItemContainer.SLOTS; i < CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS; i++) {
+        for (int i = CardItemContainer.SLOTS; i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (!(slot instanceof FilterBasicSlot)) continue;
@@ -678,7 +678,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         InputConstants.Key mouseKey = InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_);
         if (p_keyPressed_1_ == 256 || minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
             onClose();
-
             return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
@@ -712,8 +711,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     }
 
     public void saveSettings() {
-        if (showFilter)
+        if (showFilter) {
             PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
+        }
         PacketHandler.sendToServer(new PacketUpdateCard(currentMode, currentChannel, currentItemExtractAmt, currentPriority, currentSneaky, (short) currentTicks, currentExact, currentRegulate, (byte) currentRoundRobin, 0, 0, currentRedstoneMode, currentRedstoneChannel, currentAndMode));
     }
 
@@ -781,7 +781,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             setExtract(amountButton, btn);
             return true;
         }
-
         NumberButton speedButton = ((NumberButton) buttons.get("speed"));
         if (MiscTools.inBounds(speedButton.getX(), speedButton.getY(), speedButton.getWidth(), speedButton.getHeight(), x, y)) {
             if (btn == 0)
@@ -816,7 +815,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             }
             return true;
         }
-        if (hoveredSlot instanceof CardItemSlot) { //Right click
+        if (hoveredSlot instanceof CardItemSlot) {
             if (btn == 0) {
                 if (filter.getItem() instanceof BaseFilter && !(filter.getItem() instanceof FilterTag) && !(filter.getItem() instanceof FilterNBT)) //Save the filter before removing it from the slot
                     PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
