@@ -101,7 +101,7 @@ public class CardChemicalScreen extends CardItemScreen {
             if (currentMode == 0) {
                 currentPriority = (short) (Math.max(currentPriority + change, -4096));
             } else {
-                currentChemicalExtractAmt = (Math.max(currentChemicalExtractAmt + change, 100));
+                currentChemicalExtractAmt = (Math.max(currentChemicalExtractAmt + change, 1));
             }
         } else {
             if (currentMode == 0) {

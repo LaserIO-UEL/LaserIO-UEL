@@ -362,7 +362,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             if (currentMode == 0) {
                 currentPriority = (short) (Math.max(currentPriority + change, -4096));
             } else {
-                currentEnergyExtractAmt = (Math.max(currentEnergyExtractAmt + change, 100));
+                currentEnergyExtractAmt = (Math.max(currentEnergyExtractAmt + change, 1));
             }
         } else {
             if (currentMode == 0) {
