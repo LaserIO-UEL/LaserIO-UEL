@@ -8,7 +8,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-import javax.smartcardio.Card;
 import java.util.function.Supplier;
 
 public class PacketUpdateRedstoneCard {
@@ -19,8 +18,9 @@ public class PacketUpdateRedstoneCard {
     boolean threshold;
     byte thresholdLimit;
     byte thresholdOutput;
+    boolean blockRedstone;
 
-    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong, boolean invert, boolean threshold, byte thresholdLimit, byte thresholdOutput) {
+    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong, boolean invert, boolean threshold, byte thresholdLimit, byte thresholdOutput, boolean blockRedstone) {
         this.mode = mode;
         this.channel = channel;
         this.strong = strong;
@@ -28,6 +28,7 @@ public class PacketUpdateRedstoneCard {
         this.threshold = threshold;
         this.thresholdLimit = thresholdLimit;
         this.thresholdOutput = thresholdOutput;
+        this.blockRedstone = blockRedstone;
     }
 
     public static void encode(PacketUpdateRedstoneCard msg, FriendlyByteBuf buffer) {
@@ -38,10 +39,11 @@ public class PacketUpdateRedstoneCard {
         buffer.writeBoolean(msg.threshold);
         buffer.writeByte(msg.thresholdLimit);
         buffer.writeByte(msg.thresholdOutput);
+        buffer.writeBoolean(msg.blockRedstone);
     }
 
     public static PacketUpdateRedstoneCard decode(FriendlyByteBuf buffer) {
-        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readByte(), buffer.readByte());
+        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readByte(), buffer.readByte(), buffer.readBoolean());
     }
 
     public static class Handler {
@@ -67,6 +69,7 @@ public class PacketUpdateRedstoneCard {
                 CardRedstone.setThreshold(stack, msg.threshold);
                 CardRedstone.setThresholdLimit(stack, msg.thresholdLimit);
                 CardRedstone.setThresholdOutput(stack, msg.thresholdOutput);
+                CardRedstone.setBlockRedstone(stack, msg.blockRedstone);
             });
 
             ctx.get().setPacketHandled(true);

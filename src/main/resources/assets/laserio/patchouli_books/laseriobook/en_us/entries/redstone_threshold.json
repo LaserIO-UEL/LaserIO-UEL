@@ -1,0 +1,16 @@
+{
+  "name": "Threshold",
+  "sortnum": 14,
+  "category": "laserio:mechanics",
+  "icon": "laserio:textures/gui/buttons/threshold.png",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Threshold setting is only available on redstone card input."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Toggling this setting will open two buttons: Threshold Limit and Output. The channel will emit no redstone signal unless there is a signal that is equal to, or higher than the Limit. When this happens a signal equal to the Output will be put into the chosen channel.$(br2)This setting works with the $(l:laserio:redstone_invert)Redstone Channel$(/l)."
+    }
+  ]
+}

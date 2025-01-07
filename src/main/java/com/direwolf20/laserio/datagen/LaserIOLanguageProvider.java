@@ -76,12 +76,21 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("screen.laserio.sensor", "Sensor");
         add("screen.laserio.input", "Input");
         add("screen.laserio.output", "Output");
+
         add("screen.laserio.weak", "Weak");
         add("screen.laserio.strong", "Strong");
         add("screen.laserio.redstoneMode", "Redstone: ");
         add("screen.laserio.ignored", "Ignored");
         add("screen.laserio.low", "Low");
         add("screen.laserio.high", "High");
+        add("screen.laserio.notinvert", "Not Inverted");
+        add("screen.laserio.invert", "Inverted");
+        add("screen.laserio.notthreshold", "Threshold Disabled");
+        add("screen.laserio.threshold", "Threshold Enabled");
+        add("screen.laserio.thresholdlimit", "Threshold Limit");
+        add("screen.laserio.thresholdoutput", "Output");
+        //add("screen.laserio.notblockredstone", "Not Reading Block State");
+        //add("screen.laserio.blockredstone", "Read Block State");
 
         add("screen.laserio.showparticles", "Show Particles");
         add("screen.laserio.hideparticles", "Hide Particles");

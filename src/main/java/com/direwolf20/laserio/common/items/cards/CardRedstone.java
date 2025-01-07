@@ -109,4 +109,18 @@ public class CardRedstone extends BaseCard {
         if (compound == null || !compound.contains("thresholdoutput")) return (byte) 15;
         return compound.getByte("thresholdoutput");
     }
+
+    public static boolean getBlockRedstone(ItemStack stack) {
+        CompoundTag compound = stack.getTag();
+        if (compound == null || !compound.contains("blockredstone")) return false;
+        return compound.getBoolean("blockredstone");
+    }
+
+    public static boolean setBlockRedstone(ItemStack stack, boolean comp) {
+        if (!comp)
+            stack.removeTagKey("blockredstone");
+        else
+            stack.getOrCreateTag().putBoolean("blockredstone", comp);
+        return comp;
+    }
 }

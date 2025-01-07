@@ -21,22 +21,7 @@ import com.direwolf20.laserio.integration.mekanism.MekanismCache;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
-import com.direwolf20.laserio.util.CardRender;
-import com.direwolf20.laserio.util.DimBlockPos;
-import com.direwolf20.laserio.util.ExtractorCardCache;
-import com.direwolf20.laserio.util.FluidStackKey;
-import com.direwolf20.laserio.util.InserterCardCache;
-import com.direwolf20.laserio.util.ItemHandlerUtil;
-import com.direwolf20.laserio.util.ItemStackKey;
-import com.direwolf20.laserio.util.NodeSideCache;
-import com.direwolf20.laserio.util.ParticleData;
-import com.direwolf20.laserio.util.ParticleDataFluid;
-import com.direwolf20.laserio.util.ParticleRenderData;
-import com.direwolf20.laserio.util.ParticleRenderDataFluid;
-import com.direwolf20.laserio.util.SensorCardCache;
-import com.direwolf20.laserio.util.StockerCardCache;
-import com.direwolf20.laserio.util.TransferResult;
-import com.direwolf20.laserio.util.WeakConsumerWrapper;
+import com.direwolf20.laserio.util.*;
 import it.unimi.dsi.fastutil.bytes.Byte2BooleanMap;
 import it.unimi.dsi.fastutil.bytes.Byte2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ByteMap;
@@ -349,31 +334,35 @@ public class LaserNodeBE extends BaseLaserBE {
         //System.out.println("Checking redstone at: " + getBlockPos() + ", Gametime: " + level.getGameTime());
         //int myRedstoneCount = myRedstoneIn.size();
         //myRedstoneIn.clear();
+        assert level != null;
         Byte2ByteMap myRedstoneInTemp = new Byte2ByteOpenHashMap();
         boolean updated = false;
         for (Direction direction : Direction.values()) {
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
             for (int slot = 0; slot < LaserNodeContainer.CARDSLOTS; slot++) {
                 ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
-                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and input mode
-                    int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) {//Redstone mode and input mode
+                    int redstoneStrength;
+                    //if (CardRedstone.getBlockRedstone(card)) {
+                    //    redstoneStrength = level.getBlockState(getBlockPos().relative(direction)).getAnalogOutputSignal(level, getBlockPos().relative(direction));
+                    //} else {
+                    redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                    //}
                     if (CardRedstone.getInvert(card)) {redstoneStrength = (byte)(15 - redstoneStrength);}
                     if (CardRedstone.getThreshold(card)) {
                         redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;}
 
                     //System.out.println("Input: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
-                    if (redstoneStrength >= 0) {
-                        byte redstoneChannel = BaseCard.getRedstoneChannel(card);
-                        //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
-                        //    updated = true;
-                        if (myRedstoneInTemp.containsKey(redstoneChannel)) {
-                            byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
-                            if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
-                                myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
-                            }
-                        } else {
+                    byte redstoneChannel = BaseCard.getRedstoneChannel(card);
+                    //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
+                    //    updated = true;
+                    if (myRedstoneInTemp.containsKey(redstoneChannel)) {
+                        byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
+                        if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
                             myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                         }
+                    } else {
+                        myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                     }
                 }
             }
