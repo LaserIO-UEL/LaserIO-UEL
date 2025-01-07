@@ -513,7 +513,8 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
 
     public void changeAmount(int change) {
         if (Screen.hasShiftDown()) change *= 10;
-        if (Screen.hasControlDown()) change *= 64;
+        if (Screen.hasControlDown()) change *= 100;
+        int overclockerCount = container.getSlot(1).getItem().getCount();
         if (change < 0) {
             if (currentMode == 0) {
                 currentPriority = (short) (Math.max(currentPriority + change, -4096));
@@ -524,14 +525,14 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             if (currentMode == 0) {
                 currentPriority = (short) (Math.min(currentPriority + change, 4096));
             } else {
-                currentItemExtractAmt = (byte) (Math.min(currentItemExtractAmt + change, Math.max(container.getSlot(1).getItem().getCount() * 16, 8)));
+                currentItemExtractAmt = (byte) (Math.min(currentItemExtractAmt + change, Math.max(overclockerCount * 16, 8)));
             }
         }
     }
 
     public void changeTick(int change) {
         if (Screen.hasShiftDown()) change *= 10;
-        if (Screen.hasControlDown()) change *= 64;
+        if (Screen.hasControlDown()) change *= 100;
         if (change < 0) {
             currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_ITEM.get().get(container.getSlot(1).getItem().getCount())));
         } else {

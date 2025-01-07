@@ -393,7 +393,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
 
     public void changeTick(int change) {
         if (Screen.hasShiftDown()) change *= 10;
-        if (Screen.hasControlDown()) change *= 64;
+        if (Screen.hasControlDown()) change *= 100;
         if (change < 0) {
             currentTicks = (Math.max(currentTicks + change, Config.MIN_TICKS_ENERGY.get()));
         } else {
@@ -465,11 +465,10 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     public void setExtract(NumberButton amountButton, int btn) {
-        int change = currentMode == 0 ? 1 : 100;
         if (btn == 0)
-            changeAmount(change);
+            changeAmount(1);
         else if (btn == 1)
-            changeAmount(change * -1);
+            changeAmount(-1);
         amountButton.setValue(currentMode == 0 ? currentPriority : currentEnergyExtractAmt);
         amountButton.playDownSound(Minecraft.getInstance().getSoundManager());
     }
