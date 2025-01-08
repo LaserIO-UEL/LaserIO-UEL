@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -52,7 +54,8 @@ public class CardRedstoneContainer extends AbstractContainerMenu {
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         if (slotId >= 0) {
             ItemStack stackInSlot = slots.get(slotId).getItem();
-            if (stackInSlot.getItem() instanceof BaseCard && stackInSlot == player.getMainHandItem()) {
+            Item itemInSlot = stackInSlot.getItem();
+            if (stackInSlot == player.getMainHandItem() && (itemInSlot instanceof BaseCard || itemInSlot instanceof CardHolder)) {
                 return;
             }
         }

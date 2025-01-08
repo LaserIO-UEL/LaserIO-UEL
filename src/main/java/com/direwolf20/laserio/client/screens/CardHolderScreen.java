@@ -3,8 +3,10 @@ package com.direwolf20.laserio.client.screens;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.containers.CardHolderContainer;
 import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
+import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketOpenCard;
+import com.direwolf20.laserio.common.network.packets.PacketOpenFilter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -48,7 +50,11 @@ public class CardHolderScreen extends AbstractContainerScreen<CardHolderContaine
     public boolean mouseClicked(double x, double y, int btn) {
         if (btn == 1 && hoveredSlot instanceof CardHolderSlot) { //Right click
             int slot = hoveredSlot.getSlotIndex();
-            PacketHandler.sendToServer(new PacketOpenCard(slot, new BlockPos(0, -9999, 0), false));
+            if (hoveredSlot.hasItem() && hoveredSlot.getItem().getItem() instanceof BaseFilter) {
+                PacketHandler.sendToServer(new PacketOpenFilter(slot));
+            } else {
+                PacketHandler.sendToServer(new PacketOpenCard(slot, new BlockPos(0, -9999, 0), false));
+            }
             return true;
         }
         return super.mouseClicked(x, y, btn);

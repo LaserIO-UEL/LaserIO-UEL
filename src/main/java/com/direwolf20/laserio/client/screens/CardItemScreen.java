@@ -817,8 +817,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         }
         if (hoveredSlot instanceof CardItemSlot) {
             if (btn == 0) {
-                if (filter.getItem() instanceof BaseFilter && !(filter.getItem() instanceof FilterTag) && !(filter.getItem() instanceof FilterNBT)) //Save the filter before removing it from the slot
+                if (filter.getItem() instanceof BaseFilter && !(filter.getItem() instanceof FilterTag) && !(filter.getItem() instanceof FilterNBT)) { //Save the filter before removing it from the slot
                     PacketHandler.sendToServer(new PacketUpdateFilter(isAllowList == 1, isCompareNBT == 1));
+                }
             } else if (btn == 1) {
                 int slot = hoveredSlot.getSlotIndex();
                 saveSettings();

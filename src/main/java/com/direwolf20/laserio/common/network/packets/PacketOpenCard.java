@@ -47,7 +47,6 @@ public class PacketOpenCard {
 
     public static PacketOpenCard decode(FriendlyByteBuf buffer) {
         return new PacketOpenCard(buffer.readInt(), buffer.readBlockPos(), buffer.readBoolean());
-
     }
 
     public static class Handler {

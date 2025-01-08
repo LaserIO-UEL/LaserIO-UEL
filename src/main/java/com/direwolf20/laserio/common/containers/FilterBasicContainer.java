@@ -4,6 +4,7 @@ import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.containers.customhandler.FilterBasicHandler;
 import com.direwolf20.laserio.common.containers.customslot.FilterBasicSlot;
+import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.setup.Registration;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -43,9 +45,9 @@ public class FilterBasicContainer extends AbstractContainerMenu {
         this.handler = handler;
         this.playerInventory = new InvWrapper(playerInventory);
         this.filterItem = filterItem;
-        if (handler != null)
+        if (handler != null) {
             addSlotBox(handler, 0, 44, 22, 5, 18, 3, 18);
-
+        }
         layoutPlayerInventorySlots(8, 84);
     }
 
@@ -64,7 +66,8 @@ public class FilterBasicContainer extends AbstractContainerMenu {
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         if (slotId >= 0) {
             ItemStack stackInSlot = slots.get(slotId).getItem();
-            if (stackInSlot.getItem() instanceof BaseFilter && stackInSlot == player.getMainHandItem() || slotId < SLOTS) {
+            Item itemInSlot = stackInSlot.getItem();
+            if (slotId < SLOTS || (stackInSlot == player.getMainHandItem() && (itemInSlot instanceof BaseFilter || itemInSlot instanceof CardHolder))) {
                 return;
             }
         }

@@ -98,18 +98,19 @@ public class CardItemContainer extends AbstractContainerMenu {
         if (slotId >= 0) {
             Slot slot = slots.get(slotId);
             ItemStack stackInSlot = slot.getItem();
+            Item itemInSlot = stackInSlot.getItem();
             if (slot instanceof CardHolderSlot) {
+                if (itemInSlot instanceof BaseCard) {
+                    return;
+                }
                 ItemStack carriedItem = getCarried();
                 if (stackInSlot.getMaxStackSize() == 1 && stackInSlot.getCount() > 1) {
                     if (!carriedItem.isEmpty() && !stackInSlot.isEmpty() && !ItemStack.isSameItemSameTags(carriedItem, stackInSlot)) {
                         return;
                     }
                 }
-            } else {
-                Item slotItem = stackInSlot.getItem();
-                if (slotItem instanceof BaseCard && stackInSlot == player.getMainHandItem() || slotItem instanceof CardHolder) {
-                    return;
-                }
+            } else if ((itemInSlot instanceof BaseCard && stackInSlot == player.getMainHandItem()) || itemInSlot instanceof CardHolder) {
+                return;
             }
         }
         super.clicked(slotId, dragType, clickTypeIn, player);

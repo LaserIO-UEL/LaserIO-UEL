@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.common.network.packets;
 
+import com.direwolf20.laserio.common.containers.CardHolderContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.containers.FilterBasicContainer;
 import com.direwolf20.laserio.common.containers.FilterCountContainer;
@@ -81,13 +82,18 @@ public class PacketOpenFilter {
                     return;
 
                 AbstractContainerMenu container = sender.containerMenu;
-                if (container == null || !(container instanceof CardItemContainer))
+                if (container == null)
                     return;
 
                 Slot slot = container.slots.get(msg.slotNumber);
-
                 ItemStack itemStack = slot.getItem();
-                doOpenFilter(itemStack, ((CardItemContainer) container).cardItem, sender, ((CardItemContainer) container).sourceContainer);
+
+                if (container instanceof CardItemContainer)
+                    doOpenFilter(itemStack, ((CardItemContainer) container).cardItem, sender, ((CardItemContainer) container).sourceContainer);
+                else if (container instanceof CardHolderContainer)
+                    doOpenFilter(itemStack, ItemStack.EMPTY, sender, BlockPos.ZERO);
+                else
+                    return;
             });
 
             ctx.get().setPacketHandled(true);

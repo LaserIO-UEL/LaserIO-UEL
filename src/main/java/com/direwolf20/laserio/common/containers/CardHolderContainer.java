@@ -37,7 +37,6 @@ public class CardHolderContainer extends AbstractContainerMenu {
         if (iItemHandler != null) {
             addSlotBox(iItemHandler, 0, 44, 17, 5, 18, 3, 18);
         }
-
         layoutPlayerInventorySlots(8, 84);
     }
 
@@ -144,36 +143,37 @@ public class CardHolderContainer extends AbstractContainerMenu {
                 }
             }
         }
-
         return flag;
     }
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof CardHolderSlot)
+        if (slot instanceof CardHolderSlot) {
             return false;
+        }
         return true;
     }
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
+        ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
             ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
+            itemStack = stack.copy();
             //If its one of the 20 slots at the top try to move it into your inventory
             if (index < SLOTS) {
                 if (playerIn.getInventory().getFreeSlot() != -1) {
                     // moveItemStackTo() always moves the item, no matter the return value. fixes #87
-                    if (stack.getMaxStackSize() == 1)
+                    if (stack.getMaxStackSize() == 1) {
                         this.moveItemStackTo(stack.split(1), SLOTS, 36 + SLOTS, true);
-                    else
+                    } else {
                         this.moveItemStackTo(stack, SLOTS, 36 + SLOTS, true);
+                    }
                 } else {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
+                slot.onQuickCraft(stack, itemStack);
             } else {
                 if (!this.moveItemStackTo(stack, 0, SLOTS, false)) {
                     return ItemStack.EMPTY;
@@ -181,20 +181,20 @@ public class CardHolderContainer extends AbstractContainerMenu {
             }
 
             slot.onTake(playerIn, stack);
-            if (stack.getCount() < itemstack.getCount()) {
+            if (stack.getCount() < itemStack.getCount()) {
                 return ItemStack.EMPTY;
             }
         }
-
-        return itemstack;
+        return itemStack;
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            if ((handler.getSlots() == SLOTS))
+            if ((handler.getSlots() == SLOTS)) {
                 addSlot(new CardHolderSlot(handler, index, x, y));
-            else
+            } else {
                 addSlot(new SlotItemHandler(handler, index, x, y));
+            }
             x += dx;
             index++;
         }

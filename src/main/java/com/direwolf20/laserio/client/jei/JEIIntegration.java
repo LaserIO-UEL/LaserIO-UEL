@@ -3,10 +3,12 @@ package com.direwolf20.laserio.client.jei;
 import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterBasic;
 import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterCard;
 import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterCount;
+import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterNBT;
 import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterTag;
 import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.client.screens.FilterBasicScreen;
 import com.direwolf20.laserio.client.screens.FilterCountScreen;
+import com.direwolf20.laserio.client.screens.FilterNBTScreen;
 import com.direwolf20.laserio.client.screens.FilterTagScreen;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
@@ -62,6 +64,7 @@ public class JEIIntegration implements IModPlugin {
         registration.addGhostIngredientHandler(CardItemScreen.class, new GhostFilterCard());
         registration.addGhostIngredientHandler(FilterBasicScreen.class, new GhostFilterBasic());
         registration.addGhostIngredientHandler(FilterCountScreen.class, new GhostFilterCount());
+        registration.addGhostIngredientHandler(FilterNBTScreen.class, new GhostFilterNBT());
         registration.addGhostIngredientHandler(FilterTagScreen.class, new GhostFilterTag());
     }
 }
