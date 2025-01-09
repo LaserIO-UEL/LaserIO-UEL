@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.items;
 
 import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
+import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import net.minecraft.ChatFormatting;
@@ -33,9 +34,7 @@ public class CardCloner extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
-
         Minecraft mc = Minecraft.getInstance();
-
         if (world == null || mc.player == null) {
             return;
         }
@@ -120,44 +119,33 @@ public class CardCloner extends Item {
         return stack.getOrCreateTag().getCompound("settings");
     }
 
-    public static String getFilterType(ItemStack stack) {
-        CompoundTag compoundTag = getSettings(stack);
-        ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
-        itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
-        ItemStack filterStack = itemStackHandler.getStackInSlot(0);
-        if (filterStack.isEmpty()) return "";
-
-        return filterStack.getItem().toString();
-    }
-
     public static ItemStack getFilter(ItemStack stack) {
+        String cardType = getItemType(stack);
         CompoundTag compoundTag = getSettings(stack);
-        ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
-        itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
-        ItemStack filterStack = itemStackHandler.getStackInSlot(0);
+        ItemStack filterStack = ItemStack.EMPTY;
+        if (!cardType.equals("card_energy") && !cardType.equals("card_redstone")) {
+            ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
+            itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
+            filterStack = itemStackHandler.getStackInSlot(0);
+        }
         return filterStack;
-    }
-
-    public static int getOverclockCount(ItemStack stack) {
-        CompoundTag compoundTag = getSettings(stack);
-        ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
-        itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
-        ItemStack overclockStack = itemStackHandler.getStackInSlot(1);
-        if (overclockStack.isEmpty()) return 0;
-
-        return overclockStack.getCount();
     }
 
     public static ItemStack getOverclocker(ItemStack stack) {
         String cardType = getItemType(stack);
         CompoundTag compoundTag = getSettings(stack);
-        ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
-        itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
-        ItemStack overclockStack;
-        if (cardType.equals("card_energy"))
-            overclockStack = itemStackHandler.getStackInSlot(0);
-        else
+        ItemStack overclockStack = ItemStack.EMPTY;
+        if (cardType.equals("card_energy")) {
+            if (CardEnergyContainer.SLOTS == 1) {
+                ItemStackHandler itemStackHandler = new ItemStackHandler(CardEnergyContainer.SLOTS);
+                itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
+                overclockStack = itemStackHandler.getStackInSlot(0);
+            }
+        } else if (!cardType.equals("card_redstone")) {
+            ItemStackHandler itemStackHandler = new ItemStackHandler(CardItemContainer.SLOTS);
+            itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
             overclockStack = itemStackHandler.getStackInSlot(1);
+        }
         return overclockStack;
     }
 }

@@ -1,9 +1,12 @@
 package com.direwolf20.laserio.common.network.packets;
 
+import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.LaserNodeContainer;
 import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.CardEnergy;
+
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -60,7 +64,7 @@ public class PacketCopyPasteCard {
         player.connection.send(packet);
     }
 
-    public static boolean returnItemToholder(LaserNodeContainer container, ItemStack itemStack, boolean simulate) {
+    public static boolean returnItemToHolder(LaserNodeContainer container, ItemStack itemStack, boolean simulate) {
         if (itemStack.isEmpty()) return true;
         int neededReturn = itemStack.getCount();
         Map<Integer, Integer> returnStackMap = new HashMap<>();
@@ -150,12 +154,20 @@ public class PacketCopyPasteCard {
                     CardCloner.saveSettings(clonerStack, compoundTag);
                     playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT.getLocation().toString()))));
                 } else {
-                    if (slotStack.getItem().toString().equals(CardCloner.getItemType(clonerStack))) {
-                        CardItemHandler cardItemHandler = BaseCard.getInventory(slotStack);
+                    Item slotItem = slotStack.getItem();
+                    if (slotItem.toString().equals(CardCloner.getItemType(clonerStack))) {
                         ItemStack filterNeeded = CardCloner.getFilter(clonerStack);
-                        ItemStack existingFilter = cardItemHandler.getStackInSlot(0);
                         ItemStack overclockersNeeded = CardCloner.getOverclocker(clonerStack);
-                        ItemStack existingOverclockers = cardItemHandler.getStackInSlot(1);
+                        ItemStack existingFilter = ItemStack.EMPTY;
+                        ItemStack existingOverclockers = ItemStack.EMPTY;
+                        if (slotItem instanceof CardEnergy && CardEnergyContainer.SLOTS == 1) {
+                            CardItemHandler cardItemHandler = CardEnergy.getInventory(slotStack);
+                            existingOverclockers = cardItemHandler.getStackInSlot(0);
+                        } else {
+                            CardItemHandler cardItemHandler = BaseCard.getInventory(slotStack);
+                            existingFilter = cardItemHandler.getStackInSlot(0);
+                            existingOverclockers = cardItemHandler.getStackInSlot(1);
+                        }
                         boolean filterSatisfied = false;
                         boolean filterNeedsReturn = false;
                         boolean overclockSatisfied = false;
@@ -164,7 +176,7 @@ public class PacketCopyPasteCard {
                             filterSatisfied = true;
                         } else {
                             if (!existingFilter.isEmpty()) { //If we have the wrong filter, and theres an existing one, remove it first
-                                filterNeedsReturn = !returnItemToholder(laserNodeContainer, existingFilter, true);
+                                filterNeedsReturn = !returnItemToHolder(laserNodeContainer, existingFilter, true);
                             }
                             if (!filterNeedsReturn) { //If the filter can be returned or doesn't need to be
                                 filterSatisfied = getItemFromHolder(laserNodeContainer, filterNeeded, true);
@@ -176,7 +188,7 @@ public class PacketCopyPasteCard {
                             if (existingOverclockers.getCount() > overclockersNeeded.getCount()) { //If we have too many overclockers
                                 int amtReturn = existingOverclockers.getCount() - overclockersNeeded.getCount();
                                 ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
-                                overclockNeedsReturn = !returnItemToholder(laserNodeContainer, returnStack, true);
+                                overclockNeedsReturn = !returnItemToHolder(laserNodeContainer, returnStack, true);
                                 overclockSatisfied = true;
                             } else { //If we don't have enough
                                 int amtNeeded = overclockersNeeded.getCount() - existingOverclockers.getCount();
@@ -186,7 +198,7 @@ public class PacketCopyPasteCard {
                         }
                         if (filterSatisfied && !filterNeedsReturn && overclockSatisfied && !overclockNeedsReturn) {
                             if (!existingFilter.is(filterNeeded.getItem())) { //Now that we're doing it for real, check to make sure the filter needs switching
-                                boolean success = returnItemToholder(laserNodeContainer, existingFilter, false);
+                                boolean success = returnItemToHolder(laserNodeContainer, existingFilter, false);
                                 if (!success) {
                                     //Drop item in world
                                     ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), existingFilter);
@@ -198,7 +210,7 @@ public class PacketCopyPasteCard {
                                 if (existingOverclockers.getCount() > overclockersNeeded.getCount()) { //If we have too many overclockers
                                     int amtReturn = existingOverclockers.getCount() - overclockersNeeded.getCount();
                                     ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
-                                    boolean success = returnItemToholder(laserNodeContainer, returnStack, false);
+                                    boolean success = returnItemToHolder(laserNodeContainer, returnStack, false);
                                     if (!success) {
                                         //Drop item in world
                                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), returnStack);
@@ -212,10 +224,11 @@ public class PacketCopyPasteCard {
                             }
                             ItemStack tempStack = slotStack.copy();
                             CompoundTag compoundTag = CardCloner.getSettings(clonerStack);
-                            if (compoundTag.equals(new CompoundTag()))
+                            if (compoundTag.isEmpty()) {
                                 tempStack.setTag(null);
-                            else
-                                tempStack.setTag(CardCloner.getSettings(clonerStack));
+                            } else {
+                                tempStack.setTag(compoundTag.copy());
+                            }
                             container.getSlot(msg.slot).set(tempStack);
                             playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.ENCHANTMENT_TABLE_USE.getLocation().toString()))));
                             ((LaserNodeContainer)container).tile.updateThisNode();
