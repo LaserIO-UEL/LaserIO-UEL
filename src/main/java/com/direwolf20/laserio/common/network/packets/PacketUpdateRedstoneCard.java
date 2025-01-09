@@ -14,21 +14,42 @@ public class PacketUpdateRedstoneCard {
     byte mode;
     byte channel;
     boolean strong;
+    byte invert;
+    boolean threshold;
+    byte thresholdLimit;
+    byte thresholdOutput;
+    byte combined;
+    byte channeltwo;
+    //byte special;
 
-    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong) {
+    public PacketUpdateRedstoneCard(byte mode, byte channel, boolean strong, byte invert, boolean threshold, byte thresholdLimit, byte thresholdOutput, byte combined, byte channeltwo) {
         this.mode = mode;
         this.channel = channel;
         this.strong = strong;
+        this.invert = invert;
+        this.threshold = threshold;
+        this.thresholdLimit = thresholdLimit;
+        this.thresholdOutput = thresholdOutput;
+        this.combined = combined;
+        this.channeltwo = channeltwo;
+        //this.special = special;
     }
 
     public static void encode(PacketUpdateRedstoneCard msg, FriendlyByteBuf buffer) {
         buffer.writeByte(msg.mode);
         buffer.writeByte(msg.channel);
         buffer.writeBoolean(msg.strong);
+        buffer.writeByte(msg.invert);
+        buffer.writeBoolean(msg.threshold);
+        buffer.writeByte(msg.thresholdLimit);
+        buffer.writeByte(msg.thresholdOutput);
+        buffer.writeByte(msg.combined);
+        buffer.writeByte(msg.channeltwo);
+        //buffer.writeByte(msg.special);
     }
 
     public static PacketUpdateRedstoneCard decode(FriendlyByteBuf buffer) {
-        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean());
+        return new PacketUpdateRedstoneCard(buffer.readByte(), buffer.readByte(), buffer.readBoolean(), buffer.readByte(), buffer.readBoolean(), buffer.readByte(), buffer.readByte(), buffer.readByte(), buffer.readByte());
     }
 
     public static class Handler {
@@ -50,6 +71,13 @@ public class PacketUpdateRedstoneCard {
                 CardRedstone.setTransferMode(stack, msg.mode);
                 CardRedstone.setRedstoneChannel(stack, msg.channel);
                 CardRedstone.setStrong(stack, msg.strong);
+                CardRedstone.setInvert(stack, msg.invert);
+                CardRedstone.setThreshold(stack, msg.threshold);
+                CardRedstone.setThresholdLimit(stack, msg.thresholdLimit);
+                CardRedstone.setThresholdOutput(stack, msg.thresholdOutput);
+                CardRedstone.setCombined(stack, msg.combined);
+                CardRedstone.setRedstoneChannelTwo(stack, msg.channeltwo);
+                //CardRedstone.setSpecialSetting(stack, msg.special);
             });
 
             ctx.get().setPacketHandled(true);

@@ -35,4 +35,5 @@ repositories {
             includeGroup "mekanism"
         }
     }
+    maven {url = "https://cursemaven.com"}
 }

@@ -349,27 +349,34 @@ public class LaserNodeBE extends BaseLaserBE {
         //System.out.println("Checking redstone at: " + getBlockPos() + ", Gametime: " + level.getGameTime());
         //int myRedstoneCount = myRedstoneIn.size();
         //myRedstoneIn.clear();
+        assert level != null;
         Byte2ByteMap myRedstoneInTemp = new Byte2ByteOpenHashMap();
         boolean updated = false;
         for (Direction direction : Direction.values()) {
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
             for (int slot = 0; slot < LaserNodeContainer.CARDSLOTS; slot++) {
                 ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
-                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and input mode
-                    int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) {//Redstone mode and input mode
+                    int redstoneStrength;
+                    //if (CardRedstone.getBlockRedstone(card)) {
+                    //    redstoneStrength = level.getBlockState(getBlockPos().relative(direction)).getAnalogOutputSignal(level, getBlockPos().relative(direction));
+                    //} else {
+                    redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                    //}
+                    if (CardRedstone.getThreshold(card)) {
+                        redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;}
+
                     //System.out.println("Input: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
-                    if (redstoneStrength > 0) {
-                        byte redstoneChannel = BaseCard.getRedstoneChannel(card);
-                        //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
-                        //    updated = true;
-                        if (myRedstoneInTemp.containsKey(redstoneChannel)) {
-                            byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
-                            if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
-                                myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
-                            }
-                        } else {
+                    byte redstoneChannel = BaseCard.getRedstoneChannel(card);
+                    //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
+                    //    updated = true;
+                    if (myRedstoneInTemp.containsKey(redstoneChannel)) {
+                        byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
+                        if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
                             myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                         }
+                    } else {
+                        myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                     }
                 }
             }
@@ -470,6 +477,7 @@ public class LaserNodeBE extends BaseLaserBE {
         return redstoneOut > 15 ? redstoneOut - 15 : redstoneOut; //>15 means strong signal
     }
 
+    private boolean wasOn;
     public void updateRedstoneOutputs() {
         //System.out.println("Checking Redstone Outputs at: " + getBlockPos());
         //myRedstoneOut.clear();
@@ -485,7 +493,23 @@ public class LaserNodeBE extends BaseLaserBE {
                     byte cardChannel = BaseCard.getRedstoneChannel(card);
                     if (redstoneNetwork.containsKey(cardChannel)) { //Not in the list, so move on
                         byte redstoneStrength = redstoneNetwork.get(cardChannel);
+                        byte redstoneTwo = redstoneNetwork.get(CardRedstone.getRedstoneChannelTwo(card));
+                        byte combined = CardRedstone.getCombined(card);
+                        byte inverse = CardRedstone.getInvert(card);
+                        //byte special = CardRedstone.getSpecialSetting(card);
                         //System.out.println("Output: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
+                        redstoneStrength = switch (combined) {
+                            case 1 -> (byte)((redstoneStrength + redstoneTwo) > 0 ? 15 : 0); //OR
+                            case 2 -> (byte)((redstoneStrength * redstoneTwo) > 0 ? 15 : 0); //AND
+                            case 3 -> (byte)(redstoneStrength > 0 ^ redstoneTwo > 0 ? 15 : 0); //XOR
+                            default -> redstoneStrength;
+                        };
+                        redstoneStrength = switch(inverse) {
+                            case 1 -> (byte)(15 - redstoneStrength); //Complementary
+                            case 2 -> (byte)(redstoneStrength > 0 ? 0 : 15); //NOT
+                            default -> redstoneStrength;
+                        };
+
                         if (redstoneStrength > 0) {
                             if (CardRedstone.getStrong(card))
                                 redstoneStrength += 15;
