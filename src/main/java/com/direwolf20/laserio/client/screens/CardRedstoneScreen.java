@@ -36,11 +36,13 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     protected byte currentMode;
     protected byte currentRedstoneChannel;
     protected boolean currentStrong;
-    protected boolean currentInvert;
+    protected byte currentInvert;
     protected boolean currentThreshold;
     protected byte currentThresholdLimit;
     protected byte currentThresholdOutput;
-    protected boolean currentBlockRedstone;
+    protected byte currentCombined;
+    protected byte currentRedstoneChannelTwo;
+    //protected byte currentSpecialSetting;
     protected final ItemStack card;
     protected Map<String, Button> buttons = new HashMap<>();
 
@@ -63,13 +65,6 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
             guiGraphics.renderTooltip(font, translatableComponents[currentMode], mouseX, mouseY);
         }
         if (currentMode == 0) {
-            Button invertButton = buttons.get("invert");
-            if (MiscTools.inBounds(invertButton.getX(), invertButton.getY(), invertButton.getWidth(), invertButton.getHeight(), mouseX, mouseY)) {
-                MutableComponent translatableComponents[] = new MutableComponent[2];
-                translatableComponents[0] = Component.translatable("screen.laserio.notinvert");
-                translatableComponents[1] = Component.translatable("screen.laserio.invert");
-                guiGraphics.renderTooltip(font, translatableComponents[currentInvert ? 1 : 0], mouseX, mouseY);
-            }
             Button thresholdToggleButton = buttons.get("thresholdtoggle");
             if (MiscTools.inBounds(thresholdToggleButton.getX(), thresholdToggleButton.getY(), thresholdToggleButton.getWidth(), thresholdToggleButton.getHeight(), mouseX, mouseY)) {
                 MutableComponent translatableComponents[] = new MutableComponent[2];
@@ -104,6 +99,29 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 translatableComponents[0] = Component.translatable("screen.laserio.weak");
                 translatableComponents[1] = Component.translatable("screen.laserio.strong");
                 guiGraphics.renderTooltip(font, translatableComponents[currentStrong ? 1 : 0], mouseX, mouseY);
+            }
+            Button invertButton = buttons.get("invert");
+            if (MiscTools.inBounds(invertButton.getX(), invertButton.getY(), invertButton.getWidth(), invertButton.getHeight(), mouseX, mouseY)) {
+                MutableComponent translatableComponents[] = new MutableComponent[3];
+                translatableComponents[0] = Component.translatable("screen.laserio.normalredstone");
+                translatableComponents[1] = Component.translatable("screen.laserio.complementary");
+                translatableComponents[2] = Component.translatable("screen.laserio.redstonenot");
+                guiGraphics.renderTooltip(font, translatableComponents[currentInvert], mouseX, mouseY);
+            }
+            Button combinedButton = buttons.get("redstonecombined");
+            if (MiscTools.inBounds(combinedButton.getX(), combinedButton.getY(), combinedButton.getWidth(), combinedButton.getHeight(), mouseX, mouseY)) {
+                MutableComponent translatableComponents[] = new MutableComponent[4];
+                translatableComponents[0] = Component.translatable("screen.laserio.notcombined");
+                translatableComponents[1] = Component.translatable("screen.laserio.redstoneor");
+                translatableComponents[2] = Component.translatable("screen.laserio.redstoneand");
+                translatableComponents[3] = Component.translatable("screen.laserio.redstonexor");
+                guiGraphics.renderTooltip(font, translatableComponents[currentCombined], mouseX, mouseY);
+            }
+            if (!(currentCombined == 0)) {
+                Button channelButton = buttons.get("channeltwo");
+                if (MiscTools.inBounds(channelButton.getX(), channelButton.getY(), channelButton.getWidth(), channelButton.getHeight(), mouseX, mouseY)) {
+                    guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.redstonechannel").append(String.valueOf(currentRedstoneChannelTwo)), mouseX, mouseY);
+                }
             }
         }
         Button channelButton = buttons.get("channel");
@@ -140,21 +158,11 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         }));
     }
 
-    public void addInvertButton() {
-        ResourceLocation[] invertTextures = new ResourceLocation[2];
-        invertTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/notinvert.png");
-        invertTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/invert.png");
-        buttons.put("invert", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, invertTextures, currentInvert ? 1 : 0, (button) -> {
-            currentInvert = !currentInvert;
-        ((ToggleButton) button).setTexturePosition(currentInvert ? 1 : 0);
-        }));
-    }
-
     public void addThresholdToggleButton() {
         ResourceLocation[] thresholdTextures = new ResourceLocation[2];
         thresholdTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/notthreshold.png");
         thresholdTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/threshold.png");
-        buttons.put("thresholdtoggle", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, thresholdTextures, currentThreshold ? 1 : 0, (button) -> {
+        buttons.put("thresholdtoggle", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, thresholdTextures, currentThreshold ? 1 : 0, (button) -> {
             currentThreshold = !currentThreshold;
             thresholdChange();
             ((ToggleButton) button).setTexturePosition(currentThreshold ? 1 : 0);
@@ -162,27 +170,58 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addThresholdLimitButton() {
-        buttons.put("thresholdlimit", new NumberButton(getGuiLeft() + 135, getGuiTop() + 25, 16, 16, currentThresholdLimit, (button) -> {
+        buttons.put("thresholdlimit", new NumberButton(getGuiLeft() + 25, getGuiTop() + 25, 16, 16, currentThresholdLimit, (button) -> {
            changeThresholdLimit(-1);
         }));
     }
 
     public void addThresholdOutputButton() {
-        buttons.put("thresholdoutput", new NumberButton(getGuiLeft() + 115, getGuiTop() + 25, 16, 16, currentThresholdOutput, (button) -> {
+        buttons.put("thresholdoutput", new NumberButton(getGuiLeft() + 45, getGuiTop() + 25, 16, 16, currentThresholdOutput, (button) -> {
             changeThresholdOutput(-1);
         }));
     }
 
-    public void addBlockRedstoneButton() {
-        ResourceLocation[] bRTextures = new ResourceLocation[2];
-        bRTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/notreadblock.png");
-        bRTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/readblock.png");
-        buttons.put("blockredstone", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, bRTextures, currentBlockRedstone ? 1 : 0, (button) -> {
-            currentBlockRedstone = !currentBlockRedstone;
-            ((ToggleButton) button).setTexturePosition(currentBlockRedstone ? 1 : 0);
+    public void addInvertButton() {
+        ResourceLocation[] invertTextures = new ResourceLocation[3];
+        invertTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonenormal.png");
+        invertTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonecomplementary.png");
+        invertTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonenot.png");
+        buttons.put("invert", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, invertTextures, currentInvert, (button) -> {
+            currentInvert = (byte) (currentInvert == 2 ? 0 : currentInvert + 1);
+            ((ToggleButton) button).setTexturePosition(currentInvert);
         }));
     }
 
+    public void addCombinedButton() {
+        ResourceLocation[] COTextures = new ResourceLocation[4];
+        COTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/notthreshold.png");
+        COTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneor.png");
+        COTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneand.png");
+        COTextures[3] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonexor.png");
+        buttons.put("redstonecombined", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, COTextures, currentCombined, (button) -> {
+        currentCombined = (byte) (currentCombined == 3 ? 0 : currentCombined + 1);
+        ((ToggleButton) button).setTexturePosition(currentCombined);
+        combinedChange();
+        }));
+    }
+
+    public void addChannelTwoButton() {
+        buttons.put("channeltwo", new ChannelButton(getGuiLeft() + 135, getGuiTop() + 25, 16, 16, currentRedstoneChannelTwo, (button) -> {
+            currentRedstoneChannelTwo = CardRedstone.nextRedstoneChannelTwo(card);
+            ((ChannelButton) button).setChannel(currentRedstoneChannelTwo);
+        }));
+    }
+    /*
+    public void addSpecialSettingButton() {
+        ResourceLocation[] SSTextures = new ResourceLocation[2];
+        SSTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png");
+        SSTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png");
+        buttons.put("specialsetting", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 45, 16, 16, SSTextures, currentSpecialSetting, (button) -> {
+            currentSpecialSetting = (byte) (currentSpecialSetting == 1 ? 0 : currentSpecialSetting + 1);
+            ((ToggleButton) button).setTexturePosition(currentSpecialSetting);
+        }));
+    }
+    */
     protected void changeThresholdLimit(int change) {
         if (Screen.hasShiftDown()) change *= 15;
         if (currentMode == 0 && currentThreshold) {
@@ -229,7 +268,9 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         currentThreshold = CardRedstone.getThreshold(card);
         currentThresholdLimit = CardRedstone.getThresholdLimit(card);
         currentThresholdOutput = CardRedstone.getThresholdOutput(card);
-        currentBlockRedstone = CardRedstone.getBlockRedstone(card);
+        currentCombined = CardRedstone.getCombined(card);
+        currentRedstoneChannelTwo = CardRedstone.getRedstoneChannelTwo(card);
+        //currentSpecialSetting = CardRedstone.getSpecialSetting(card);
         addModeButton();
         addChannelButton();
         addStrongButton();
@@ -237,7 +278,9 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         addThresholdToggleButton();
         addThresholdLimitButton();
         addThresholdOutputButton();
-        //addBlockRedstoneButton();
+        addCombinedButton();
+        addChannelTwoButton();
+        //addSpecialSettingButton();
 
         if (container.direction != -1) {
             buttons.put("return", new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
@@ -254,32 +297,37 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
 
     public void modeChange() {
         Button strongButton = buttons.get("strong");
-        Button invertButton = buttons.get("invert");
+        Button invert = buttons.get("invert");
         Button thresholdToggle = buttons.get("thresholdtoggle");
         Button thresholdLimit = buttons.get("thresholdlimit");
         Button thresholdOutput = buttons.get("thresholdoutput");
-        //Button bR = buttons.get("blockredstone");
+        Button combined = buttons.get("redstonecombined");
+        Button channeltwo = buttons.get("channeltwo");
+        //Button special = buttons.get("specialsetting");
         if (currentMode == 0) { //Input
-            if (!renderables.contains(invertButton))
-                addRenderableWidget(invertButton);
+            if (!renderables.contains(invert))
+                addRenderableWidget(invert);
             if (!renderables.contains(thresholdToggle))
                 addRenderableWidget(thresholdToggle);
-            //if (!renderables.contains(bR))
-            //    addRenderableWidget(bR);
             removeWidget(strongButton);
+            removeWidget(invert);
+            removeWidget(combined);
+            removeWidget(channeltwo);
+            //removeWidget(special);
             thresholdChange();
         } else if (currentMode == 1) { //output
             if (!renderables.contains(strongButton))
                 addRenderableWidget(strongButton);
-            if (!renderables.contains(invertButton))
-                addRenderableWidget(invertButton);
-            if (!renderables.contains(thresholdToggle))
-                addRenderableWidget(thresholdToggle);
-            removeWidget(invertButton);
+            if (!renderables.contains(invert))
+                addRenderableWidget(invert);
+            if (!renderables.contains(combined))
+                addRenderableWidget(combined);
+            //if (!renderables.contains(special))
+            //    addRenderableWidget(special);
             removeWidget(thresholdToggle);
             removeWidget(thresholdLimit);
             removeWidget(thresholdOutput);
-            //removeWidget(bR);
+            combinedChange();
         }
 
     }
@@ -295,6 +343,15 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         } else {
             removeWidget(thresholdLimit);
             removeWidget(thresholdOutput);
+        }}
+
+    public void combinedChange() {
+        Button channeltwo = buttons.get("channeltwo");
+        if (!(currentCombined == 0)) {
+            if (!renderables.contains(channeltwo))
+                addRenderableWidget(channeltwo);
+        } else {
+            removeWidget(channeltwo);
         }}
 
     @Override
@@ -353,7 +410,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void saveSettings() {
-        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong, currentInvert, currentThreshold, currentThresholdLimit, currentThresholdOutput, currentBlockRedstone));
+        PacketHandler.sendToServer(new PacketUpdateRedstoneCard(currentMode, currentRedstoneChannel, currentStrong, currentInvert, currentThreshold, currentThresholdLimit, currentThresholdOutput, currentCombined, currentRedstoneChannelTwo));
     }
 
     public void openNode() {
@@ -374,6 +431,17 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
             channelButton.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }
+        ChannelButton channelButtonTwo = ((ChannelButton) buttons.get("channeltwo"));
+        if (MiscTools.inBounds(channelButtonTwo.getX(), channelButtonTwo.getY(), channelButtonTwo.getWidth(), channelButtonTwo.getHeight(), x, y)) {
+            if (btn == 0)
+                currentRedstoneChannelTwo = CardRedstone.nextRedstoneChannelTwo(card);
+            else if (btn == 1)
+                currentRedstoneChannelTwo = CardRedstone.previousRedstoneChannelTwo(card);
+            channelButtonTwo.setChannel(currentRedstoneChannelTwo);
+            channelButtonTwo.playDownSound(Minecraft.getInstance().getSoundManager());
+            return true;
+        }
+
         NumberButton thresholdLimitButton = ((NumberButton) buttons.get("thresholdlimit"));
         if (MiscTools.inBounds(thresholdLimitButton.getX(), thresholdLimitButton.getY(), thresholdLimitButton.getWidth(), thresholdLimitButton.getHeight(), x, y)) {
             setThresholdLimit(thresholdLimitButton, btn);

@@ -21,7 +21,22 @@ import com.direwolf20.laserio.integration.mekanism.MekanismCache;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
-import com.direwolf20.laserio.util.*;
+import com.direwolf20.laserio.util.CardRender;
+import com.direwolf20.laserio.util.DimBlockPos;
+import com.direwolf20.laserio.util.ExtractorCardCache;
+import com.direwolf20.laserio.util.FluidStackKey;
+import com.direwolf20.laserio.util.InserterCardCache;
+import com.direwolf20.laserio.util.ItemHandlerUtil;
+import com.direwolf20.laserio.util.ItemStackKey;
+import com.direwolf20.laserio.util.NodeSideCache;
+import com.direwolf20.laserio.util.ParticleData;
+import com.direwolf20.laserio.util.ParticleDataFluid;
+import com.direwolf20.laserio.util.ParticleRenderData;
+import com.direwolf20.laserio.util.ParticleRenderDataFluid;
+import com.direwolf20.laserio.util.SensorCardCache;
+import com.direwolf20.laserio.util.StockerCardCache;
+import com.direwolf20.laserio.util.TransferResult;
+import com.direwolf20.laserio.util.WeakConsumerWrapper;
 import it.unimi.dsi.fastutil.bytes.Byte2BooleanMap;
 import it.unimi.dsi.fastutil.bytes.Byte2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ByteMap;
@@ -348,7 +363,6 @@ public class LaserNodeBE extends BaseLaserBE {
                     //} else {
                     redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
                     //}
-                    if (CardRedstone.getInvert(card)) {redstoneStrength = (byte)(15 - redstoneStrength);}
                     if (CardRedstone.getThreshold(card)) {
                         redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;}
 
@@ -463,6 +477,7 @@ public class LaserNodeBE extends BaseLaserBE {
         return redstoneOut > 15 ? redstoneOut - 15 : redstoneOut; //>15 means strong signal
     }
 
+    private boolean wasOn;
     public void updateRedstoneOutputs() {
         //System.out.println("Checking Redstone Outputs at: " + getBlockPos());
         //myRedstoneOut.clear();
@@ -478,7 +493,22 @@ public class LaserNodeBE extends BaseLaserBE {
                     byte cardChannel = BaseCard.getRedstoneChannel(card);
                     if (redstoneNetwork.containsKey(cardChannel)) { //Not in the list, so move on
                         byte redstoneStrength = redstoneNetwork.get(cardChannel);
+                        byte redstoneTwo = redstoneNetwork.get(CardRedstone.getRedstoneChannelTwo(card));
+                        byte combined = CardRedstone.getCombined(card);
+                        byte inverse = CardRedstone.getInvert(card);
+                        //byte special = CardRedstone.getSpecialSetting(card);
                         //System.out.println("Output: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
+                        redstoneStrength = switch (combined) {
+                            case 1 -> (byte)((redstoneStrength + redstoneTwo) > 0 ? 15 : 0); //OR
+                            case 2 -> (byte)((redstoneStrength * redstoneTwo) > 0 ? 15 : 0); //AND
+                            case 3 -> (byte)(redstoneStrength > 0 ^ redstoneTwo > 0 ? 15 : 0); //XOR
+                            default -> redstoneStrength;
+                        };
+                        redstoneStrength = switch(inverse) {
+                            case 1 -> (byte)(15 - redstoneStrength); //Complementary
+                            case 2 -> (byte)(redstoneStrength > 0 ? 0 : 15); //NOT
+                            default -> redstoneStrength;
+                        };
 
                         if (redstoneStrength > 0) {
                             if (CardRedstone.getStrong(card))
