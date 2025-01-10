@@ -250,7 +250,10 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
                 if (extractorCardCache.decrementSleep() == 0) {
                     if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overclockers) continue;
+                    if (countCardsHandled > nodeSideCache.overclockers) {
+                        extractorCardCache.externallyManaged = false;
+                        continue;
+                    }
                     if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
                         if (extractorCardCache.cardType.equals(BaseCard.CardType.ITEM)) {
                             if (stockItems(stockerCardCache))
