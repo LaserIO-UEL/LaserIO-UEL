@@ -20,7 +20,7 @@
       "type": "patchouli:text",
       "text": "All cards have a redstone mode toggle, which defaults to ignored, meaning the cards will always operate.$(br2)If set to low, the cards will only function when there is NOT a redstone signal on the redstone channel (the channel button is to the right of the redstone toggle).$(br2)On redstone high mode, the cards will only operate when there IS a redstone signal on the redstone channel."
     },
-	{
+    {
       "type": "patchouli:text",
       "text": "Some settings exist for more complex redstone needs:$(br2)$(bold)Input side$()$(br)Toggling Threshold mode will reveal two other buttons: Limit and Output.$(br2)The Limit determines when (equal or greater than) a signal will be sent on the redstone channel.$(br)The signal strength will be equal to the specified Output when activated."
     },
