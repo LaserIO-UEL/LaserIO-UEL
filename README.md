@@ -36,4 +36,4 @@ A very special thanks to:
 - Spicierspace153 for the help with some parts of the code and tips
 - Create-Powerlines devs and embeddedt for the mixin part
 - Blackalf for testing the changes and giving suggestions on how to improve the mod
-- All future contributors (we will update this as time passes)
+- All current and future contributors
