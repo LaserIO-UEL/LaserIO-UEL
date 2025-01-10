@@ -10,16 +10,17 @@ As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!
 - Chemical Cards for use with Mekanism chemicals (if Mekanism is installed)
 - Energy Cards maximum FE/operation is now configurable via config (default: 1,000,000 FE/operation)
 - Removal of standard Overclockers from Energy Cards
+- Additional features to Redstone Cards
 - Better JEI dragging integration for filtering fluids and chemicals
 - Automatic maximum extract value on Overclocker insert
 - Show particles button inside Nodes
-- Updated guide book
+- Up to date guide book
 
 # Advanced Features:
 - Optional Energy Overclocker tier(s) meant to help pack developers better gate energy transportation
 - These tiers come with: configurable names, maximum energy values (tooltips will change to reflect these values), and colors - all controllable from the config!
 - Configurable minimum ticks/operation for each Card per Overclocker amount
-- General cleanup and optimizations
+- Optimizations and bugfixes
 
 # Migration:
 Even if this fork adds a lot of new and cool features, don't worry: migration from LaserIO to LaserIO-UEL is safe!<br/>
@@ -28,7 +29,6 @@ Existing blocks and items will not disappear, for the most part (only Overclocke
 
 # Future Plans:
 - Node cloning
-- Additional features to Redstone Cards
 
 ## Credits
 A very special thanks to:
