@@ -1210,13 +1210,13 @@ public class LaserNodeBE extends BaseLaserBE {
         NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
         int countCardsHandled = 0;
         for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
+            if (extractorCardCache.remainingSleep != 1) continue;
             if (!extractorCardCache.enabled) continue;
             if (countCardsHandled > nodeSideCache.overclockers) return totalAmtSent;
             if (extractorCardCache instanceof StockerCardCache) {
                 //No-Op
             } else {
                 if (extractorCardCache.cardType.equals(BaseCard.CardType.ENERGY)) {
-                    if (extractorCardCache.remainingSleep != 1) continue;
                     int amtSent = sendReceivedEnergy(extractorCardCache, totalAmtNeeded, simulate);
                     if (amtSent > 0) {
                         countCardsHandled++;
