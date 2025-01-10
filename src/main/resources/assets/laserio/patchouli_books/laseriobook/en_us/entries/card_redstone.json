@@ -20,17 +20,17 @@
       "type": "patchouli:text",
       "text": "All cards have a redstone mode toggle, which defaults to ignored, meaning the cards will always operate.$(br2)If set to low, the cards will only function when there is NOT a redstone signal on the redstone channel (the channel button is to the right of the redstone toggle).$(br2)On redstone high mode, the cards will only operate when there IS a redstone signal on the redstone channel."
     },
-    {
+	{
       "type": "patchouli:text",
-      "text": "$(bold)Advanced Settings$()$(br)Some settings exist for more complex redstone needs. Toggling Threshold mode will reveal two other buttons: Threshold Limit and Output.$(br2)The Limit determines when (equal or greater than) the redstone channel will activate. The channels redstone strength will equal to the specified Output when activated."
+      "text": "Some settings exist for more complex redstone needs:$(br2)$(bold)Input side$()$(br)Toggling Threshold mode will reveal two other buttons: Limit and Output.$(br2)The Limit determines when (equal or greater than) a signal will be sent on the redstone channel.$(br)The signal strength will be equal to the specified Output when activated."
     },
     {
       "type": "patchouli:text",
-      "text": "Complementary takes the channel signal and emits: 15 - that. NOT is similar to Complementary but only gives off a 15 signal strength when there is none on the channel. Any signal from the channel and nothing will be emitted.$(br2)Lastly, the combination settings. These settings utilize another redstone channel to perform \"Combined\" logic with the already chosen one."
+      "text": "$(bold)Output side$()$(br)Complementary takes the channel signal and emits: 15 - that.$(br)NOT is similar to Complementary but only gives off a 15 signal strength when there is none on the channel. Any signal from the channel and nothing will be emitted.$(br2)Lastly, the 'Logic Operation' mode. These settings utilize another redstone channel to perform a boolean operation with the already chosen one.$(br2)The possible operations are documented in the following page."
     },
     {
       "type": "patchouli:text",
-      "text": "Combined mode offers three types of logic: OR, AND, XOR. OR emits a signal when either channel has power. AND only emits a signal when both channels are powered. And XOR is OR but will not emit a signal if AND is true.$(br2)The Combination settings can be combined with Complimentary and NOT for further options!"
+      "text": "Logic Operation mode offers three types of boolean operators: OR, AND, XOR.$(br2)OR emits a signal when either channel has power.$(br)AND only emits a signal when both channels are powered.$(br)XOR emits a signal when exactly one of the two channels has power.$(br2)Logic Operation settings can be combined with Complementary/NOT to get their negated version (NOR, NAND, XNOR)!"
     },
     {
       "type": "patchouli:crafting",
