@@ -6,6 +6,7 @@ import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
+import com.direwolf20.laserio.common.items.cards.CardRedstone;
 
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -163,7 +164,7 @@ public class PacketCopyPasteCard {
                         if (slotItem instanceof CardEnergy && CardEnergyContainer.SLOTS == 1) {
                             CardItemHandler cardItemHandler = CardEnergy.getInventory(slotStack);
                             existingOverclockers = cardItemHandler.getStackInSlot(0);
-                        } else {
+                        } else if (!(slotItem instanceof CardRedstone)) {
                             CardItemHandler cardItemHandler = BaseCard.getInventory(slotStack);
                             existingFilter = cardItemHandler.getStackInSlot(0);
                             existingOverclockers = cardItemHandler.getStackInSlot(1);
