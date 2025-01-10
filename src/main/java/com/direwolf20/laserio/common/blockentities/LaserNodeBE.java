@@ -172,6 +172,7 @@ public class LaserNodeBE extends BaseLaserBE {
     /** Misc Variables **/
     private boolean discoveredNodes = false; //The first time this block entity loads, it'll run discovery to refresh itself
     private boolean showParticles = true;
+    private boolean refreshedInvNodesThisTick = false;
 
     public MekanismCache mekanismCache;
 
@@ -200,7 +201,11 @@ public class LaserNodeBE extends BaseLaserBE {
             if (targetLevel == null) continue;
             this.otherNodesInNetwork.add(new DimBlockPos(targetLevel, getRelativePos(pos.blockPos)));
         }
+        if (refreshedInvNodesThisTick) {
+            return;
+        }
         refreshAllInvNodes(); //Seeing as the otherNodes list just got updated, we should refresh the InventoryNode content caches
+        refreshedInvNodesThisTick = true;
     }
 
     public void updateOverclockers() {
@@ -328,6 +333,7 @@ public class LaserNodeBE extends BaseLaserBE {
 
     public void tickServer() {
         if (!discoveredNodes) { //On world / chunk reload, lets rediscover the network, including this block's extractor cards.
+            refreshedInvNodesThisTick = false;
             discoverAllNodes();
             findMyExtractors();
             updateOverclockers();
