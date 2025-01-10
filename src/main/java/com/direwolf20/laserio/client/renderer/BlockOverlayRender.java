@@ -24,7 +24,6 @@ public class BlockOverlayRender {
 
         float scale = (be instanceof LaserConnectorBE || be instanceof LaserConnectorAdvBE) ? 0.375f : 0.625f;
 
-
         Vec3 view = mc.gameRenderer.getMainCamera().getPosition();
 
         PoseStack matrix = event.getPoseStack();

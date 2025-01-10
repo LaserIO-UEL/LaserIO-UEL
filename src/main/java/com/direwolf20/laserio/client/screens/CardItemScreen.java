@@ -745,7 +745,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         ChannelButton channelButton = ((ChannelButton) buttons.get("channel"));
-        if ((currentMode != 3) && MiscTools.inBounds(channelButton.getX(), channelButton.getY(), channelButton.getWidth(), channelButton.getHeight(), x, y)) {
+        if (currentMode != 3 && MiscTools.inBounds(channelButton.getX(), channelButton.getY(), channelButton.getWidth(), channelButton.getHeight(), x, y)) {
             if (btn == 0)
                 currentChannel = BaseCard.nextChannel(card);
             else if (btn == 1)
@@ -777,12 +777,12 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             return true;
         }
         NumberButton amountButton = ((NumberButton) buttons.get("amount"));
-        if (MiscTools.inBounds(amountButton.getX(), amountButton.getY(), amountButton.getWidth(), amountButton.getHeight(), x, y)) {
+        if (currentMode != 3 && MiscTools.inBounds(amountButton.getX(), amountButton.getY(), amountButton.getWidth(), amountButton.getHeight(), x, y)) {
             setExtract(amountButton, btn);
             return true;
         }
         NumberButton speedButton = ((NumberButton) buttons.get("speed"));
-        if (MiscTools.inBounds(speedButton.getX(), speedButton.getY(), speedButton.getWidth(), speedButton.getHeight(), x, y)) {
+        if (currentMode != 0 && MiscTools.inBounds(speedButton.getX(), speedButton.getY(), speedButton.getWidth(), speedButton.getHeight(), x, y)) {
             if (btn == 0)
                 changeTick(1);
             else if (btn == 1)
@@ -791,9 +791,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             speedButton.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }
-        if (hoveredSlot == null)
+        if (hoveredSlot == null) {
             return super.mouseClicked(x, y, btn);
-
+        }
         if (hoveredSlot instanceof FilterBasicSlot) {
             if (filter.getItem() instanceof FilterBasic) {
                 // By splitting the stack we can get air easily :) perfect removal basically

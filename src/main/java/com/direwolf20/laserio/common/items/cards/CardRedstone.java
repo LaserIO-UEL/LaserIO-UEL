@@ -40,34 +40,6 @@ public class CardRedstone extends BaseCard {
         return setTransferMode(card, (byte) (mode == 1 ? 0 : mode + 1));
     }
 
-    public static boolean getStrong(ItemStack stack) {
-        CompoundTag compound = stack.getTag();
-        if (compound == null || !compound.contains("redstonestrong")) return false;
-        return compound.getBoolean("redstonestrong");
-    }
-
-    public static boolean setStrong(ItemStack stack, boolean strong) {
-        if (!strong)
-            stack.removeTagKey("redstonestrong");
-        else
-            stack.getOrCreateTag().putBoolean("redstonestrong", strong);
-        return strong;
-    }
-
-    public static byte getInvert(ItemStack stack) {
-        CompoundTag compound = stack.getTag();
-        if (compound == null || !compound.contains("redstoneinvert")) return (byte) 0;
-        return compound.getByte("redstoneinvert");
-    }
-
-    public static byte setInvert(ItemStack stack, byte invert) {
-        if (invert == 0)
-            stack.removeTagKey("redstoneinvert");
-        else
-            stack.getOrCreateTag().putByte("redstoneinvert", invert);
-        return invert;
-    }
-
     public static boolean getThreshold(ItemStack stack) {
         CompoundTag compound = stack.getTag();
         if (compound == null || !compound.contains("redstonethreshold")) return false;
@@ -82,84 +54,112 @@ public class CardRedstone extends BaseCard {
         return threshold;
     }
 
-    public static byte setThresholdLimit(ItemStack card, byte limit) {
-        if (limit == 0)
-            card.removeTagKey("thresholdlimit");
-        else
-            card.getOrCreateTag().putByte("thresholdlimit", limit);
-        return limit;
-    }
-
     public static byte getThresholdLimit(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("thresholdlimit")) return (byte) 0;
-        return compound.getByte("thresholdlimit");
+        if (compound == null || !compound.contains("redstonethresholdlimit")) return (byte) 0;
+        return compound.getByte("redstonethresholdlimit");
     }
 
-    public static byte setThresholdOutput(ItemStack card, byte output) {
-        if (output == 15)
-            card.removeTagKey("thresholdoutput");
+    public static byte setThresholdLimit(ItemStack card, byte thresholdLimit) {
+        if (thresholdLimit == 0)
+            card.removeTagKey("redstonethresholdlimit");
         else
-            card.getOrCreateTag().putByte("thresholdoutput", output);
-        return output;
+            card.getOrCreateTag().putByte("redstonethresholdlimit", thresholdLimit);
+        return thresholdLimit;
     }
 
     public static byte getThresholdOutput(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("thresholdoutput")) return (byte) 15;
-        return compound.getByte("thresholdoutput");
+        if (compound == null || !compound.contains("redstonethresholdoutput")) return (byte) 15;
+        return compound.getByte("redstonethresholdoutput");
     }
 
-    public static byte setCombined(ItemStack card, byte combined) {
-        if (combined == 0)
-            card.removeTagKey("redstonecombined");
+    public static byte setThresholdOutput(ItemStack card, byte thresholdOutput) {
+        if (thresholdOutput == 15)
+            card.removeTagKey("redstonethresholdoutput");
         else
-            card.getOrCreateTag().putByte("redstonecombined", combined);
-        return combined;
+            card.getOrCreateTag().putByte("redstonethresholdoutput", thresholdOutput);
+        return thresholdOutput;
     }
 
-    public static byte getCombined(ItemStack card) {
-        CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonecombined")) return (byte) 0;
-        return compound.getByte("redstonecombined");
+    public static boolean getStrong(ItemStack stack) {
+        CompoundTag compound = stack.getTag();
+        if (compound == null || !compound.contains("redstonestrong")) return false;
+        return compound.getBoolean("redstonestrong");
     }
 
-    public static byte setRedstoneChannelTwo(ItemStack card, byte redstonechannel) {
-        if (redstonechannel == 0)
-            card.removeTagKey("redstonechanneltwo");
+    public static boolean setStrong(ItemStack stack, boolean strong) {
+        if (!strong)
+            stack.removeTagKey("redstonestrong");
         else
-            card.getOrCreateTag().putByte("redstonechanneltwo", redstonechannel);
-        return redstonechannel;
+            stack.getOrCreateTag().putBoolean("redstonestrong", strong);
+        return strong;
     }
 
-    public static byte getRedstoneChannelTwo(ItemStack card) {
+    public static byte getOutputMode(ItemStack stack) {
+        CompoundTag compound = stack.getTag();
+        if (compound == null || !compound.contains("redstoneoutputmode")) return (byte) 0;
+        return compound.getByte("redstoneoutputmode");
+    }
+
+    public static byte setOutputMode(ItemStack stack, byte outputMode) {
+        if (outputMode == 0)
+            stack.removeTagKey("redstoneoutputmode");
+        else
+            stack.getOrCreateTag().putByte("redstoneoutputmode", outputMode);
+        return outputMode;
+    }
+
+    public static byte getLogicOperation(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonechanneltwo")) return (byte) 0;
-        return compound.getByte("redstonechanneltwo");
+        if (compound == null || !compound.contains("redstonelogicoperation")) return (byte) 0;
+        return compound.getByte("redstonelogicoperation");
     }
 
-    public static byte nextRedstoneChannelTwo(ItemStack card) {
-        byte k = getRedstoneChannelTwo(card);
-        return setRedstoneChannelTwo(card, (byte) (k == 15 ? 0 : k + 1));
+    public static byte setLogicOperation(ItemStack card, byte logicOperation) {
+        if (logicOperation == 0)
+            card.removeTagKey("redstonelogicoperation");
+        else
+            card.getOrCreateTag().putByte("redstonelogicoperation", logicOperation);
+        return logicOperation;
     }
 
-    public static byte previousRedstoneChannelTwo(ItemStack card) {
-        byte k = getRedstoneChannelTwo(card);
-        return setRedstoneChannelTwo(card, (byte) (k == 0 ? 15 : k - 1));
+    public static byte getRedstoneChannelOperation(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("redstonechanneloperation")) return (byte) 0;
+        return compound.getByte("redstonechanneloperation");
+    }
+
+    public static byte setRedstoneChannelOperation(ItemStack card, byte logicOperationChannel) {
+        if (logicOperationChannel == 0)
+            card.removeTagKey("redstonechanneloperation");
+        else
+            card.getOrCreateTag().putByte("redstonechanneloperation", logicOperationChannel);
+        return logicOperationChannel;
+    }
+
+    public static byte nextRedstoneChannelOperation(ItemStack card) {
+        byte k = getRedstoneChannelOperation(card);
+        return setRedstoneChannelOperation(card, (byte) (k == 15 ? 0 : k + 1));
+    }
+
+    public static byte previousRedstoneChannelOperation(ItemStack card) {
+        byte k = getRedstoneChannelOperation(card);
+        return setRedstoneChannelOperation(card, (byte) (k == 0 ? 15 : k - 1));
     }
     /*
-    public static byte setSpecialSetting(ItemStack card, byte special) {
-        if (special == 0)
-            card.removeTagKey("specialsetting");
-        else
-            card.getOrCreateTag().putByte("specialsetting", special);
-        return special;
+    public static byte getSpecialFeature(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("specialfeature")) return (byte) 0;
+        return compound.getByte("specialfeature");
     }
 
-    public static byte getSpecialSetting(ItemStack card) {
-        CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("specialsetting")) return (byte) 0;
-        return compound.getByte("specialsetting");
+    public static byte setSpecialFeature(ItemStack card, byte specialFeature) {
+        if (specialFeature == 0)
+            card.removeTagKey("specialfeature");
+        else
+            card.getOrCreateTag().putByte("specialfeature", specialFeature);
+        return specialFeature;
     }
     */
 }

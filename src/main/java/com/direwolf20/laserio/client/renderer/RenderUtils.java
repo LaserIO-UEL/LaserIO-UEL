@@ -111,7 +111,6 @@ public class RenderUtils {
         float diffY = endBlock.getY() + .5f - startBlock.getY();
         float diffZ = endBlock.getZ() + .5f - startBlock.getZ();
 
-
         VertexConsumer builder;
         Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         matrixStackIn.pushPose();
@@ -259,7 +258,7 @@ public class RenderUtils {
             matrixStackIn.translate(startBlock.getX() - projectedView.x, startBlock.getY() - projectedView.y, startBlock.getZ() - projectedView.z);
 
             for (CardRender cardRender : be.cardRenders) {
-                drawLaser(builder, positionMatrix, cardRender.endLaser, cardRender.startLaser, cardRender.floatcolors[0], cardRender.floatcolors[1], cardRender.floatcolors[2], 1f, 0.0125f, v, v + cardRender.diffY * 1.5, be);
+                drawLaser(builder, positionMatrix, cardRender.endLaser, cardRender.startLaser, cardRender.floatColors[0], cardRender.floatColors[1], cardRender.floatColors[2], 1f, 0.0125f, v, v + cardRender.diffY * 1.5, be);
             }
             matrixStackIn.popPose();
         }
@@ -332,7 +331,6 @@ public class RenderUtils {
             long gameTime = level.getGameTime();
             double v = gameTime * 0.04;
 
-
             BlockPos startBlock = be.getBlockPos();
 
             matrixStackIn.pushPose();
@@ -397,7 +395,6 @@ public class RenderUtils {
         matrixStackIn.pushPose();
         Matrix4f positionMatrix = matrixStackIn.last().pose();
         matrixStackIn.translate(startBlock.getX() - projectedView.x, startBlock.getY() - projectedView.y, startBlock.getZ() - projectedView.z);
-
 
         builder = buffer.getBuffer(MyRenderType.LASER_MAIN_BEAM);
         for (Direction direction : Direction.values()) {

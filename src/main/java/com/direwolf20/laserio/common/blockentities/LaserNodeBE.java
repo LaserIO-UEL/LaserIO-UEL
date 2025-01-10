@@ -115,15 +115,12 @@ public class LaserNodeBE extends BaseLaserBE {
 
     /** BE and ItemHandler used for checking if a note/container is valid **/
     private record LaserNodeItemHandler(LaserNodeBE be, IItemHandler handler) {
-
     }
 
     private record LaserNodeFluidHandler(LaserNodeBE be, IFluidHandler handler) {
-
     }
 
     private record LaserNodeEnergyHandler(LaserNodeBE be, IEnergyStorage handler) {
-
     }
 
     public Map<ExtractorCardCache, Integer> roundRobinMap = new Object2IntOpenHashMap<>();
@@ -349,34 +346,30 @@ public class LaserNodeBE extends BaseLaserBE {
         //System.out.println("Checking redstone at: " + getBlockPos() + ", Gametime: " + level.getGameTime());
         //int myRedstoneCount = myRedstoneIn.size();
         //myRedstoneIn.clear();
-        assert level != null;
         Byte2ByteMap myRedstoneInTemp = new Byte2ByteOpenHashMap();
         boolean updated = false;
         for (Direction direction : Direction.values()) {
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
             for (int slot = 0; slot < LaserNodeContainer.CARDSLOTS; slot++) {
                 ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
-                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) {//Redstone mode and input mode
-                    int redstoneStrength;
-                    //if (CardRedstone.getBlockRedstone(card)) {
-                    //    redstoneStrength = level.getBlockState(getBlockPos().relative(direction)).getAnalogOutputSignal(level, getBlockPos().relative(direction));
-                    //} else {
-                    redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
-                    //}
+                if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and input mode
+                    int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
                     if (CardRedstone.getThreshold(card)) {
-                        redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;}
-
+                        redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;
+                    }
                     //System.out.println("Input: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
-                    byte redstoneChannel = BaseCard.getRedstoneChannel(card);
-                    //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
-                    //    updated = true;
-                    if (myRedstoneInTemp.containsKey(redstoneChannel)) {
-                        byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
-                        if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
+                    if (redstoneStrength > 0) {
+                        byte redstoneChannel = BaseCard.getRedstoneChannel(card);
+                        //if (updateMyRedstoneIn(redstoneChannel, (byte) redstoneStrength))
+                        //    updated = true;
+                        if (myRedstoneInTemp.containsKey(redstoneChannel)) {
+                            byte existingRedstoneStrength = myRedstoneInTemp.get(redstoneChannel);
+                            if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
+                                myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
+                            }
+                        } else {
                             myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                         }
-                    } else {
-                        myRedstoneInTemp.put(redstoneChannel, (byte) redstoneStrength);
                     }
                 }
             }
@@ -394,7 +387,7 @@ public class LaserNodeBE extends BaseLaserBE {
             notifyOtherNodesOfChange();
     }
 
-    /** Visits all the notes in the network, and refreshes this redstone network cache from theirs **/
+    /** Visits all the nodes in the network, and refreshes this redstone network cache from theirs **/
     public void refreshRedstoneNetwork() {
         //System.out.println("Updating Redstone Network at: " + getBlockPos() + ", Gametime: " + level.getGameTime());
         redstoneNetwork.clear();
@@ -420,8 +413,9 @@ public class LaserNodeBE extends BaseLaserBE {
             if (inserterCardCache.be.getBlockPos().equals(getBlockPos())) {
                 boolean tempEnabled = inserterCardCache.enabled;
                 inserterCardCache.setEnabled();
-                if (tempEnabled != inserterCardCache.enabled)
+                if (tempEnabled != inserterCardCache.enabled) {
                     inserterUpdated = true;
+                }
             }
         }
         for (Direction direction : Direction.values()) {
@@ -429,8 +423,9 @@ public class LaserNodeBE extends BaseLaserBE {
             for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
                 boolean tempEnabled = extractorCardCache.enabled;
                 extractorCardCache.setEnabled();
-                if (tempEnabled != extractorCardCache.enabled)
+                if (tempEnabled != extractorCardCache.enabled) {
                     extractorUpdated = true;
+                }
             }
         }
         //if (inserterUpdated || extractorUpdated)
@@ -477,7 +472,6 @@ public class LaserNodeBE extends BaseLaserBE {
         return redstoneOut > 15 ? redstoneOut - 15 : redstoneOut; //>15 means strong signal
     }
 
-    private boolean wasOn;
     public void updateRedstoneOutputs() {
         //System.out.println("Checking Redstone Outputs at: " + getBlockPos());
         //myRedstoneOut.clear();
@@ -491,38 +485,36 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 1) { //Redstone mode and Output mode
                     redstoneCardSides.put((byte) direction.ordinal(), true);
                     byte cardChannel = BaseCard.getRedstoneChannel(card);
-                    if (redstoneNetwork.containsKey(cardChannel)) { //Not in the list, so move on
+                    byte logicOperationChannel = CardRedstone.getRedstoneChannelOperation(card);
+                    byte logicOperation = CardRedstone.getLogicOperation(card);
+                    byte outputMode = CardRedstone.getOutputMode(card);
+                    if (redstoneNetwork.containsKey(cardChannel) || (logicOperation != 0 && redstoneNetwork.containsKey(logicOperationChannel)) || outputMode != 0) {
                         byte redstoneStrength = redstoneNetwork.get(cardChannel);
-                        byte redstoneTwo = redstoneNetwork.get(CardRedstone.getRedstoneChannelTwo(card));
-                        byte combined = CardRedstone.getCombined(card);
-                        byte inverse = CardRedstone.getInvert(card);
-                        //byte special = CardRedstone.getSpecialSetting(card);
-                        //System.out.println("Output: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
-                        redstoneStrength = switch (combined) {
-                            case 1 -> (byte)((redstoneStrength + redstoneTwo) > 0 ? 15 : 0); //OR
-                            case 2 -> (byte)((redstoneStrength * redstoneTwo) > 0 ? 15 : 0); //AND
-                            case 3 -> (byte)(redstoneStrength > 0 ^ redstoneTwo > 0 ? 15 : 0); //XOR
+                        byte logicOperationRedstoneStrength = redstoneNetwork.get(logicOperationChannel);
+                        redstoneStrength = switch(logicOperation) {
+                            case 1 -> (byte) (((redstoneStrength + logicOperationRedstoneStrength) > 0) ? 15 : 0); //OR
+                            case 2 -> (byte) (((redstoneStrength * logicOperationRedstoneStrength) > 0) ? 15 : 0); //AND
+                            case 3 -> (byte) (((redstoneStrength > 0) ^ (logicOperationRedstoneStrength > 0)) ? 15 : 0); //XOR
                             default -> redstoneStrength;
                         };
-                        redstoneStrength = switch(inverse) {
-                            case 1 -> (byte)(15 - redstoneStrength); //Complementary
-                            case 2 -> (byte)(redstoneStrength > 0 ? 0 : 15); //NOT
+                        redstoneStrength = switch(outputMode) {
+                            case 1 -> (byte) (15 - redstoneStrength); //Complementary
+                            case 2 -> (byte) ((redstoneStrength > 0) ? 0 : 15); //NOT
                             default -> redstoneStrength;
                         };
-
                         if (redstoneStrength > 0) {
-                            if (CardRedstone.getStrong(card))
+                            if (CardRedstone.getStrong(card)) {
                                 redstoneStrength += 15;
-
+                            }
                             if (myRedstoneOutTemp.containsKey(side)) {
                                 byte existingRedstoneStrength = myRedstoneOutTemp.get(side);
-                                if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger.
+                                if (redstoneStrength > existingRedstoneStrength) { //Only update the network if the new strength is bigger
                                     myRedstoneOutTemp.put(side, redstoneStrength);
                                 }
                             } else {
                                 myRedstoneOutTemp.put(side, redstoneStrength);
                             }
-                            //if (updateMyRedstoneOut((byte) direction.ordinal(), redstoneStrength)) ;
+                            //if (updateMyRedstoneOut((byte) direction.ordinal(), redstoneStrength));
                         }
                     }
                 } else if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and Output mode
@@ -530,19 +522,20 @@ public class LaserNodeBE extends BaseLaserBE {
                 }
             }
             if (firstTimeNodeLoaded || !Objects.equals(myRedstoneOutTemp.get(side), myRedstoneOut.get(side))) {
-                if (myRedstoneOutTemp.containsKey(side))
+                if (myRedstoneOutTemp.containsKey(side)) {
                     myRedstoneOut.put(side, myRedstoneOutTemp.get(side));
-                else
+                } else {
                     myRedstoneOut.remove(side);
+                }
                 level.neighborChanged(getBlockPos().relative(direction), this.getBlockState().getBlock(), getBlockPos());
                 level.updateNeighborsAtExceptFromFacing(getBlockPos().relative(direction), this.getBlockState().getBlock(), direction.getOpposite());
-
             }
         }
         BlockState state = this.getBlockState();
         state.updateNeighbourShapes(level, getBlockPos(), UPDATE_ALL);
-        if (firstTimeNodeLoaded)
+        if (firstTimeNodeLoaded) {
             firstTimeNodeLoaded = false;
+        }
     }
 
     public void sortInserters() {
@@ -688,8 +681,9 @@ public class LaserNodeBE extends BaseLaserBE {
         int amtStillNeeded = amtNeeded;
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeItemHandler laserNodeItemHandler = getLaserNodeHandlerItem(inserterCardCache);
-            if (laserNodeItemHandler == null) continue;
-
+            if (laserNodeItemHandler == null) {
+                continue;
+            }
             TransferResult thisResult = ItemHandlerUtil.insertItemWithSlots(laserNodeItemHandler.be, laserNodeItemHandler.handler, extractStack, 0, true, extractorCardCache.isCompareNBT, true, inserterCardCache); //Test!!
             if (extractorCardCache.roundRobin == 2 && thisResult.getTotalItemCounts() < amtStillNeeded) {
                 return false;
@@ -703,20 +697,23 @@ public class LaserNodeBE extends BaseLaserBE {
             insertResults.remainingStack = ItemStack.EMPTY; //We don't really care about this
             int amtFit = thisResult.getTotalItemCounts(); //How many items fit (Above)
             amtStillNeeded -= amtFit;
-            if (amtStillNeeded == 0)
+            if (amtStillNeeded == 0) {
                 break;
+            }
             extractStack.setCount(amtStillNeeded); //Modify the stack size rather than .copy
         }
 
-        if (amtStillNeeded == amtNeeded || (amtStillNeeded != 0 && exactMode))
+        if (amtStillNeeded == amtNeeded || (amtStillNeeded != 0 && exactMode)) {
             return false; //If we are in exact mode, make sure we fit exactly what we need, otherwise see if we fit anything
+        }
         //If we get to this point, it means we can insert all the itemstacks we wanted to, so lets do it for realsies
         extractStack.setCount(amtNeeded - amtStillNeeded); //Set back to how many we actually need
         for (TransferResult.Result result : insertResults.results) {
             ItemStack tempStack = extractStack.split(result.itemStack.getCount());
             ItemStack returnedStack = result.insertHandler.insertItem(result.insertSlot, tempStack, true);
-            if (!returnedStack.isEmpty())
+            if (!returnedStack.isEmpty()) {
                 break; //We tested all these, so this should be empty, unless something weird happened
+            }
             int amtToExtract = tempStack.getCount();
             ItemStack extractedStack;
             for (TransferResult.Result extractResult : extractResults.results) {
@@ -730,12 +727,13 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (amtToExtract == 0) break;
             }
             result.insertHandler.insertItem(result.insertSlot, tempStack, false);
-            if (result.inserterCardCache != null)
+            if (result.inserterCardCache != null) {
                 drawParticles(tempStack, extractorCardCache.direction, this, result.toBE, result.inserterCardCache.direction, extractorCardCache.cardSlot, result.inserterCardCache.cardSlot);
+            }
         }
-
-        if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
-
+        if (extractorCardCache.roundRobin != 0) {
+            getNextRR(extractorCardCache, inserterCardCaches);
+        }
         return true;
     }
 
@@ -1019,7 +1017,6 @@ public class LaserNodeBE extends BaseLaserBE {
             if (stackInSlot.isEmpty() || !(extractorCardCache.isStackValidForCard(stackInSlot))) continue;
             ItemStack extractStack = stackInSlot.copy();
             extractStack.setCount(extractorCardCache.extractAmt);
-
             if (extractorCardCache.filterCard.getItem() instanceof FilterCount) { //If this is a count filter, only try to extract up to the amount in the filter
                 int filterCount = extractorCardCache.getFilterAmt(extractStack);
                 if (filterCount <= 0) continue; //This should never happen in theory...
@@ -1137,7 +1134,9 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (extractorCardCache.roundRobin == 2) {
                     return false;
                 }
-                if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
+                if (extractorCardCache.roundRobin != 0) {
+                    getNextRR(extractorCardCache, inserterCardCaches);
+                }
                 continue;
             }
             extractStack.setAmount(amtFit);
@@ -1147,11 +1146,13 @@ public class LaserNodeBE extends BaseLaserBE {
             totalAmtNeeded -= drainedStack.getAmount(); //Keep track of how much we have left to insert
             amtToExtract = totalAmtNeeded;
             if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
-            if (totalAmtNeeded == 0) break;
+            if (totalAmtNeeded == 0) {
+                break;
+            }
         }
-
-        if (totalAmtNeeded > 0) return false;
-
+        if (totalAmtNeeded > 0) {
+            return false;
+        }
         for (Map.Entry<InserterCardCache, Integer> entry : insertHandlers.entrySet()) {
             InserterCardCache inserterCardCache = entry.getKey();
             LaserNodeFluidHandler laserNodeFluidHandler = getLaserNodeHandlerFluid(inserterCardCache);
@@ -1161,7 +1162,6 @@ public class LaserNodeBE extends BaseLaserBE {
             handler.fill(drainedStack, IFluidHandler.FluidAction.EXECUTE);
             drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
-
         return true;
     }
 
@@ -1178,7 +1178,6 @@ public class LaserNodeBE extends BaseLaserBE {
             if (fluidStack.isEmpty() || !extractorCardCache.isStackValidForCard(fluidStack)) continue;
             FluidStack extractStack = fluidStack.copy();
             extractStack.setAmount(extractorCardCache.extractAmt);
-
             if (extractorCardCache.filterCard.getItem() instanceof FilterCount) { //If this is a count filter, only try to extract up to the amount in the filter
                 int filterCount = extractorCardCache.getFilterAmt(extractStack);
                 if (filterCount <= 0) continue; //This should never happen in theory...
@@ -1188,7 +1187,6 @@ public class LaserNodeBE extends BaseLaserBE {
                 int amtRemaining = Math.min(extractStack.getAmount(), amtAllowedToRemove);
                 extractStack.setAmount(amtRemaining);
             }
-
             if (extractorCardCache.exact) {
                 if (extractFluidStackExact(extractorCardCache, adjacentTank, extractStack))
                     return true;
@@ -1196,8 +1194,6 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (extractFluidStack(extractorCardCache, adjacentTank, extractStack))
                     return true;
             }
-
-
         }
         return false;
     }
@@ -1327,8 +1323,9 @@ public class LaserNodeBE extends BaseLaserBE {
     public boolean canAnyFluidFiltersFit(IFluidHandler adjacentTank, StockerCardCache stockerCardCache) {
         for (FluidStack fluidStack : stockerCardCache.getFilteredFluids()) {
             int amtFit = adjacentTank.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
-            if (amtFit > 0)
+            if (amtFit > 0) {
                 return true;
+            }
         }
         return false;
     }
@@ -1345,8 +1342,9 @@ public class LaserNodeBE extends BaseLaserBE {
             if (amtHad > itemStack.getCount()) { //if we have enough, move onto the next stack after removing this one from the list
                 ItemStack extractStack = itemStack.copy();
                 extractStack.setCount(Math.min(amtHad - itemStack.getCount(), stockerCardCache.extractAmt));
-                if (extractItem(stockerCardCache, stockerInventory, extractStack))
+                if (extractItem(stockerCardCache, stockerInventory, extractStack)) {
                     return true;
+                }
             }
         }
         return false;
@@ -1359,13 +1357,15 @@ public class LaserNodeBE extends BaseLaserBE {
             int amtHad = 0;
             for (int tank = 0; tank < stockerTank.getTanks(); tank++) { //Loop through all the tanks
                 FluidStack stackInTank = stockerTank.getFluidInTank(tank);
-                if (stackInTank.isFluidEqual(fluidStack))
+                if (stackInTank.isFluidEqual(fluidStack)) {
                     amtHad += stackInTank.getAmount();
+                }
             }
             if (amtHad > desiredAmt) { //If we have too much of this fluid, remove the difference.
                 fluidStack.setAmount(Math.min(amtHad - desiredAmt, stockerCardCache.extractAmt));
-                if (extractFluidStack(stockerCardCache, stockerTank, fluidStack))
+                if (extractFluidStack(stockerCardCache, stockerTank, fluidStack)) {
                     return true;
+                }
             }
         }
         return false;
@@ -1373,7 +1373,9 @@ public class LaserNodeBE extends BaseLaserBE {
 
     public boolean regulateEnergyStocker(StockerCardCache stockerCardCache, IEnergyStorage stockerTank) {
         int desired = (int) (stockerTank.getMaxEnergyStored() * ((float) stockerCardCache.insertLimit / 100));
-        if (desired >= stockerTank.getEnergyStored()) return false;
+        if (desired >= stockerTank.getEnergyStored()) {
+            return false;
+        }
         int overFlow = Math.min(stockerCardCache.extractAmt, stockerTank.getEnergyStored() - desired);
         return extractEnergy(stockerCardCache, stockerTank, overFlow);
     }
@@ -1386,10 +1388,10 @@ public class LaserNodeBE extends BaseLaserBE {
         Optional<IEnergyStorage> adjacentEnergyOptional = getAttachedEnergyTank(stockerCardCache.direction, stockerCardCache.sneaky).resolve();
         if (adjacentEnergyOptional.isEmpty()) return false;
         IEnergyStorage adjacentEnergy = adjacentEnergyOptional.get();
-
         if (stockerCardCache.regulate) {
-            if (regulateEnergyStocker(stockerCardCache, adjacentEnergy))
+            if (regulateEnergyStocker(stockerCardCache, adjacentEnergy)) {
                 return true;
+            }
         }
         int desired = (int) (adjacentEnergy.getMaxEnergyStored() * ((float) stockerCardCache.insertLimit / 100));
         if (adjacentEnergy.getEnergyStored() >= desired) {
@@ -2314,56 +2316,68 @@ public class LaserNodeBE extends BaseLaserBE {
         this.cardRenders.clear();
         redstoneCardSides.clear();
         for (Direction direction : Direction.values()) {
-            IItemHandler h = getCapability(ForgeCapabilities.ITEM_HANDLER, direction).orElse(new ItemStackHandler(0));
-            for (int slot = 0; slot < h.getSlots(); slot++) {
-                ItemStack card = h.getStackInSlot(slot);
-                if (!(card.getItem() instanceof BaseCard)) continue;
-                byte redstoneMode = BaseCard.getRedstoneMode(card);
-                if (card.getItem() instanceof CardRedstone) redstoneMode = 2;
-                byte redstoneChannel = BaseCard.getRedstoneChannel(card);
+            IItemHandler itemHandler = getCapability(ForgeCapabilities.ITEM_HANDLER, direction).orElse(new ItemStackHandler(0));
+            for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                ItemStack card = itemHandler.getStackInSlot(slot);
+                Item cardItem = card.getItem();
+                if (!(cardItem instanceof BaseCard)) {
+                    continue;
+                }
                 boolean enabled;
-                if (redstoneMode == 0 || BaseCard.getNamedTransferMode(card).equals(BaseCard.TransferMode.SENSOR)) { //Sensors are always enabled
-                    enabled = true;
-                } else {
-                    byte strength = getRedstoneChannelStrength(redstoneChannel);
-                    if (strength > 0 && redstoneMode == 1) {
-                        enabled = false;
-                    } else if (strength == 0 && redstoneMode == 2) {
-                        enabled = false;
+                if (cardItem instanceof CardRedstone) {
+                    byte channelStrength = getRedstoneChannelStrength(BaseCard.getRedstoneChannel(card));
+                    if (BaseCard.getTransferMode(card) == 0) {
+                        enabled = (channelStrength >= (CardRedstone.getThreshold(card) ? CardRedstone.getThresholdLimit(card) : 1));
                     } else {
+                        byte logicOperationChannelStrength = redstoneNetwork.get(CardRedstone.getRedstoneChannelOperation(card));
+                        enabled = switch(CardRedstone.getLogicOperation(card)) {
+                            case 1 -> ((channelStrength + logicOperationChannelStrength) > 0); //OR
+                            case 2 -> ((channelStrength * logicOperationChannelStrength) > 0); //AND
+                            case 3 -> ((channelStrength > 0) ^ (logicOperationChannelStrength > 0)); //XOR
+                            default -> (channelStrength > 0);
+                        };
+                        if (CardRedstone.getOutputMode(card) != 0) {
+                            enabled = !enabled; //Complementary or NOT
+                        }
+                    }
+                } else {
+                    byte redstoneMode = BaseCard.getRedstoneMode(card);
+                    if (redstoneMode == 0 || BaseCard.getNamedTransferMode(card).equals(BaseCard.TransferMode.SENSOR)) { //Sensors are always enabled
                         enabled = true;
+                    } else {
+                        byte channelStrength = getRedstoneChannelStrength(BaseCard.getRedstoneChannel(card));
+                        if (channelStrength > 0 && redstoneMode == 1) {
+                            enabled = false;
+                        } else if (channelStrength == 0 && redstoneMode == 2) {
+                            enabled = false;
+                        } else {
+                            enabled = true;
+                        }
                     }
                 }
-
-                if (card.getItem() instanceof CardItem) {
-                    if (getAttachedInventoryNoCache(direction, BaseCard.getSneaky(card)).equals(LazyOptional.empty()))
+                if (cardItem instanceof CardItem) {
+                    if (!getAttachedInventoryNoCache(direction, BaseCard.getSneaky(card)).isPresent()) {
                         continue;
-
+                    }
                     cardRenders.add(new CardRender(direction, slot, card, getBlockPos(), level, enabled));
-                } else if (card.getItem() instanceof CardFluid) {
-                    if (getAttachedFluidTankNoCache(direction, BaseCard.getSneaky(card)).equals(LazyOptional.empty()))
+                } else if (cardItem instanceof CardFluid) {
+                    if (!getAttachedFluidTankNoCache(direction, BaseCard.getSneaky(card)).isPresent()) {
                         continue;
-
+                    }
                     cardRenders.add(new CardRender(direction, slot, card, getBlockPos(), level, enabled));
-                } else if (card.getItem() instanceof CardEnergy) {
-                    Optional<IEnergyStorage> lazyEnergyStorage = getAttachedEnergyTankNoCache(direction, BaseCard.getSneaky(card)).resolve();
-                    if (lazyEnergyStorage.isEmpty())
+                } else if (cardItem instanceof CardEnergy) {
+                    if (!getAttachedEnergyTankNoCache(direction, BaseCard.getSneaky(card)).isPresent()) {
                         continue;
-                    //IEnergyStorage energyStorage = lazyEnergyStorage.get();
-                    /*if (BaseCard.getTransferMode(card) == 1) { //Extract
-                        if (energyStorage.canExtract())
-                            cardRenders.add(new CardRender(direction, slot, card, getBlockPos()));
-                    } else { //Insert/Stock
-                        if (energyStorage.canReceive())*/
+                    }
                     cardRenders.add(new CardRender(direction, slot, card, getBlockPos(), level, enabled));
-                    //}
                 } else if (card.getItem() instanceof CardRedstone) {
                     redstoneCardSides.put((byte) direction.ordinal(), true);
                     cardRenders.add(new CardRender(direction, slot, card, getBlockPos(), level, enabled));
                 } else if (card.getItem() instanceof CardChemical) {
                     Map<ChemicalType, LazyOptional<IChemicalHandler<?, ?>>> chemicalHandlers = mekanismCache.getAttachedChemicalTanksNoCache(direction, BaseCard.getSneaky(card));
-                    if (chemicalHandlers == null || chemicalHandlers.isEmpty())
+                    if (chemicalHandlers == null || chemicalHandlers.isEmpty()) {
                         continue;
+                    }
                     cardRenders.add(new CardRender(direction, slot, card, getBlockPos(), level, enabled));
                 }
             }
