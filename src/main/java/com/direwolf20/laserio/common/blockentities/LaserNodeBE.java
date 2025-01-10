@@ -21,6 +21,7 @@ import com.direwolf20.laserio.integration.mekanism.MekanismCache;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
+import com.direwolf20.laserio.util.BaseCardCache;
 import com.direwolf20.laserio.util.CardRender;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.ExtractorCardCache;
@@ -165,7 +166,6 @@ public class LaserNodeBE extends BaseLaserBE {
     public boolean redstoneRefreshed = false;
     public boolean firstTimeNodeLoaded = true; //Redstone needs to be refreshed first time node loads into the world
 
-
     /** Misc Variables **/
     private boolean discoveredNodes = false; //The first time this block entity loads, it'll run discovery to refresh itself
     private boolean showParticles = true;
@@ -180,8 +180,8 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         for (Direction direction : Direction.values()) {
             final int j = direction.ordinal();
-            com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler tempHandler = new com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler(LaserNodeContainer.SLOTS, this);
-            nodeSideCaches[j] = new NodeSideCache(tempHandler, LazyOptional.of(() -> tempHandler), 0);
+            com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler itemHandler = new com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler(LaserNodeContainer.SLOTS, this);
+            nodeSideCaches[j] = new NodeSideCache(itemHandler, new LaserEnergyStorage(direction), 0);
         }
     }
 
@@ -210,10 +210,11 @@ public class LaserNodeBE extends BaseLaserBE {
             int slot = 9; //The Overclockers Slot
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
             ItemStack overclockerStack = nodeSideCache.itemHandler.getStackInSlot(slot);
-            if (overclockerStack.isEmpty())
-                nodeSideCache.overClocker = 0;
+            if (overclockerStack.isEmpty()) {
+                nodeSideCache.overclockers = 0;
+            }
             if (overclockerStack.getItem() instanceof OverclockerNode) {
-                nodeSideCache.overClocker = overclockerStack.getCount();
+                nodeSideCache.overclockers = overclockerStack.getCount();
             }
         }
     }
@@ -249,7 +250,7 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
                 if (extractorCardCache.decrementSleep() == 0) {
                     if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overClocker) continue;
+                    if (countCardsHandled > nodeSideCache.overclockers) continue;
                     if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
                         if (extractorCardCache.cardType.equals(BaseCard.CardType.ITEM)) {
                             if (stockItems(stockerCardCache))
@@ -272,8 +273,10 @@ public class LaserNodeBE extends BaseLaserBE {
                             if (sendFluids(extractorCardCache))
                                 countCardsHandled++;
                         } else if (extractorCardCache.cardType.equals(BaseCard.CardType.ENERGY)) {
-                            if (sendEnergy(extractorCardCache))
+                            if (sendEnergy(extractorCardCache)) {
                                 countCardsHandled++;
+                                extractorCardCache.externallyManaged = false;
+                            }
                         } else if (extractorCardCache.cardType.equals(BaseCard.CardType.CHEMICAL)) {
                             if (mekanismCache.sendChemicals(extractorCardCache))
                                 countCardsHandled++;
@@ -297,7 +300,7 @@ public class LaserNodeBE extends BaseLaserBE {
                     continue; //Don't even try to operate on non-sensor cards
                 if (extractorCardCache.decrementSleep() == 0) {
                     if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overClocker) continue;
+                    if (countCardsHandled > nodeSideCache.overclockers) continue;
                     if (extractorCardCache instanceof SensorCardCache sensorCardCache) {
                         if (extractorCardCache.cardType.equals(BaseCard.CardType.ITEM)) {
                             if (senseItems(sensorCardCache))
@@ -426,6 +429,7 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         for (Direction direction : Direction.values()) {
             NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
+            nodeSideCache.invalidateEnergy();
             for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
                 boolean tempEnabled = extractorCardCache.enabled;
                 extractorCardCache.setEnabled();
@@ -1032,8 +1036,9 @@ public class LaserNodeBE extends BaseLaserBE {
                 int amtRemaining = Math.min(extractStack.getCount(), amtAllowedToRemove);
                 extractStack.setCount(amtRemaining);
             }
-            if (extractItem(extractorCardCache, adjacentInventory, extractStack))
+            if (extractItem(extractorCardCache, adjacentInventory, extractStack)) {
                 return true;
+            }
         }
         return false;
     }
@@ -1048,12 +1053,10 @@ public class LaserNodeBE extends BaseLaserBE {
             roundRobin = getRR(extractorCardCache);
             inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
         }
-
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeFluidHandler laserNodeFluidHandler = getLaserNodeHandlerFluid(inserterCardCache);
             if (laserNodeFluidHandler == null) continue;
             IFluidHandler handler = laserNodeFluidHandler.handler;
-
             if (inserterCardCache.filterCard.getItem() instanceof FilterCount) {
                 int filterCount = inserterCardCache.getFilterAmt(extractStack);
                 for (int tank = 0; tank < handler.getTanks(); tank++) {
@@ -1092,26 +1095,21 @@ public class LaserNodeBE extends BaseLaserBE {
             if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
             if (totalAmtNeeded == 0) return true;
         }
-
         return foundAnything;
     }
 
     public boolean extractFluidStackExact(ExtractorCardCache extractorCardCache, IFluidHandler fromInventory, FluidStack extractStack) {
         int totalAmtNeeded = extractStack.getAmount();
         int amtToExtract = extractStack.getAmount();
-
         FluidStack testDrain = fromInventory.drain(extractStack, IFluidHandler.FluidAction.SIMULATE);
         if (testDrain.getAmount() < totalAmtNeeded) return false; //If we don't have enough in the extractTank we can't pull out this exact amount!
         List<InserterCardCache> inserterCardCaches = getPossibleInserters(extractorCardCache, extractStack);
         int roundRobin = -1;
-
         if (extractorCardCache.roundRobin != 0) {
             roundRobin = getRR(extractorCardCache);
             inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
         }
-
         Map<InserterCardCache, Integer> insertHandlers = new Object2IntOpenHashMap<>();
-
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeFluidHandler laserNodeFluidHandler = getLaserNodeHandlerFluid(inserterCardCache);
             if (laserNodeFluidHandler == null) continue;
@@ -1194,14 +1192,87 @@ public class LaserNodeBE extends BaseLaserBE {
                 extractStack.setAmount(amtRemaining);
             }
             if (extractorCardCache.exact) {
-                if (extractFluidStackExact(extractorCardCache, adjacentTank, extractStack))
+                if (extractFluidStackExact(extractorCardCache, adjacentTank, extractStack)) {
                     return true;
+                }
             } else {
-                if (extractFluidStack(extractorCardCache, adjacentTank, extractStack))
+                if (extractFluidStack(extractorCardCache, adjacentTank, extractStack)) {
                     return true;
+                }
             }
         }
         return false;
+    }
+
+    public int receiveEnergy(Direction direction, int receiveAmt, boolean simulate) {
+        int totalAmtNeeded = receiveAmt;
+        int totalAmtSent = 0;
+        NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
+        int countCardsHandled = 0;
+        for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
+            if (!extractorCardCache.enabled) continue;
+            if (countCardsHandled > nodeSideCache.overclockers) return totalAmtSent;
+            if (extractorCardCache instanceof StockerCardCache) {
+                //No-Op
+            } else {
+                if (extractorCardCache.cardType.equals(BaseCard.CardType.ENERGY)) {
+                    if (extractorCardCache.remainingSleep != 1) continue;
+                    int amtSent = sendReceivedEnergy(extractorCardCache, totalAmtNeeded, simulate);
+                    if (amtSent > 0) {
+                        countCardsHandled++;
+                        extractorCardCache.externallyManaged = true;
+                    }
+                    totalAmtNeeded -= amtSent;
+                    totalAmtSent += amtSent;
+                    if (totalAmtNeeded <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return totalAmtSent;
+    }
+
+    public int sendReceivedEnergy(ExtractorCardCache extractorCardCache, int receiveAmt, boolean simulate) {
+        int totalAmtNeeded = Math.min(extractorCardCache.extractAmt, receiveAmt);
+        int totalFit = 0;
+        List<InserterCardCache> inserterCardCaches = getChannelMatchInserters(extractorCardCache);
+        int roundRobin = -1;
+        if (extractorCardCache.roundRobin != 0) {
+            roundRobin = getRR(extractorCardCache);
+            inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
+        }
+        for (InserterCardCache inserterCardCache : inserterCardCaches) {
+            LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
+            if (laserNodeEnergyHandler == null) continue;
+            BlockEntity targetBE = level.getBlockEntity(laserNodeEnergyHandler.be.getBlockPos().relative(inserterCardCache.direction));
+            if (targetBE instanceof LaserNodeBE)
+                continue; //Don't let laser nodes insert into other laser nodes in this way.
+            IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
+            int desired;
+            if (inserterCardCache.insertLimit != 100)
+                desired = (int) (energyStorage.getMaxEnergyStored() * ((float) inserterCardCache.insertLimit / 100)) - energyStorage.getEnergyStored();
+            else
+                desired = receiveAmt;
+            if (desired <= 0) continue;
+            int amtToTry = Math.min(desired, totalAmtNeeded);
+            int amtFit = energyStorage.receiveEnergy(amtToTry, true); //Simulate Insert Energy
+            if (amtFit == 0) { //Next inserter if nothing went in -- return false if enforcing round robin
+                if (extractorCardCache.roundRobin == 2) {
+                    return totalFit;
+                }
+                if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
+                continue;
+            }
+            totalAmtNeeded -= amtFit; //If we removed 100 and wanted to remove 1000, keep looking for other nodes to insert into
+            totalFit += amtFit;
+            if (!simulate)
+                energyStorage.receiveEnergy(amtFit, false); //Insert the amount we removed from the source
+            //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
+            if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
+            if (totalAmtNeeded == 0) return totalFit;
+        }
+        return totalFit;
     }
 
     public boolean extractEnergy(ExtractorCardCache extractorCardCache, IEnergyStorage fromEnergyTank, int extractAmt) {
@@ -1213,16 +1284,16 @@ public class LaserNodeBE extends BaseLaserBE {
             roundRobin = getRR(extractorCardCache);
             inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
         }
-
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
             if (laserNodeEnergyHandler == null) continue;
             IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
             int desired;
-            if (inserterCardCache.insertLimit != 100)
+            if (inserterCardCache.insertLimit != 100) {
                 desired = (int) (energyStorage.getMaxEnergyStored() * ((float) inserterCardCache.insertLimit / 100)) - energyStorage.getEnergyStored();
-            else
+            } else {
                 desired = extractAmt;
+            }
             if (desired <= 0) continue;
             int amtToTry = Math.min(desired, totalAmtNeeded);
             int amtFit = energyStorage.receiveEnergy(amtToTry, true); //Simulate Insert Energy
@@ -1249,23 +1320,21 @@ public class LaserNodeBE extends BaseLaserBE {
         int totalAmtNeeded = extractAmt;
         List<InserterCardCache> inserterCardCaches = getChannelMatchInserters(extractorCardCache);
         int roundRobin = -1;
-
         if (extractorCardCache.roundRobin != 0) {
             roundRobin = getRR(extractorCardCache);
             inserterCardCaches = applyRR(extractorCardCache, inserterCardCaches, roundRobin);
         }
-
         Map<InserterCardCache, Integer> insertHandlers = new Object2IntOpenHashMap<>();
-
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
             if (laserNodeEnergyHandler == null) continue;
             IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
             int desired;
-            if (inserterCardCache.insertLimit != 100)
+            if (inserterCardCache.insertLimit != 100) {
                 desired = (int) (energyStorage.getMaxEnergyStored() * ((float) inserterCardCache.insertLimit / 100)) - energyStorage.getEnergyStored();
-            else
+            } else {
                 desired = extractAmt;
+            }
             if (desired <= 0) continue;
             int amtToTry = Math.min(desired, totalAmtNeeded);
             int amtFit = energyStorage.receiveEnergy(amtToTry, true); //Simulate Insert
@@ -1283,9 +1352,7 @@ public class LaserNodeBE extends BaseLaserBE {
             if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
             if (totalAmtNeeded == 0) break;
         }
-
         if (totalAmtNeeded > 0) return false;
-
         for (Map.Entry<InserterCardCache, Integer> entry : insertHandlers.entrySet()) {
             InserterCardCache inserterCardCache = entry.getKey();
             LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
@@ -1294,12 +1361,14 @@ public class LaserNodeBE extends BaseLaserBE {
             energyStorage.receiveEnergy(actualRemoved, false);
             //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
-
         return true;
     }
 
     /** Extractor Cards call this, and try to find an inserter card to send their items to **/
     public boolean sendEnergy(ExtractorCardCache extractorCardCache) {
+        if (extractorCardCache.externallyManaged) {
+            return true;
+        }
         BlockPos adjacentPos = getBlockPos().relative(extractorCardCache.direction);
         assert level != null;
         if (!level.isLoaded(adjacentPos)) return false;
@@ -1589,7 +1658,6 @@ public class LaserNodeBE extends BaseLaserBE {
 
         if (filteredFluidsList.isEmpty()) //If we have nothing left to look for! Probably only happens when its a count card.
             return false;
-
 
         //At this point we should have a list of fluids that we need to satisfy the stock request
         for (FluidStack fluidStack : filteredFluidsList) {
@@ -1987,6 +2055,7 @@ public class LaserNodeBE extends BaseLaserBE {
         markDirtyClient();
         findMyExtractors();
         updateOverclockers();
+        Arrays.stream(nodeSideCaches).forEach(NodeSideCache::invalidateEnergy);
         //updateRedstoneOutputs();
     }
 
@@ -2409,6 +2478,23 @@ public class LaserNodeBE extends BaseLaserBE {
         if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
             return nodeSideCaches[side.ordinal()].handlerLazyOptional.cast();
         }
+        if (cap == ForgeCapabilities.ENERGY) {
+            if (side == null) {
+                return LazyOptional.empty();
+            } else {
+                NodeSideCache nodeSideCache = nodeSideCaches[side.ordinal()];
+                for (int slot = 0; slot < LaserNodeContainer.CARDSLOTS; slot++) {
+                    ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
+                    if (card.getItem() instanceof CardEnergy) {
+                        BaseCardCache baseCardCache = new BaseCardCache(side, card, slot, this);
+                        if (baseCardCache.enabled) {
+                            return nodeSideCaches[side.ordinal()].laserEnergyStorage.cast();
+                        }
+                    }
+                }
+                return LazyOptional.empty();
+            }
+        }
         return super.getCapability(cap, side);
     }
 
@@ -2472,5 +2558,44 @@ public class LaserNodeBE extends BaseLaserBE {
     public void setRemoved() {
         super.setRemoved();
         Arrays.stream(nodeSideCaches).forEach(e -> e.handlerLazyOptional.invalidate());
+        Arrays.stream(nodeSideCaches).forEach(e -> e.laserEnergyStorage.invalidate());
+    }
+
+    public class LaserEnergyStorage implements IEnergyStorage {
+        private final Direction facing;
+
+        public LaserEnergyStorage(Direction facing) {
+            this.facing = facing;
+        }
+
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            return LaserNodeBE.this.receiveEnergy(facing, maxReceive, simulate);
+        }
+
+        @Override
+        public int extractEnergy(int maxExtract, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public int getEnergyStored() {
+            return 0;
+        }
+
+        @Override
+        public int getMaxEnergyStored() {
+            return 0;
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return true;
+        }
     }
 }
