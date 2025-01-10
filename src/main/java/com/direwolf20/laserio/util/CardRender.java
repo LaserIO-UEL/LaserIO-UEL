@@ -26,8 +26,7 @@ public class CardRender {
     public float diffZ;
     public Vector3f startLaser;
     public Vector3f endLaser;
-    public float[] floatcolors;
-
+    public float[] floatColors;
 
     public CardRender(Direction direction, int cardSlot, ItemStack card, BlockPos start, Level level, boolean enabled) {
         this.direction = direction;
@@ -63,7 +62,6 @@ public class CardRender {
             g /= 4f;
             b /= 4f;
         }
-
         Vector3f offset = findOffset(direction, cardSlot, LaserNodeBERender.offsets);
         Vector3f shapeOffset = shapeOffset(offset, voxelShape, startBlock, endBlock, direction, level, targetState);
         diffX = shapeOffset.x();
@@ -71,16 +69,19 @@ public class CardRender {
         diffZ = shapeOffset.z();
         boolean reverse = !direction.equals(Direction.DOWN);
         if (card.getItem() instanceof CardRedstone) {
-            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT)
+            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT) {
                 reverse = !reverse;
+            }
         } else {
-            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.EXTRACT)
+            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.EXTRACT) {
                 reverse = !reverse;
+            }
         }
-        if (card.getItem() instanceof CardRedstone || BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR)
-            floatcolors = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(card)].getColorComponents(new float[3]);
-        else
-            floatcolors = LaserNodeBERender.colors[BaseCard.getChannel(card)].getColorComponents(new float[3]);
+        if (card.getItem() instanceof CardRedstone || BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
+            floatColors = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(card)].getColorComponents(new float[3]);
+        } else {
+            floatColors = LaserNodeBERender.colors[BaseCard.getChannel(card)].getColorComponents(new float[3]);
+        }
         if (reverse) {
             endLaser = new Vector3f(offset.x(), offset.y(), offset.z());
             startLaser = new Vector3f(diffX, diffY, diffZ);
@@ -100,41 +101,44 @@ public class CardRender {
             diffY = (float) (((voxelShape.bounds().maxY - voxelShape.bounds().minY) * diffY) + voxelShape.bounds().minY);
             diffZ = (float) (((voxelShape.bounds().maxZ - voxelShape.bounds().minZ) * diffZ) + voxelShape.bounds().minZ);
             if (direction.equals(Direction.WEST)) {
-                if (targetState.getOffset(level, endBlock).x != 0)
+                if (targetState.getOffset(level, endBlock).x != 0) {
                     diffX = -1 - (float) (targetState.getOffset(level, endBlock).x + (float) 1 / 16 - ((voxelShape.bounds().maxX - voxelShape.bounds().minX)));
-                else {
+                } else {
                     diffX = -1 + (float) voxelShape.bounds().maxX;
                 }
                 offset.x = (offset.x() - 0.1875f);
             } else if (direction.equals(Direction.EAST)) {
-                if (targetState.getOffset(level, endBlock).x != 0)
+                if (targetState.getOffset(level, endBlock).x != 0) {
                     diffX = 1 + (float) (targetState.getOffset(level, endBlock).x - (float) 1 / 16 + ((voxelShape.bounds().maxX - voxelShape.bounds().minX)));
-                else
+                } else {
                     diffX = 1 + (float) voxelShape.bounds().minX;
+                }
                 offset.x = (offset.x() + 0.1875f);
             } else if (direction.equals(Direction.SOUTH)) {
-                if (targetState.getOffset(level, endBlock).z != 0)
+                if (targetState.getOffset(level, endBlock).z != 0) {
                     diffZ = 1 + (float) (targetState.getOffset(level, endBlock).z - (float) 1 / 16 + ((voxelShape.bounds().maxZ - voxelShape.bounds().minZ)));
-                else
+                } else {
                     diffZ = 1 + (float) voxelShape.bounds().minZ;
+                }
                 offset.z = (offset.z() + 0.1875f);
             } else if (direction.equals(Direction.NORTH)) {
-                if (targetState.getOffset(level, endBlock).z != 0)
+                if (targetState.getOffset(level, endBlock).z != 0) {
                     diffZ = (float) (targetState.getOffset(level, endBlock).z + (float) 1 / 16 - ((voxelShape.bounds().maxZ - voxelShape.bounds().minZ)));
-                else {
+                } else {
                     diffZ = -1 + (float) voxelShape.bounds().maxZ;
                 }
                 offset.z = (offset.z() - 0.1875f);
             } else if (direction.equals(Direction.UP)) {
-                if (targetState.getOffset(level, endBlock).y != 0)
+                if (targetState.getOffset(level, endBlock).y != 0) {
                     diffY = 1 + (float) (targetState.getOffset(level, endBlock).y - (float) 1 / 16 + ((voxelShape.bounds().maxY - voxelShape.bounds().minY)));
-                else
+                } else {
                     diffY = 1 + (float) voxelShape.bounds().minY;
+                }
                 offset.y = (offset.y() + 0.1875f);
             } else if (direction.equals(Direction.DOWN)) {
-                if (targetState.getOffset(level, endBlock).y != 0)
+                if (targetState.getOffset(level, endBlock).y != 0) {
                     diffY = (float) (targetState.getOffset(level, endBlock).y + (float) 1 / 16 - ((voxelShape.bounds().maxY - voxelShape.bounds().minY)));
-                else {
+                } else {
                     diffY = -1 + (float) voxelShape.bounds().maxY;
                 }
                 offset.y = (offset.y() - 0.1875f);

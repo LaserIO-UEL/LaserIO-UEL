@@ -35,5 +35,12 @@ repositories {
             includeGroup "mekanism"
         }
     }
-    maven {url = "https://cursemaven.com"}
+    
+    maven { //Jade - used for testing
+        name = 'CurseMaven'
+        url = 'https://www.cursemaven.com'
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
