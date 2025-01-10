@@ -21,6 +21,18 @@
       "text": "All cards have a redstone mode toggle, which defaults to ignored, meaning the cards will always operate.$(br2)If set to low, the cards will only function when there is NOT a redstone signal on the redstone channel (the channel button is to the right of the redstone toggle).$(br2)On redstone high mode, the cards will only operate when there IS a redstone signal on the redstone channel."
     },
     {
+      "type": "patchouli:text",
+      "text": "Some settings exist for more complex redstone needs:$(br2)$(bold)Input side$()$(br)Toggling Threshold mode will reveal two other buttons: Limit and Output.$(br2)The Limit determines when (equal or greater than) a signal will be sent on the redstone channel.$(br)The signal strength will be equal to the specified Output when activated."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Output side$()$(br)Complementary takes the channel signal and emits: 15 - that.$(br)NOT is similar to Complementary but only gives off a 15 signal strength when there is none on the channel. Any signal from the channel and nothing will be emitted.$(br2)Lastly, the 'Logic Operation' mode. These settings utilize another redstone channel to perform a boolean operation with the already chosen one.$(br2)The possible operations are documented in the following page."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Logic Operation mode offers three types of boolean operators: OR, AND, XOR.$(br2)OR emits a signal when either channel has power.$(br)AND only emits a signal when both channels are powered.$(br)XOR emits a signal when exactly one of the two channels has power.$(br2)Logic Operation settings can be combined with Complementary/NOT to get their negated version (NOR, NAND, XNOR)!"
+    },
+    {
       "type": "patchouli:crafting",
       "title": "Redstone Card",
       "recipe": "laserio:card_redstone"
