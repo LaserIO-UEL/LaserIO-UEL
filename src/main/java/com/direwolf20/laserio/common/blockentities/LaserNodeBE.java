@@ -250,10 +250,7 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
                 if (extractorCardCache.decrementSleep() == 0) {
                     if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overclockers) {
-                        extractorCardCache.externallyManaged = false;
-                        continue;
-                    }
+                    if (countCardsHandled > nodeSideCache.overclockers) continue;
                     if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
                         if (extractorCardCache.cardType.equals(BaseCard.CardType.ITEM)) {
                             if (stockItems(stockerCardCache))
@@ -335,8 +332,8 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public void tickServer() {
+        refreshedInvNodesThisTick = false;
         if (!discoveredNodes) { //On world / chunk reload, lets rediscover the network, including this block's extractor cards.
-            refreshedInvNodesThisTick = false;
             discoverAllNodes();
             findMyExtractors();
             updateOverclockers();
@@ -681,7 +678,6 @@ public class LaserNodeBE extends BaseLaserBE {
             return false;
         extractStack.setCount(amtNeeded);
         TransferResult insertResults = new TransferResult();
-
         List<InserterCardCache> inserterCardCaches = getPossibleInserters(extractorCardCache, extractStack);
         int roundRobin = -1;
 
@@ -1213,8 +1209,9 @@ public class LaserNodeBE extends BaseLaserBE {
         NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
         int countCardsHandled = 0;
         for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
-            if (extractorCardCache.remainingSleep != 1) continue;
+            if (extractorCardCache.remainingSleep > 1) continue;
             if (!extractorCardCache.enabled) continue;
+            if (extractorCardCache.externallyManaged && simulate) continue;
             if (countCardsHandled > nodeSideCache.overclockers) return totalAmtSent;
             if (extractorCardCache instanceof StockerCardCache) {
                 //No-Op
