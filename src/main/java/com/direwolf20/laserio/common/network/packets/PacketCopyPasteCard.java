@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.network.packets;
 
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
+import com.direwolf20.laserio.common.containers.CardHolderContainer;
 import com.direwolf20.laserio.common.containers.LaserNodeContainer;
 import com.direwolf20.laserio.common.containers.customhandler.CardItemHandler;
 import com.direwolf20.laserio.common.items.CardCloner;
@@ -69,7 +70,7 @@ public class PacketCopyPasteCard {
         if (itemStack.isEmpty()) return true;
         int neededReturn = itemStack.getCount();
         Map<Integer, Integer> returnStackMap = new HashMap<>();
-        for (int returnSlot = LaserNodeContainer.CARDSLOTS + 1; returnSlot < LaserNodeContainer.SLOTS; returnSlot++) {
+        for (int returnSlot = LaserNodeContainer.SLOTS; returnSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); returnSlot++) {
             ItemStack possibleReturnStack = container.getSlot(returnSlot).getItem();
             if (possibleReturnStack.isEmpty() || (possibleReturnStack.is(itemStack.getItem()) && possibleReturnStack.getCount() < possibleReturnStack.getMaxStackSize())) {
                 int roomAvailable = possibleReturnStack.getMaxStackSize() - possibleReturnStack.getCount();
@@ -104,7 +105,7 @@ public class PacketCopyPasteCard {
         if (itemStack.isEmpty()) return true;
         int neededCount = itemStack.getCount();
         Map<Integer, Integer> findStackMap = new HashMap<>();
-        for (int getSlot = LaserNodeContainer.CARDSLOTS + 1; getSlot < LaserNodeContainer.SLOTS; getSlot++) {
+        for (int getSlot = LaserNodeContainer.SLOTS; getSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); getSlot++) {
             ItemStack possibleStack = container.getSlot(getSlot).getItem();
             if (possibleStack.is(itemStack.getItem())) {
                 int stackAvailable = possibleStack.getCount();
