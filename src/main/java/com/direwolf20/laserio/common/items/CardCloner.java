@@ -4,6 +4,8 @@ import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -48,21 +50,27 @@ public class CardCloner extends Item {
             String cardType = getItemType(stack);
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY.getColor());
             int cardColor = ChatFormatting.WHITE.getColor();
+            boolean isEnergyCard = false;
+            boolean isRedstoneCard = false;
             if (cardType.equals("card_item"))
                 cardColor = ChatFormatting.GREEN.getColor();
             else if (cardType.equals("card_fluid"))
                 cardColor = ChatFormatting.BLUE.getColor();
-            else if (cardType.equals("card_energy"))
+            else if (cardType.equals("card_energy")) {
                 cardColor = ChatFormatting.YELLOW.getColor();
-            else if (cardType.equals("card_redstone"))
+                isEnergyCard = true;
+            } else if (cardType.equals("card_redstone")) {
                 cardColor = ChatFormatting.RED.getColor();
+                isRedstoneCard = true;
+            }
             if (cardType.equals(""))
                 toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", cardColor));
             else
                 toWrite.append(tooltipMaker("item.laserio." + cardType, cardColor));
             tooltip.add(toWrite);
-            if (cardType.equals(""))
+            if (cardType.equals("")) {
                 return;
+            }
 
             CompoundTag compoundTag = stack.getOrCreateTag().getCompound("settings");
             int mode = !compoundTag.contains("mode") ? 0 : compoundTag.getByte("mode");;
@@ -84,22 +92,37 @@ public class CardCloner extends Item {
             int channel = !compoundTag.contains("channel") ? 0 : compoundTag.getByte("channel");;
             toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.colors[channel].getRGB()));
             tooltip.add(toWrite);
+            if (isRedstoneCard) {
+                return;
+            }
 
-            toWrite = tooltipMaker("laserio.tooltip.item.card.Filter", ChatFormatting.GRAY.getColor());
-            ItemStack filterStack = getFilter(stack);
-            if (filterStack.isEmpty())
-                toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE.getColor()));
-            else
-                toWrite.append(tooltipMaker("item.laserio." + filterStack.getItem(), ChatFormatting.DARK_AQUA.getColor()));
-            tooltip.add(toWrite);
+            if (!isEnergyCard) {
+                toWrite = tooltipMaker("laserio.tooltip.item.card.Filter", ChatFormatting.GRAY.getColor());
+                ItemStack filterStack = getFilter(stack);
+                if (filterStack.isEmpty())
+                    toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE.getColor()));
+                else
+                    toWrite.append(tooltipMaker("item.laserio." + filterStack.getItem(), ChatFormatting.DARK_AQUA.getColor()));
+                tooltip.add(toWrite);
+            }
 
-            toWrite = tooltipMaker("laserio.tooltip.item.card.Overclockers", ChatFormatting.GRAY.getColor());
-            ItemStack overclockStack = getOverclocker(stack);
-            if (overclockStack.isEmpty())
-                toWrite.append(tooltipMaker(String.valueOf(0), ChatFormatting.WHITE.getColor()));
-            else
-                toWrite.append(tooltipMaker(String.valueOf(overclockStack.getCount()), ChatFormatting.DARK_AQUA.getColor()));
-            tooltip.add(toWrite);
+            if (!isEnergyCard || (isEnergyCard && CardEnergyContainer.SLOTS == 1)) {
+                ItemStack overclockerStack = getOverclocker(stack);
+                if (isEnergyCard) {
+                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclocker", ChatFormatting.GRAY.getColor());
+                    if (overclockerStack.isEmpty())
+                        toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE.getColor()));
+                    else
+                        toWrite.append(tooltipMaker("item.laserio." + overclockerStack.getItem(), ChatFormatting.DARK_AQUA.getColor()));
+                } else {
+                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclockers", ChatFormatting.GRAY.getColor());
+                    if (overclockerStack.isEmpty())
+                        toWrite.append(tooltipMaker(String.valueOf(0), ChatFormatting.WHITE.getColor()));
+                    else
+                        toWrite.append(tooltipMaker(String.valueOf(overclockerStack.getCount()), ChatFormatting.DARK_AQUA.getColor()));
+                }
+                tooltip.add(toWrite);
+            }
         }
     }
 

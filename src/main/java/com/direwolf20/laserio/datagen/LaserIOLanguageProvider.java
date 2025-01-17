@@ -119,6 +119,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.card.sneaky.WEST", "West");
         add("laserio.tooltip.item.card.sneaky.EAST", "East");
         add("laserio.tooltip.item.card.Filter", "Filter: ");
+        add("laserio.tooltip.item.card.Overclocker", "Overclocker: ");
         add("laserio.tooltip.item.card.Overclockers", "Overclockers: ");
         add("laserio.tooltip.item.card.None", "None");
 
