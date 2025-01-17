@@ -2405,15 +2405,17 @@ public class LaserNodeBE extends BaseLaserBE {
                         enabled = (channelStrength >= (CardRedstone.getThreshold(card) ? CardRedstone.getThresholdLimit(card) : 1));
                     } else {
                         byte logicOperationChannelStrength = redstoneNetwork.get(CardRedstone.getRedstoneChannelOperation(card));
-                        enabled = switch(CardRedstone.getLogicOperation(card)) {
-                            case 1 -> ((channelStrength + logicOperationChannelStrength) > 0); //OR
-                            case 2 -> ((channelStrength * logicOperationChannelStrength) > 0); //AND
-                            case 3 -> ((channelStrength > 0) ^ (logicOperationChannelStrength > 0)); //XOR
+                        channelStrength = switch(CardRedstone.getLogicOperation(card)) {
+                            case 1 -> (byte) (((channelStrength + logicOperationChannelStrength) > 0) ? 15 : 0); //OR
+                            case 2 -> (byte) (((channelStrength * logicOperationChannelStrength) > 0) ? 15 : 0); //AND
+                            case 3 -> (byte) (((channelStrength > 0) ^ (logicOperationChannelStrength > 0)) ? 15 : 0); //XOR
+                            default -> channelStrength;
+                        };
+                        enabled = switch(CardRedstone.getOutputMode(card)) {
+                            case 1 -> (channelStrength != 15); //Complementary
+                            case 2 -> (channelStrength == 0); //NOT
                             default -> (channelStrength > 0);
                         };
-                        if (CardRedstone.getOutputMode(card) != 0) {
-                            enabled = !enabled; //Complementary or NOT
-                        }
                     }
                 } else {
                     byte redstoneMode = BaseCard.getRedstoneMode(card);
