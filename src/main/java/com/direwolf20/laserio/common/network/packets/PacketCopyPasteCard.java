@@ -66,31 +66,31 @@ public class PacketCopyPasteCard {
         player.connection.send(packet);
     }
 
-    public static boolean returnItemToHolder(LaserNodeContainer container, ItemStack itemStack, boolean simulate) {
-        if (itemStack.isEmpty()) return true;
-        int neededReturn = itemStack.getCount();
+    public static int returnItemToHolder(LaserNodeContainer container, ItemStack returnStack, boolean simulate) {
+        int returnCount = returnStack.getCount();
+        if (returnCount == 0) {
+            return 0;
+        }
         Map<Integer, Integer> returnStackMap = new HashMap<>();
         for (int returnSlot = LaserNodeContainer.SLOTS; returnSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); returnSlot++) {
             ItemStack possibleReturnStack = container.getSlot(returnSlot).getItem();
-            if (possibleReturnStack.isEmpty() || (possibleReturnStack.is(itemStack.getItem()) && possibleReturnStack.getCount() < possibleReturnStack.getMaxStackSize())) {
+            if (possibleReturnStack.isEmpty() || (possibleReturnStack.is(returnStack.getItem()) && possibleReturnStack.getCount() < possibleReturnStack.getMaxStackSize())) {
                 int roomAvailable = possibleReturnStack.getMaxStackSize() - possibleReturnStack.getCount();
-                int amtFit = (neededReturn - roomAvailable < 0) ? neededReturn : neededReturn - roomAvailable;
+                int amtFit = Math.min(returnCount, roomAvailable);
                 returnStackMap.put(returnSlot, amtFit);
-                neededReturn = neededReturn - amtFit;
-                if (neededReturn == 0) {
-                    if (simulate) {
-                        return true;
-                    }
+                returnCount -= amtFit;
+                if (returnCount == 0) {
                     break;
                 }
             }
         }
-        if (neededReturn > 0 || returnStackMap.isEmpty()) //If we didn't return everything we needed to, return false
-            return false;
+        if (simulate) { //Return the remaining
+            return returnCount;
+        }
         for (Map.Entry<Integer, Integer> entry : returnStackMap.entrySet()) {
             ItemStack possibleReturnStack = container.getSlot(entry.getKey()).getItem();
             if (possibleReturnStack.isEmpty()) {
-                container.getSlot(entry.getKey()).set(itemStack);
+                container.getSlot(entry.getKey()).set(returnStack);
                 //In *THEORY* this should never be needed but who knows!
                 possibleReturnStack = container.getSlot(entry.getKey()).getItem();
                 possibleReturnStack.setCount(entry.getValue());
@@ -98,20 +98,22 @@ public class PacketCopyPasteCard {
                 possibleReturnStack.grow(entry.getValue());
             }
         }
-        return true; //Since we got here we can assume we updated everything
+        return returnCount; //Since we got here we can assume we updated everything
     }
 
-    public static boolean getItemFromHolder(LaserNodeContainer container, ItemStack itemStack, boolean simulate) {
-        if (itemStack.isEmpty()) return true;
-        int neededCount = itemStack.getCount();
-        Map<Integer, Integer> findStackMap = new HashMap<>();
+    public static boolean getItemFromHolder(LaserNodeContainer container, ItemStack neededStack, boolean simulate) {
+        int neededCount = neededStack.getCount();
+        if (neededCount == 0) {
+            return true;
+        }
+        Map<Integer, Integer> foundStackMap = new HashMap<>();
         for (int getSlot = LaserNodeContainer.SLOTS; getSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); getSlot++) {
             ItemStack possibleStack = container.getSlot(getSlot).getItem();
-            if (possibleStack.is(itemStack.getItem())) {
+            if (possibleStack.is(neededStack.getItem())) {
                 int stackAvailable = possibleStack.getCount();
-                int amtFound = (neededCount - stackAvailable < 0) ? neededCount : stackAvailable;
-                findStackMap.put(getSlot, amtFound);
-                neededCount = neededCount - amtFound;
+                int amtFound = Math.min(neededCount, stackAvailable);
+                foundStackMap.put(getSlot, amtFound);
+                neededCount -= amtFound;
                 if (neededCount == 0) {
                     if (simulate) {
                         return true;
@@ -120,11 +122,12 @@ public class PacketCopyPasteCard {
                 }
             }
         }
-        if (neededCount > 0 || findStackMap.isEmpty()) //If we didn't find everything we needed to, return false
+        if (neededCount > 0) { //If we didn't find everything we needed to
             return false;
-        for (Map.Entry<Integer, Integer> entry : findStackMap.entrySet()) {
-            ItemStack possibleStack = container.getSlot(entry.getKey()).getItem();
-            possibleStack.shrink(entry.getValue());
+        }
+        for (Map.Entry<Integer, Integer> entry : foundStackMap.entrySet()) {
+            ItemStack foundStack = container.getSlot(entry.getKey()).getItem();
+            foundStack.shrink(entry.getValue());
         }
         return true; //Since we got here we can assume we updated everything
     }
@@ -170,59 +173,50 @@ public class PacketCopyPasteCard {
                             existingFilter = cardItemHandler.getStackInSlot(0);
                             existingOverclockers = cardItemHandler.getStackInSlot(1);
                         }
-                        boolean filterSatisfied = false;
-                        boolean filterNeedsReturn = false;
-                        boolean overclockSatisfied = false;
-                        boolean overclockNeedsReturn = false;
-                        if (existingFilter.is(filterNeeded.getItem())) { //If the right filters there, do nothing
-                            filterSatisfied = true;
+                        boolean filterSatisfied = true;
+                        if (!existingFilter.is(filterNeeded.getItem())) {
+                            filterSatisfied = getItemFromHolder(laserNodeContainer, filterNeeded, true);
+                        }
+                        int amtReturn = 0;
+                        int amtNeeded = 0;
+                        if (!existingOverclockers.is(overclockersNeeded.getItem())) {
+                            amtReturn = existingOverclockers.getCount();
+                            amtNeeded = overclockersNeeded.getCount();
                         } else {
-                            if (!existingFilter.isEmpty()) { //If we have the wrong filter, and theres an existing one, remove it first
-                                filterNeedsReturn = !returnItemToHolder(laserNodeContainer, existingFilter, true);
-                            }
-                            if (!filterNeedsReturn) { //If the filter can be returned or doesn't need to be
-                                filterSatisfied = getItemFromHolder(laserNodeContainer, filterNeeded, true);
+                            int amt = existingOverclockers.getCount() - overclockersNeeded.getCount();
+                            if (amt > 0) {
+                                amtReturn = amt;
+                            } else {
+                                amtNeeded = -amt;
                             }
                         }
-                        if (existingOverclockers.getCount() == overclockersNeeded.getCount()) { //If we have the right number of overclockers
-                            overclockSatisfied = true;
-                        } else {
-                            if (existingOverclockers.getCount() > overclockersNeeded.getCount()) { //If we have too many overclockers
-                                int amtReturn = existingOverclockers.getCount() - overclockersNeeded.getCount();
-                                ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
-                                overclockNeedsReturn = !returnItemToHolder(laserNodeContainer, returnStack, true);
-                                overclockSatisfied = true;
-                            } else { //If we don't have enough
-                                int amtNeeded = overclockersNeeded.getCount() - existingOverclockers.getCount();
-                                ItemStack findStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
-                                overclockSatisfied = getItemFromHolder(laserNodeContainer, findStack, true);
-                            }
+                        boolean overclockSatisfied = true;
+                        if (amtNeeded > 0) {
+                            ItemStack neededStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
+                            overclockSatisfied = getItemFromHolder(laserNodeContainer, neededStack, true);
                         }
-                        if (filterSatisfied && !filterNeedsReturn && overclockSatisfied && !overclockNeedsReturn) {
-                            if (!existingFilter.is(filterNeeded.getItem())) { //Now that we're doing it for real, check to make sure the filter needs switching
-                                boolean success = returnItemToHolder(laserNodeContainer, existingFilter, false);
-                                if (!success) {
+                        if (filterSatisfied && overclockSatisfied) {
+                            if (!existingFilter.is(filterNeeded.getItem())) {
+                                if (returnItemToHolder(laserNodeContainer, existingFilter, false) != 0) {
                                     //Drop item in world
                                     ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), existingFilter);
                                     player.level().addFreshEntity(itemEntity);
                                 }
                                 getItemFromHolder(laserNodeContainer, filterNeeded, false);
                             }
-                            if (existingOverclockers.getCount() != overclockersNeeded.getCount()) { //If we need to work with Overclockers
-                                if (existingOverclockers.getCount() > overclockersNeeded.getCount()) { //If we have too many overclockers
-                                    int amtReturn = existingOverclockers.getCount() - overclockersNeeded.getCount();
-                                    ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
-                                    boolean success = returnItemToHolder(laserNodeContainer, returnStack, false);
-                                    if (!success) {
-                                        //Drop item in world
-                                        ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), returnStack);
-                                        player.level().addFreshEntity(itemEntity);
-                                    }
-                                } else { //If we don't have enough
-                                    int amtNeeded = overclockersNeeded.getCount() - existingOverclockers.getCount();
-                                    ItemStack findStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
-                                    getItemFromHolder(laserNodeContainer, findStack, false);
+                            if (amtReturn > 0) {
+                                ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
+                                int remaining = returnItemToHolder(laserNodeContainer, returnStack, false);
+                                if (remaining > 0) {
+                                    //Drop item in world
+                                    returnStack.setCount(remaining);
+                                    ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), returnStack);
+                                    player.level().addFreshEntity(itemEntity);
                                 }
+                            }
+                            if (amtNeeded > 0) {
+                                ItemStack neededStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
+                                getItemFromHolder(laserNodeContainer, neededStack, false);
                             }
                             ItemStack tempStack = slotStack.copy();
                             CompoundTag compoundTag = CardCloner.getSettings(clonerStack);
