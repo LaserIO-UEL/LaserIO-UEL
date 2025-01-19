@@ -33,11 +33,19 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.Optional;
+
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public class LaserNode extends BaseLaserBlock implements EntityBlock {
     //This makes the shape fit the model perfectly, but introduces issues with clicking on specific sides of the block
@@ -144,13 +152,29 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
     }
 
     public static ItemStack findCardHolders(Player player) {
-        ItemStack cardHolder = ItemStack.EMPTY;
+        if (ModList.get().isLoaded("curios")) {
+            LazyOptional<ICuriosItemHandler> curiosInventoryOptional = CuriosApi.getCuriosInventory(player);
+            if (curiosInventoryOptional.isPresent()) {
+                Optional<ICurioStacksHandler> slotInventoryOptional = curiosInventoryOptional.resolve().get().getStacksHandler("card_holder");
+                if (slotInventoryOptional.isPresent()) {
+                    IDynamicStackHandler possibleCardHolders = slotInventoryOptional.get().getStacks();
+                    for (int i = 0; i < possibleCardHolders.getSlots(); i++) {
+                        ItemStack possibleCardHolder = possibleCardHolders.getStackInSlot(i);
+                        if (possibleCardHolder.getItem() instanceof CardHolder) {
+                            return possibleCardHolder;
+                        }
+                    }
+                }
+            }
+        }
         Inventory playerInventory = player.getInventory();
         for (int i = 0; i < playerInventory.items.size(); i++) {
-            ItemStack itemStack = playerInventory.items.get(i);
-            if (itemStack.getItem() instanceof CardHolder) return itemStack;
+            ItemStack possibleCardHolder = playerInventory.items.get(i);
+            if (possibleCardHolder.getItem() instanceof CardHolder) {
+                return possibleCardHolder;
+            }
         }
-        return cardHolder;
+        return ItemStack.EMPTY;
     }
 
     @Nullable

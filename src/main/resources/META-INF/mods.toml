@@ -30,6 +30,13 @@ description='''
     side="BOTH"
 
 [[dependencies.laserio]]
+    modId="curios"
+    mandatory=false
+    versionRange="${curios_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.laserio]]
     modId="patchouli"
     mandatory=false
     versionRange="${patchouli_version_range}"

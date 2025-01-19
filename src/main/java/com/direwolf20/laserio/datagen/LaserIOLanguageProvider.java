@@ -124,7 +124,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.card.None", "None");
 
         //Energy Overclockers Tooltip
-        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/t");
+        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
 
         //Filter Tooltips
         add("laserio.tooltip.item.filter.type", "Type: ");
@@ -133,6 +133,9 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.filter.nbt", "Match NBT: ");
         add("laserio.tooltip.item.filter.nbt.allow", "True");
         add("laserio.tooltip.item.filter.nbt.deny", "False");
+
+        //Curios Card Holder slot
+        add("curios.identifier.card_holder", "Card Holder");
 
         //add("", "");
     }

@@ -33,10 +33,18 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer> {
     private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node.png");
@@ -162,11 +170,30 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     }
 
     public boolean validateHolder() {
+        if (ModList.get().isLoaded("curios")) {
+            LazyOptional<ICuriosItemHandler> curiosInventoryOptional = CuriosApi.getCuriosInventory(container.playerEntity);
+            if (curiosInventoryOptional.isPresent()) {
+                Optional<ICurioStacksHandler> slotInventoryOptional = curiosInventoryOptional.resolve().get().getStacksHandler("card_holder");
+                if (slotInventoryOptional.isPresent()) {
+                    IDynamicStackHandler possibleCardHolders = slotInventoryOptional.get().getStacks();
+                    for (int i = 0; i < possibleCardHolders.getSlots(); i++) {
+                        ItemStack possibleCardHolder = possibleCardHolders.getStackInSlot(i);
+                        if (possibleCardHolder.getItem() instanceof CardHolder) {
+                            if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
+                                showCardHolderUI = true;
+                                toggleHolderSlots();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         Inventory playerInventory = container.playerEntity.getInventory();
         for (int i = 0; i < playerInventory.items.size(); i++) {
-            ItemStack itemStack = playerInventory.items.get(i);
-            if (itemStack.getItem() instanceof CardHolder) {
-                if (CardHolder.getUUID(itemStack).equals(container.cardHolderUUID)) {
+            ItemStack possibleCardHolder = playerInventory.items.get(i);
+            if (possibleCardHolder.getItem() instanceof CardHolder) {
+                if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
                     showCardHolderUI = true;
                     toggleHolderSlots();
                     return true;

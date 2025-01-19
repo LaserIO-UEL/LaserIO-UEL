@@ -15,10 +15,17 @@ repositories {
         name "extra-mods"
         dir file(extraModsDir)
     }
-    
+
     flatDir {
         name "extra-api"
         dir file(extraAPIDir)
+    }
+
+    maven { //Curios
+        url = "https://maven.theillusivec4.top"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
     }
 
     maven { //Patchouli && JEI
@@ -30,14 +37,13 @@ repositories {
     }
 
     maven { //Mekanism
-        url = 'https://modmaven.dev/'
+        url = 'https://modmaven.dev'
         content {
             includeGroup "mekanism"
         }
     }
-    
+
     maven { //Jade - used for testing
-        name = 'CurseMaven'
         url = 'https://www.cursemaven.com'
         content {
             includeGroup "curse.maven"
