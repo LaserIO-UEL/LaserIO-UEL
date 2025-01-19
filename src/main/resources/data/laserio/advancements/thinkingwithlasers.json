@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:story/root",
+  "display": {
+    "icon": {
+      "item": "laserio:laser_node"
+    },
+    "title": "Thinking With Lasers",
+    "description": "Obtain a Laser Node",
+    "frame": "goal",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": ["laserio:laser_node"]} ]
+      }}},
+  "rewards": {
+    "loot": ["laserio:give_book"]
+  }
+}
