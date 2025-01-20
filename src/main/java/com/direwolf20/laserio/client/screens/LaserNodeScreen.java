@@ -15,6 +15,7 @@ import com.direwolf20.laserio.common.network.packets.PacketCopyPasteCard;
 import com.direwolf20.laserio.common.network.packets.PacketOpenCard;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketToggleParticles;
+import com.direwolf20.laserio.util.CuriosIntegrationUtil;
 import com.direwolf20.laserio.util.MiscTools;
 import com.direwolf20.laserio.util.Vec2i;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -33,18 +34,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer> {
     private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node.png");
@@ -170,24 +163,10 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     }
 
     public boolean validateHolder() {
-        if (ModList.get().isLoaded("curios")) {
-            LazyOptional<ICuriosItemHandler> curiosInventoryOptional = CuriosApi.getCuriosInventory(container.playerEntity);
-            if (curiosInventoryOptional.isPresent()) {
-                Optional<ICurioStacksHandler> slotInventoryOptional = curiosInventoryOptional.resolve().get().getStacksHandler("card_holder");
-                if (slotInventoryOptional.isPresent()) {
-                    IDynamicStackHandler possibleCardHolders = slotInventoryOptional.get().getStacks();
-                    for (int i = 0; i < possibleCardHolders.getSlots(); i++) {
-                        ItemStack possibleCardHolder = possibleCardHolders.getStackInSlot(i);
-                        if (possibleCardHolder.getItem() instanceof CardHolder) {
-                            if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
-                                showCardHolderUI = true;
-                                toggleHolderSlots();
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
+        if (CuriosIntegrationUtil.isCardHolderInCuriosSlots(container.playerEntity, container.cardHolderUUID)) {
+            showCardHolderUI = true;
+            toggleHolderSlots();
+            return true;
         }
         Inventory playerInventory = container.playerEntity.getInventory();
         for (int i = 0; i < playerInventory.items.size(); i++) {

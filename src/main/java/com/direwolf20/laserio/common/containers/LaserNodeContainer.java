@@ -10,6 +10,8 @@ import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.setup.Registration;
+import com.direwolf20.laserio.util.CuriosIntegrationUtil;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,8 +21,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -28,13 +28,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nullable;
 
-import java.util.Optional;
 import java.util.UUID;
-
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public class LaserNodeContainer extends AbstractContainerMenu {
     public static final int CARDSLOTS = 9;
@@ -96,32 +90,16 @@ public class LaserNodeContainer extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player playerIn) {
         if (cardHolder.isEmpty() && cardHolderUUID != null) {
-            //System.out.println("Lost card holder!");
-            if (ModList.get().isLoaded("curios")) {
-                LazyOptional<ICuriosItemHandler> curiosInventoryOptional = CuriosApi.getCuriosInventory(playerEntity);
-                if (curiosInventoryOptional.isPresent()) {
-                    Optional<ICurioStacksHandler> slotInventoryOptional = curiosInventoryOptional.resolve().get().getStacksHandler("card_holder");
-                    if (slotInventoryOptional.isPresent()) {
-                        IDynamicStackHandler possibleCardHolders = slotInventoryOptional.get().getStacks();
-                        for (int i = 0; i < possibleCardHolders.getSlots(); i++) {
-                            ItemStack possibleCardHolder = possibleCardHolders.getStackInSlot(i);
-                            if (possibleCardHolder.getItem() instanceof CardHolder) {
-                                if (CardHolder.getUUID(possibleCardHolder).equals(cardHolderUUID)) {
-                                    cardHolder = possibleCardHolder;
-                                    break;
-                                }
-                            }
+            cardHolder = CuriosIntegrationUtil.findSpecificCardHolderCuriosSlots(playerIn, cardHolderUUID);
+            if (cardHolder.isEmpty()) {
+                Inventory playerInventory = playerEntity.getInventory();
+                for (int i = 0; i < playerInventory.items.size(); i++) {
+                    ItemStack possibleCardHolder = playerInventory.items.get(i);
+                    if (possibleCardHolder.getItem() instanceof CardHolder) {
+                        if (CardHolder.getUUID(possibleCardHolder).equals(cardHolderUUID)) {
+                            cardHolder = possibleCardHolder;
+                            break;
                         }
-                    }
-                }
-            }
-            Inventory playerInventory = playerEntity.getInventory();
-            for (int i = 0; i < playerInventory.items.size(); i++) {
-                ItemStack possibleCardHolder = playerInventory.items.get(i);
-                if (possibleCardHolder.getItem() instanceof CardHolder) {
-                    if (CardHolder.getUUID(possibleCardHolder).equals(cardHolderUUID)) {
-                        cardHolder = possibleCardHolder;
-                        break;
                     }
                 }
             }
