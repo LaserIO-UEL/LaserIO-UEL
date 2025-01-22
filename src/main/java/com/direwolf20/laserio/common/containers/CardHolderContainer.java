@@ -16,26 +16,30 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
+import java.util.UUID;
+
 public class CardHolderContainer extends AbstractContainerMenu {
     public static final int SLOTS = 15;
     public ItemStack cardHolder;
+    public UUID cardHolderUUID;
     public Player playerEntity;
     private IItemHandler playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
-    public IItemHandler iItemHandler;
+    public IItemHandler itemHandler;
 
     public CardHolderContainer(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, extraData.readItem(), new ItemStackHandler(SLOTS));
     }
 
-    public CardHolderContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardHolder, IItemHandler iItemHandler) {
+    public CardHolderContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardHolder, IItemHandler itemHandler) {
         super(Registration.CardHolder_Container.get(), windowId);
         playerEntity = player;
-        this.iItemHandler = iItemHandler;
+        this.itemHandler = itemHandler;
         this.playerInventory = new InvWrapper(playerInventory);
         this.cardHolder = cardHolder;
-        if (iItemHandler != null) {
-            addSlotBox(iItemHandler, 0, 44, 17, 5, 18, 3, 18);
+        cardHolderUUID = CardHolder.getUUID(cardHolder);
+        if (itemHandler != null) {
+            addSlotBox(itemHandler, 0, 44, 17, 5, 18, 3, 18);
         }
         layoutPlayerInventorySlots(8, 84);
     }
@@ -52,7 +56,7 @@ public class CardHolderContainer extends AbstractContainerMenu {
                         return;
                     }
                 }
-            } else if (stackInSlot.getItem() instanceof CardHolder && stackInSlot == player.getMainHandItem()) {
+            } else if (stackInSlot.getItem() instanceof CardHolder && CardHolder.getUUID(stackInSlot).equals(cardHolderUUID)) {
                 return;
             }
         }
@@ -61,7 +65,7 @@ public class CardHolderContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return playerIn.getMainHandItem().equals(cardHolder) || playerIn.getOffhandItem().equals(cardHolder);
+        return (cardHolder.getItem() instanceof CardHolder && CardHolder.getUUID(cardHolder).equals(cardHolderUUID));
     }
 
     @Override
@@ -166,9 +170,9 @@ public class CardHolderContainer extends AbstractContainerMenu {
                 if (playerIn.getInventory().getFreeSlot() != -1) {
                     // moveItemStackTo() always moves the item, no matter the return value. fixes #87
                     if (stack.getMaxStackSize() == 1) {
-                        this.moveItemStackTo(stack.split(1), SLOTS, 36 + SLOTS, true);
+                        this.moveItemStackTo(stack.split(1), SLOTS, (36 + SLOTS), true);
                     } else {
-                        this.moveItemStackTo(stack, SLOTS, 36 + SLOTS, true);
+                        this.moveItemStackTo(stack, SLOTS, (36 + SLOTS), true);
                     }
                 } else {
                     return ItemStack.EMPTY;
@@ -190,7 +194,7 @@ public class CardHolderContainer extends AbstractContainerMenu {
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            if ((handler.getSlots() == SLOTS)) {
+            if (handler.getSlots() == SLOTS) {
                 addSlot(new CardHolderSlot(handler, index, x, y));
             } else {
                 addSlot(new SlotItemHandler(handler, index, x, y));

@@ -2,6 +2,7 @@ package com.direwolf20.laserio.common.network.packets;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
+import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.containers.CardRedstoneContainer;
@@ -27,9 +28,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
-import static com.direwolf20.laserio.common.blocks.LaserNode.SCREEN_LASERNODE;
-import static com.direwolf20.laserio.common.blocks.LaserNode.findCardHolders;
-
 public class PacketOpenNode {
     private BlockPos sourcePos;
     private byte side;
@@ -53,13 +51,13 @@ public class PacketOpenNode {
         public static void handle(PacketOpenNode msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer sender = ctx.get().getSender();
-                if (sender == null)
+                if (sender == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = sender.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
+                }
                 BlockPos pos;
                 if (container instanceof LaserNodeContainer)
                     pos = msg.sourcePos;
@@ -73,20 +71,20 @@ public class PacketOpenNode {
 
                 final BlockPos sourcePos = pos;
                 BlockEntity be = sender.level().getBlockEntity(sourcePos);
-                if (be == null || !(be instanceof BaseLaserBE))
+                if (be == null || !(be instanceof BaseLaserBE)) {
                     return;
-
+                }
                 ItemStack heldStack = sender.containerMenu.getCarried();
                 if (!heldStack.isEmpty()) {
                     // set it to empty, so it's doesn't get dropped
                     sender.containerMenu.setCarried(ItemStack.EMPTY);
                 }
                 be.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.values()[msg.side]).ifPresent(h -> {
-                    ItemStack cardHolder = findCardHolders(sender);
+                    ItemStack cardHolder = LaserNode.findFirstCardHolder(sender);
                     MenuProvider containerProvider = new MenuProvider() {
                         @Override
                         public Component getDisplayName() {
-                            return Component.translatable(SCREEN_LASERNODE);
+                            return Component.translatable(LaserNode.SCREEN_LASERNODE);
                         }
 
                         @Override
@@ -104,8 +102,6 @@ public class PacketOpenNode {
                         PacketHandler.sendVanillaPacket(sender, new ClientboundContainerSetSlotPacket(-1, -1, -1, heldStack));
                     }
                 });
-
-
             });
 
             ctx.get().setPacketHandled(true);

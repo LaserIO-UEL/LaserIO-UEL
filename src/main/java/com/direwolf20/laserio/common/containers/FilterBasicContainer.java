@@ -67,7 +67,7 @@ public class FilterBasicContainer extends AbstractContainerMenu {
         if (slotId >= 0) {
             ItemStack stackInSlot = slots.get(slotId).getItem();
             Item itemInSlot = stackInSlot.getItem();
-            if (slotId < SLOTS || (stackInSlot == player.getMainHandItem() && (itemInSlot instanceof BaseFilter || itemInSlot instanceof CardHolder))) {
+            if (slotId < SLOTS || (itemInSlot instanceof BaseFilter && stackInSlot == player.getMainHandItem()) || itemInSlot instanceof CardHolder) {
                 return;
             }
         }
@@ -93,7 +93,6 @@ public class FilterBasicContainer extends AbstractContainerMenu {
                 }
             }
         }
-
         return itemstack;
     }
 
@@ -141,7 +140,6 @@ public class FilterBasicContainer extends AbstractContainerMenu {
                 BlockEntity blockEntity = world.getBlockEntity(sourceContainer);
                 if (blockEntity instanceof LaserNodeBE)
                     ((LaserNodeBE) blockEntity).updateThisNode();
-
             }
         }
         super.removed(playerIn);

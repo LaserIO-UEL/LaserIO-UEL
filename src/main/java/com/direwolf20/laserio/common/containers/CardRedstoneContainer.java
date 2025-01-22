@@ -55,7 +55,7 @@ public class CardRedstoneContainer extends AbstractContainerMenu {
         if (slotId >= 0) {
             ItemStack stackInSlot = slots.get(slotId).getItem();
             Item itemInSlot = stackInSlot.getItem();
-            if (stackInSlot == player.getMainHandItem() && (itemInSlot instanceof BaseCard || itemInSlot instanceof CardHolder)) {
+            if ((itemInSlot instanceof BaseCard && stackInSlot == player.getMainHandItem()) || itemInSlot instanceof CardHolder) {
                 return;
             }
         }

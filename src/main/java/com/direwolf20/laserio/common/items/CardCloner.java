@@ -4,7 +4,6 @@ import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
-import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

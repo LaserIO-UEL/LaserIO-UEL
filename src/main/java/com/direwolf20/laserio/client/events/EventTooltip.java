@@ -128,7 +128,6 @@ public class EventTooltip {
                 }
             }
         }
-
     }
 
     private static void renderFilterStack(GuiGraphics guiGraphics, ItemStack itemStack, int x, int y) {

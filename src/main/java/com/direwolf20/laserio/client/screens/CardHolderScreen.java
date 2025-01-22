@@ -53,7 +53,7 @@ public class CardHolderScreen extends AbstractContainerScreen<CardHolderContaine
             if (hoveredSlot.hasItem() && hoveredSlot.getItem().getItem() instanceof BaseFilter) {
                 PacketHandler.sendToServer(new PacketOpenFilter(slot));
             } else {
-                PacketHandler.sendToServer(new PacketOpenCard(slot, new BlockPos(0, -9999, 0), false));
+                PacketHandler.sendToServer(new PacketOpenCard(slot, new BlockPos(0, -1000, 0), false));
             }
             return true;
         }

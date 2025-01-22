@@ -69,14 +69,14 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.denylist"), mouseX, mouseY);
         }
         cycleRenders++;
-        int availableItemsstartX = getGuiLeft() + 7;
-        int availableItemstartY = getGuiTop() + 47;
+        int availableItemsStartX = getGuiLeft() + 7;
+        int availableItemsStartY = getGuiTop() + 47;
         int color = 0x885B5B5B;
         PoseStack matrixStack = guiGraphics.pose();
         matrixStack.pushPose();
         RenderSystem.disableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
-        guiGraphics.fillGradient(availableItemsstartX - 2, availableItemstartY - 4, availableItemsstartX + 162, availableItemstartY + 110, color, color);
+        guiGraphics.fillGradient(availableItemsStartX - 2, availableItemsStartY - 4, availableItemsStartX + 162, availableItemsStartY + 110, color, color);
         RenderSystem.colorMask(true, true, true, true);
         matrixStack.popPose();
 
@@ -97,14 +97,14 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
         maxPages = Math.max((int) Math.ceil((double) tempTags.size() / tagsPerPage) - 1, 0);
         if (page > maxPages) page = maxPages;
         String pagesLabel = MagicHelpers.withSuffix(page + 1) + " / " + MagicHelpers.withSuffix(maxPages + 1);
-        guiGraphics.drawString(font, pagesLabel, (availableItemsstartX - 2) / 2 + (availableItemsstartX + 162) / 2 - font.width(pagesLabel) / 2, getGuiTop() + 160, Color.DARK_GRAY.getRGB(), false);
+        guiGraphics.drawString(font, pagesLabel, (availableItemsStartX - 2) / 2 + (availableItemsStartX + 162) / 2 - font.width(pagesLabel) / 2, getGuiTop() + 160, Color.DARK_GRAY.getRGB(), false);
 
         int itemStackMin = (page * tagsPerPage);
         int itemStackMax = Math.min((page * tagsPerPage) + tagsPerPage, tempTags.size());
 
         displayTags = tempTags.subList(itemStackMin, itemStackMax);
 
-        int tagStartY = availableItemstartY;
+        int tagStartY = availableItemsStartY;
 
         int slot = 0;
         overSlot = -1;
@@ -113,17 +113,17 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
             matrixStack.pushPose();
             matrixStack.scale(0.75f, 0.75f, 0.75f);
             int fontColor = stackInSlotTags.contains(tag) ? Color.BLUE.getRGB() : Color.DARK_GRAY.getRGB();
-            guiGraphics.drawString(font, tag, availableItemsstartX / 0.75f + 16, tagStartY / 0.75f, fontColor, false);
+            guiGraphics.drawString(font, tag, availableItemsStartX / 0.75f + 16, tagStartY / 0.75f, fontColor, false);
             matrixStack.popPose();
 
-            if (MiscTools.inBounds(availableItemsstartX, tagStartY - 2, 160, 8, mouseX, mouseY)) {
+            if (MiscTools.inBounds(availableItemsStartX, tagStartY - 2, 160, 8, mouseX, mouseY)) {
                 overSlot = slot;
                 color = -2130706433;// : 0xFF5B5B5B;
 
                 matrixStack.pushPose();
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
-                guiGraphics.fillGradient(availableItemsstartX - 1, tagStartY - 2, availableItemsstartX + 160, tagStartY + 8, color, color);
+                guiGraphics.fillGradient(availableItemsStartX - 1, tagStartY - 2, availableItemsStartX + 160, tagStartY + 8, color, color);
                 Tag tempTag = stackInSlot.getOrCreateTag().get(displayTags.get(overSlot));
                 if (tempTag != null) {
                     String tooltip = Objects.requireNonNull(stackInSlot.getOrCreateTag().get(displayTags.get(overSlot))).toString();
@@ -141,11 +141,11 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
 
-                int x1 = availableItemsstartX + 160;
+                int x1 = availableItemsStartX + 160;
                 int y1 = tagStartY + 10;
-                guiGraphics.hLine(availableItemsstartX - 2, x1 - 0, tagStartY - 2, color);
-                guiGraphics.hLine(availableItemsstartX - 2, x1 - 0, y1 - 3, color);
-                guiGraphics.vLine(availableItemsstartX - 2, tagStartY - 2, y1 - 2, color);
+                guiGraphics.hLine(availableItemsStartX - 2, x1 - 0, tagStartY - 2, color);
+                guiGraphics.hLine(availableItemsStartX - 2, x1 - 0, y1 - 3, color);
+                guiGraphics.vLine(availableItemsStartX - 2, tagStartY - 2, y1 - 2, color);
                 guiGraphics.vLine(x1 - 0, tagStartY - 2, y1 - 2, color);
 
                 RenderSystem.colorMask(true, true, true, true);
@@ -342,8 +342,6 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
         }
 
         if (hoveredSlot instanceof FilterBasicSlot) {
-
-
             // By splitting the stack we can get air easily :) perfect removal basically
             ItemStack stack = this.menu.getCarried();// getMinecraft().player.inventoryMenu.getCarried();
             stack = stack.copy().split(hoveredSlot.getMaxStackSize()); // Limit to slot limit

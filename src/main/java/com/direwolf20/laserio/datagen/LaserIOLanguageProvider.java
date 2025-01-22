@@ -1,11 +1,10 @@
 package com.direwolf20.laserio.datagen;
 
 import com.direwolf20.laserio.common.LaserIO;
+import com.direwolf20.laserio.setup.ModSetup;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
-
-import static com.direwolf20.laserio.setup.ModSetup.TAB_NAME;
 
 public class LaserIOLanguageProvider extends LanguageProvider {
     public LaserIOLanguageProvider(PackOutput output, String locale) {
@@ -14,7 +13,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add("itemGroup." + TAB_NAME, "LaserIO");
+        add("itemGroup." + ModSetup.TAB_NAME, LaserIO.MODNAME);
         add(Registration.LaserConnector.get(), "Laser Connector");
         add(Registration.LaserConnectorAdv.get(), "Advanced Laser Connector");
         add(Registration.LaserNode.get(), "Laser Node");
@@ -102,6 +101,12 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
         add("message.laserio.wrenchrange", "Connection exceeds maximum range of %d");
+        add("message.laserio.card_holder_pulling_enabled", "Card Holder pulling enabled");
+        add("message.laserio.card_holder_pulling_disabled", "Card Holder pulling disabled");
+
+        //Keybinds
+        add("key.laserio.open_card_holder", "Open Card Holder");
+        add("key.laserio.toggle_card_holder_pulling", "Toggle Card Holder Pulling");
 
         //Card Tooltips
         add("laserio.tooltip.item.show_settings", "Hold shift to show settings");

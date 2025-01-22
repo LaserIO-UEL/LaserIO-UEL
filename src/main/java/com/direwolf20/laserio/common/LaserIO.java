@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(LaserIO.MODID)
 public class LaserIO {
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
     public static final String MODID = "laserio";
+    public static final String MODNAME = "LaserIO";
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public LaserIO() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);

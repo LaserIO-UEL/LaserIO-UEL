@@ -7,7 +7,6 @@ import com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandl
 import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.LaserWrench;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
-import com.direwolf20.laserio.util.CuriosIntegrationUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,11 +34,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import top.theillusivec4.curios.api.CuriosApi;
 
 public class LaserNode extends BaseLaserBlock implements EntityBlock {
     //This makes the shape fit the model perfectly, but introduces issues with clicking on specific sides of the block
@@ -101,7 +103,7 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
                     else
                         direction = result.getDirection();
                     be.getCapability(ForgeCapabilities.ITEM_HANDLER, direction).ifPresent(h -> {
-                        ItemStack cardHolder = findCardHolders(player);
+                        ItemStack cardHolder = findFirstCardHolder(player);
                         if (!cardHolder.isEmpty()) CardHolder.getUUID(cardHolder);
                         MenuProvider containerProvider = new MenuProvider() {
                             @Override
@@ -145,8 +147,11 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
         return stack;
     }
 
-    public static ItemStack findCardHolders(Player player) {
-        ItemStack cardHolder = CuriosIntegrationUtil.findFirstCardHolderCuriosSlots(player);
+    public static ItemStack findFirstCardHolder(Player player) {
+        ItemStack cardHolder = ItemStack.EMPTY;
+        if (ModList.get().isLoaded("curios")) {
+            cardHolder = CuriosApi.getCuriosInventory(player).map(inv -> inv.findFirstCurio(stack -> stack.getItem() instanceof CardHolder).map(result -> result.stack()).orElse(ItemStack.EMPTY)).get();
+        }
         if (cardHolder.isEmpty()) {
             Inventory playerInventory = player.getInventory();
             for (int i = 0; i < playerInventory.items.size(); i++) {

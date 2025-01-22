@@ -8,14 +8,12 @@ import com.direwolf20.laserio.common.containers.LaserNodeContainer;
 import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
 import com.direwolf20.laserio.common.containers.customslot.LaserNodeSlot;
 import com.direwolf20.laserio.common.items.CardCloner;
-import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketCopyPasteCard;
 import com.direwolf20.laserio.common.network.packets.PacketOpenCard;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketToggleParticles;
-import com.direwolf20.laserio.util.CuriosIntegrationUtil;
 import com.direwolf20.laserio.util.MiscTools;
 import com.direwolf20.laserio.util.Vec2i;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -69,7 +67,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         super(container, inv, name);
         this.container = container;
         this.imageHeight = 181;
-        showCardHolderUI = container.cardHolder.isEmpty();
+        showCardHolderUI = !container.cardHolder.isEmpty();
         this.currentParticles = container.tile.getShowParticles();
     }
 
@@ -96,7 +94,6 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         for (int i = 0; i < leftWidgets.size(); i++) {
             addRenderableWidget(leftWidgets.get(i));
         }
-
     }
 
     @Override
@@ -108,8 +105,8 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        validateHolder();
         this.renderBackground(guiGraphics);
+        toggleHolderSlots();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         if (MiscTools.inBounds(particlesButton.getX(), particlesButton.getY(), particlesButton.getWidth(), particlesButton.getHeight(), mouseX, mouseY)) {
@@ -162,30 +159,8 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         }
     }
 
-    public boolean validateHolder() {
-        if (CuriosIntegrationUtil.isCardHolderInCuriosSlots(container.playerEntity, container.cardHolderUUID)) {
-            showCardHolderUI = true;
-            toggleHolderSlots();
-            return true;
-        }
-        Inventory playerInventory = container.playerEntity.getInventory();
-        for (int i = 0; i < playerInventory.items.size(); i++) {
-            ItemStack possibleCardHolder = playerInventory.items.get(i);
-            if (possibleCardHolder.getItem() instanceof CardHolder) {
-                if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
-                    showCardHolderUI = true;
-                    toggleHolderSlots();
-                    return true;
-                }
-            }
-        }
-        showCardHolderUI = false;
-        toggleHolderSlots();
-        return false;
-    }
-
     public void toggleHolderSlots() {
-        for (int i = 10; i < 10 + CardHolderContainer.SLOTS; i++) {
+        for (int i = LaserNodeContainer.CARDSLOTS; i < (LaserNodeContainer.CARDSLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (!(slot instanceof CardHolderSlot)) continue;

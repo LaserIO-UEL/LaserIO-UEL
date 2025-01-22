@@ -11,8 +11,6 @@ import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.setup.Registration;
-import com.direwolf20.laserio.util.CuriosIntegrationUtil;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,24 +53,24 @@ public class CardEnergyContainer extends AbstractContainerMenu {
     public CardEnergyContainer(int windowId, Inventory playerInventory, Player player, FriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, extraData.readItem());
         this.direction = extraData.readByte();
-        if (SLOTS == 1) {
-            this.cardHolder = LaserNode.findCardHolders(player);
-        }
+        cardHolder = (SLOTS == 1) ? LaserNode.findFirstCardHolder(player) : ItemStack.EMPTY;
     }
 
     public CardEnergyContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
         super(Registration.CardEnergy_Container.get(), windowId);
-        this.playerEntity = player;
+        playerEntity = player;
         if (SLOTS == 1) {
             this.handler = CardEnergy.getInventory(cardItem);
-            this.cardHolder = LaserNode.findCardHolders(player);
+            cardHolder = LaserNode.findFirstCardHolder(player);
+        } else {
+            cardHolder = ItemStack.EMPTY;
         }
         this.playerInventory = new InvWrapper(playerInventory);
         this.cardItem = cardItem;
         if (handler != null) {
             addSlotRange(handler, 0, 153, 5, 1, 18);
         }
-        if (cardHolder != null && !cardHolder.isEmpty()) {
+        if (!cardHolder.isEmpty()) {
             this.cardHolderHandler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
             addSlotBox(cardHolderHandler, 0, -92, 32, 5, 18, 3, 18);
             cardHolderUUID = CardHolder.getUUID(cardHolder);
@@ -102,7 +100,9 @@ public class CardEnergyContainer extends AbstractContainerMenu {
                         return;
                     }
                 }
-            } else if ((itemInSlot instanceof BaseCard && stackInSlot == player.getMainHandItem()) || (itemInSlot instanceof CardHolder && (SLOTS == 1 || stackInSlot == player.getMainHandItem()))) {
+            } else if (itemInSlot instanceof BaseCard && stackInSlot.equals(player.getMainHandItem())) {
+                return;
+            } else if (itemInSlot instanceof CardHolder && (stackInSlot.equals(player.getMainHandItem()) || CardHolder.getUUID(stackInSlot).equals(cardHolderUUID))) {
                 return;
             }
         }
@@ -111,19 +111,9 @@ public class CardEnergyContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        if (SLOTS == 1 && cardHolder.isEmpty() && cardHolderUUID != null) {
-            cardHolder = CuriosIntegrationUtil.findSpecificCardHolderCuriosSlots(playerIn, cardHolderUUID);
-            if (cardHolder.isEmpty()) {
-                Inventory playerInventory = playerEntity.getInventory();
-                for (int i = 0; i < playerInventory.items.size(); i++) {
-                    ItemStack possibleCardHolder = playerInventory.items.get(i);
-                    if (possibleCardHolder.getItem() instanceof CardHolder) {
-                        if (CardHolder.getUUID(possibleCardHolder).equals(cardHolderUUID)) {
-                            cardHolder = possibleCardHolder;
-                            break;
-                        }
-                    }
-                }
+        if (cardHolderUUID != null) {
+            if (!(cardHolder.getItem() instanceof CardHolder) || !CardHolder.getUUID(cardHolder).equals(cardHolderUUID)) {
+                return false;
             }
         }
         if (sourceContainer.equals(BlockPos.ZERO)) {
@@ -152,14 +142,14 @@ public class CardEnergyContainer extends AbstractContainerMenu {
 
             if (index < SLOTS) {
                 if (!cardHolder.isEmpty()) { //Do the below set of logic if we have a card holder, otherwise just try to move to inventory
-                    if (!this.moveItemStackTo(stack, SLOTS, SLOTS + CardHolderContainer.SLOTS, false)) { //Try the CardHolder First!
+                    if (!this.moveItemStackTo(stack, SLOTS, (SLOTS + CardHolderContainer.SLOTS), false)) { //Try the CardHolder First!
                         return ItemStack.EMPTY;
                     }
-                    if (!this.moveItemStackTo(stack, SLOTS + CardHolderContainer.SLOTS, 36 + SLOTS + CardHolderContainer.SLOTS, true)) {
+                    if (!this.moveItemStackTo(stack, (SLOTS + CardHolderContainer.SLOTS), (36 + SLOTS + CardHolderContainer.SLOTS), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else { //If no card holder, the slot targets are different
-                    if (!this.moveItemStackTo(stack, SLOTS, 36 + SLOTS, true)) {
+                    if (!this.moveItemStackTo(stack, SLOTS, (36 + SLOTS), true)) {
                         return ItemStack.EMPTY;
                     }
                 }

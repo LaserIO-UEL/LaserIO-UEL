@@ -9,6 +9,7 @@ import com.direwolf20.laserio.util.ItemStackHandlerProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -39,22 +40,26 @@ public class CardHolder extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-
-        if (player.isShiftKeyDown()) {
-            setActive(itemstack, !getActive(itemstack));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            if (player.isShiftKeyDown()) {
+                String translationKey = "message.laserio.card_holder_pulling_" + (CardHolder.getActive(itemStack) ? "disabled" : "enabled");
+                player.displayClientMessage(Component.translatable(translationKey), true);
+                player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
+            }
+            return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
         }
-
-        itemstack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
+        if (player.isShiftKeyDown()) {
+            setActive(itemStack, !getActive(itemStack));
+            return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
+        }
+        itemStack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
             NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, player, itemstack, h), Component.translatable("")), (buf -> {
-                buf.writeItem(itemstack);
+                    (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, player, itemStack, h), Component.translatable("")), (buf -> {
+                buf.writeItem(itemStack);
             }));
         });
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
     }
 
     @Override
@@ -81,8 +86,9 @@ public class CardHolder extends Item {
     }
 
     public static ItemStack addCardToInventory(ItemStack cardHolder, ItemStack card) {
-        if (card.getItem() instanceof BaseFilter && card.hasTag())
+        if (card.getItem() instanceof BaseFilter && card.hasTag()) {
             return card;
+        }
         IItemHandler handler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
         List<Integer> emptySlots = new ArrayList<>();
         for (int i = 0; i < handler.getSlots(); i++) {

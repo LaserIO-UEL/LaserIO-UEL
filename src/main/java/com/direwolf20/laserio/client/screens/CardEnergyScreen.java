@@ -9,7 +9,6 @@ import com.direwolf20.laserio.common.containers.CardHolderContainer;
 import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardItemSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
-import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
@@ -18,7 +17,6 @@ import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.setup.Config;
-import com.direwolf20.laserio.util.CuriosIntegrationUtil;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -77,20 +75,13 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         super(container, inv, name);
         this.container = container;
         this.card = container.cardItem;
-        this.showCardHolderUI = false;
-    }
-
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-
+        this.showCardHolderUI = !container.cardHolder.isEmpty();
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (CardEnergyContainer.SLOTS == 1) {
-            validateHolder();
-        }
         this.renderBackground(guiGraphics);
+        toggleHolderSlots();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         Button modeButton = buttons.get("mode");
@@ -164,28 +155,6 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         if (MiscTools.inBounds(limitButton.getX(), limitButton.getY(), limitButton.getWidth(), limitButton.getHeight(), mouseX, mouseY)) {
             guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.energylimit"), mouseX, mouseY);
         }
-    }
-
-    public boolean validateHolder() {
-        if (CuriosIntegrationUtil.isCardHolderInCuriosSlots(container.playerEntity, container.cardHolderUUID)) {
-            showCardHolderUI = true;
-            toggleHolderSlots();
-            return true;
-        }
-        Inventory playerInventory = container.playerEntity.getInventory();
-        for (int i = 0; i < playerInventory.items.size(); i++) {
-            ItemStack possibleCardHolder = playerInventory.items.get(i);
-            if (possibleCardHolder.getItem() instanceof CardHolder) {
-                if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
-                    showCardHolderUI = true;
-                    toggleHolderSlots();
-                    return true;
-                }
-            }
-        }
-        showCardHolderUI = false;
-        toggleHolderSlots();
-        return false;
     }
 
     public void toggleHolderSlots() {
@@ -266,9 +235,11 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         currentInsertLimitPercent = CardEnergy.getInsertLimitPercent(card);
         currentRedstoneMode = CardEnergy.getRedstoneMode(card);
         currentRedstoneChannel = BaseCard.getRedstoneChannel(card);
+        showCardHolderUI = !container.cardHolder.isEmpty();
 
-        if (CardEnergyContainer.SLOTS == 1)
+        if (CardEnergyContainer.SLOTS == 1) {
             lastOverclocker = container.getSlot(0).getItem();
+        }
 
         addAmtButton();
         addLimitButton();
@@ -471,6 +442,11 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
 
     private boolean showExtractLimit() {
         return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.EXTRACT;
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+
     }
 
     @Override

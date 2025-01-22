@@ -35,26 +35,26 @@ public class PacketUpdateFilter {
         public static void handle(PacketUpdateFilter msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer player = ctx.get().getSender();
-                if (player == null)
+                if (player == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = player.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
+                }
                 if (container instanceof CardItemContainer) {
                     ItemStack stack = container.slots.get(0).getItem();
                     if (stack.isEmpty()) return;
                     FilterBasic.setAllowList(stack, msg.allowList);
                     FilterBasic.setCompareNBT(stack, msg.compareNBT);
                 }
-                if (container instanceof FilterBasicContainer) {
-                    ItemStack stack = ((FilterBasicContainer) container).filterItem;
+                if (container instanceof FilterBasicContainer filterBasicContainer) {
+                    ItemStack stack = filterBasicContainer.filterItem;
                     FilterBasic.setAllowList(stack, msg.allowList);
                     FilterBasic.setCompareNBT(stack, msg.compareNBT);
                 }
-                if (container instanceof FilterCountContainer) {
-                    ItemStack stack = ((FilterCountContainer) container).filterItem;
+                if (container instanceof FilterCountContainer filterCountContainer) {
+                    ItemStack stack = filterCountContainer.filterItem;
                     FilterCount.setAllowList(stack, msg.allowList);
                     FilterCount.setCompareNBT(stack, msg.compareNBT);
                 }

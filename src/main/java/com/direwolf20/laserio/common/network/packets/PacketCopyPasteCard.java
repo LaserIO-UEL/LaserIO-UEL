@@ -55,11 +55,11 @@ public class PacketCopyPasteCard {
         // Create the packet
         ClientboundSoundPacket packet = new ClientboundSoundPacket(
                 soundEventHolder, // The sound event
-                SoundSource.MASTER, // The sound category
+                SoundSource.PLAYERS, // The sound category
                 x, y, z, // The sound location
                 1, // The volume, 1 is normal, higher is louder
                 1, // The pitch, 1 is normal, higher is higher pitch
-                1 // A random for some reason? (Some sounds have different variants, like the enchanting table success
+                1 // A random for some reason? (Some sounds have different variants, like the enchanting table success)
         );
 
         // Send the packet to the player
@@ -70,6 +70,9 @@ public class PacketCopyPasteCard {
         int returnCount = returnStack.getCount();
         if (returnCount == 0) {
             return 0;
+        }
+        if (container.cardHolder.isEmpty()) {
+            return returnCount;
         }
         Map<Integer, Integer> returnStackMap = new HashMap<>();
         for (int returnSlot = LaserNodeContainer.SLOTS; returnSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); returnSlot++) {
@@ -106,6 +109,9 @@ public class PacketCopyPasteCard {
         if (neededCount == 0) {
             return true;
         }
+        if (container.cardHolder.isEmpty()) {
+            return false;
+        }
         Map<Integer, Integer> foundStackMap = new HashMap<>();
         for (int getSlot = LaserNodeContainer.SLOTS; getSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); getSlot++) {
             ItemStack possibleStack = container.getSlot(getSlot).getItem();
@@ -136,21 +142,21 @@ public class PacketCopyPasteCard {
         public static void handle(PacketCopyPasteCard msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer player = ctx.get().getSender();
-                if (player == null)
+                if (player == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = player.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
-                if (!(container instanceof LaserNodeContainer))
+                }
+                if (!(container instanceof LaserNodeContainer)) {
                     return;
-
+                }
                 LaserNodeContainer laserNodeContainer = (LaserNodeContainer) container;
 
-                if (player.containerMenu.getCarried().isEmpty())
+                if (player.containerMenu.getCarried().isEmpty()) {
                     return;
-
+                }
                 ItemStack slotStack = container.getSlot(msg.slot).getItem();
                 ItemStack clonerStack = container.getCarried();
                 if (msg.copy) { //copy mode

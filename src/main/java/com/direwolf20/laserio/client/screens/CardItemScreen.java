@@ -10,7 +10,6 @@ import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardItemSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
 import com.direwolf20.laserio.common.containers.customslot.FilterBasicSlot;
-import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardItem;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
@@ -27,7 +26,6 @@ import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
 import com.direwolf20.laserio.setup.Config;
-import com.direwolf20.laserio.util.CuriosIntegrationUtil;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -96,13 +94,13 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         this.container = container;
         this.card = container.cardItem;
         this.filter = container.slots.get(0).getItem();
-        this.showCardHolderUI = container.cardHolder.isEmpty();
+        this.showCardHolderUI = !container.cardHolder.isEmpty();
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        validateHolder();
         this.renderBackground(guiGraphics);
+        toggleHolderSlots();
         toggleFilterSlots();
         if (renderChemicals) {
             guiGraphics = new LaserGuiGraphicsChemical(Minecraft.getInstance(), guiGraphics.bufferSource(), this);
@@ -211,28 +209,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         }
     }
 
-    public boolean validateHolder() {
-        if (CuriosIntegrationUtil.isCardHolderInCuriosSlots(container.playerEntity, container.cardHolderUUID)) {
-            showCardHolderUI = true;
-            toggleHolderSlots();
-            return true;
-        }
-        Inventory playerInventory = container.playerEntity.getInventory();
-        for (int i = 0; i < playerInventory.items.size(); i++) {
-            ItemStack possibleCardHolder = playerInventory.items.get(i);
-            if (possibleCardHolder.getItem() instanceof CardHolder) {
-                if (CardHolder.getUUID(possibleCardHolder).equals(container.cardHolderUUID)) {
-                    showCardHolderUI = true;
-                    toggleHolderSlots();
-                    return true;
-                }
-            }
-        }
-        showCardHolderUI = false;
-        toggleHolderSlots();
-        return false;
-    }
-
     public void toggleHolderSlots() {
         for (int i = (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
@@ -312,6 +288,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         currentRedstoneMode = BaseCard.getRedstoneMode(card);
         currentRedstoneChannel = BaseCard.getRedstoneChannel(card);
         currentAndMode = BaseCard.getAnd(card);
+        showCardHolderUI = !container.cardHolder.isEmpty();
         lastOverclockerCount = container.getSlot(1).getItem().getCount();
 
         showFilter = !(filter == null) && !filter.isEmpty() && !(filter.getItem() instanceof FilterTag);
