@@ -134,6 +134,10 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.filter.nbt.allow", "True");
         add("laserio.tooltip.item.filter.nbt.deny", "False");
 
+        //Advancement
+        add("laserio.advancement.root.title", "LaserIO");
+        add("laserio.advancement.root.description", "Obtain a Laser Node");
+
         //add("", "");
     }
 }
