@@ -26,7 +26,7 @@ public class KeybindHandler {
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
             LaserIO.MODNAME
-        );
+    );
     public static final KeyMapping TOGGLE_CARD_HOLDER_PULLING = new KeyMapping(
             "key.laserio.toggle_card_holder_pulling",
             KeyConflictContext.IN_GAME,
@@ -34,7 +34,7 @@ public class KeybindHandler {
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
             LaserIO.MODNAME
-        );
+    );
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.Key event) {

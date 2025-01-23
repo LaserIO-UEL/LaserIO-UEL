@@ -88,13 +88,13 @@ minecraft {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
-    
+
             //Patchouli
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-         
-             arg "-mixin.config=${mod_id}.mixins.json"
-             
+
+            arg "-mixin.config=${mod_id}.mixins.json"
+
             mods {
                 "${mod_id}" {
                     source sourceSets.main

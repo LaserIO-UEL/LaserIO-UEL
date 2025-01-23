@@ -13,7 +13,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -46,7 +45,7 @@ public class PacketCopyPasteCard {
         return new PacketCopyPasteCard(buffer.readInt(), buffer.readBoolean());
     }
 
-    public static void playSound(ServerPlayer player, Holder<SoundEvent> soundEventHolder) {
+    public static void playSound(ServerPlayer player, SoundEvent soundEvent) {
         // Get player's position
         double x = player.getX();
         double y = player.getY();
@@ -54,7 +53,7 @@ public class PacketCopyPasteCard {
 
         // Create the packet
         ClientboundSoundPacket packet = new ClientboundSoundPacket(
-                soundEventHolder, // The sound event
+                Holder.direct(soundEvent), // The sound event
                 SoundSource.PLAYERS, // The sound category
                 x, y, z, // The sound location
                 1, // The volume, 1 is normal, higher is louder
@@ -163,7 +162,7 @@ public class PacketCopyPasteCard {
                     CardCloner.setItemType(clonerStack, slotStack.getItem().toString());
                     CompoundTag compoundTag = slotStack.getTag() == null ? new CompoundTag() : slotStack.getTag();
                     CardCloner.saveSettings(clonerStack, compoundTag);
-                    playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT.getLocation().toString()))));
+                    playSound(player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
                 } else {
                     Item slotItem = slotStack.getItem();
                     if (slotItem.toString().equals(CardCloner.getItemType(clonerStack))) {
@@ -232,14 +231,13 @@ public class PacketCopyPasteCard {
                                 tempStack.setTag(compoundTag.copy());
                             }
                             container.getSlot(msg.slot).set(tempStack);
-                            playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.ENCHANTMENT_TABLE_USE.getLocation().toString()))));
+                            playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE);
                             ((LaserNodeContainer)container).tile.updateThisNode();
                         } else {
-                            playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.WAXED_SIGN_INTERACT_FAIL.getLocation().toString()))));
+                            playSound(player, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                         }
-                    }
-                    else {
-                        playSound(player, Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(SoundEvents.WAXED_SIGN_INTERACT_FAIL.getLocation().toString()))));
+                    } else {
+                        playSound(player, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                     }
                 }
             });

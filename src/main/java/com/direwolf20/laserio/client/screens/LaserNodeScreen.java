@@ -171,12 +171,11 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         if (hoveredSlot != null && container.getCarried().getItem() instanceof CardCloner) {
-            if (hoveredSlot instanceof LaserNodeSlot && !hoveredSlot.getItem().isEmpty())
-            if (btn == 0) { //Left click
-                PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), true));
-            }
-            if (btn == 1) { //Right click
-                PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), false));
+            if (hoveredSlot instanceof LaserNodeSlot && !hoveredSlot.getItem().isEmpty()) {
+                if (btn == 0) //Left click
+                    PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), true));
+                else if (btn == 1) //Right click
+                    PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), false));
             }
             return true;
         }
@@ -210,10 +209,9 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }
-
-        if (hoveredSlot == null || hoveredSlot.getItem().isEmpty() || !(hoveredSlot.getItem().getItem() instanceof BaseCard))
+        if (hoveredSlot == null || hoveredSlot.getItem().isEmpty() || !(hoveredSlot.getItem().getItem() instanceof BaseCard)) {
             return super.mouseClicked(x, y, btn);
-
+        }
         if (btn == 1 && hoveredSlot instanceof LaserNodeSlot) { //Right click
             int slot = hoveredSlot.getSlotIndex();
             PacketHandler.sendToServer(new PacketOpenCard(slot, container.tile.getBlockPos(), hasShiftDown()));
