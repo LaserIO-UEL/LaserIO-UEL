@@ -1,10 +1,11 @@
 package com.direwolf20.laserio.datagen;
 
 import com.direwolf20.laserio.common.LaserIO;
-import com.direwolf20.laserio.setup.ModSetup;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
+
+import static com.direwolf20.laserio.setup.ModSetup.TAB_NAME;
 
 public class LaserIOLanguageProvider extends LanguageProvider {
     public LaserIOLanguageProvider(PackOutput output, String locale) {
@@ -13,8 +14,7 @@ public class LaserIOLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        //Items names
-        add("itemGroup." + ModSetup.TAB_NAME, LaserIO.MODNAME);
+        add("itemGroup." + TAB_NAME, "LaserIO");
         add(Registration.LaserConnector.get(), "Laser Connector");
         add(Registration.LaserConnectorAdv.get(), "Advanced Laser Connector");
         add(Registration.LaserNode.get(), "Laser Node");
@@ -36,7 +36,6 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add(Registration.Overclocker_Node.get(), "Node Overclocker");
         add(Registration.Logistic_Overclocker_Card.get(), "Logistic Overclocker");
 
-        //Screens informations
         add("screen.laserio.extractamt", "Transfer Amount");
         add("screen.laserio.tickSpeed", "Speed (Ticks)");
 
@@ -102,7 +101,9 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("screen.laserio.nbttrue", "Match NBT");
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
-        //Cards tooltips
+        add("message.laserio.wrenchrange", "Connection exceeds maximum range of %d");
+
+        //Card Tooltips
         add("laserio.tooltip.item.show_settings", "Hold shift to show settings");
         add("laserio.tooltip.item.card.mode", "Mode: ");
         add("laserio.tooltip.item.card.channel", "Channel: ");
@@ -122,10 +123,10 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.tooltip.item.card.Overclockers", "Overclockers: ");
         add("laserio.tooltip.item.card.None", "None");
 
-        //Energy Overclockers tooltip
-        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
+        //Energy Overclockers Tooltip
+        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/t");
 
-        //Filters tooltips
+        //Filter Tooltips
         add("laserio.tooltip.item.filter.type", "Type: ");
         add("laserio.tooltip.item.filter.type.allow", "Allow");
         add("laserio.tooltip.item.filter.type.deny", "Deny");
@@ -144,6 +145,10 @@ public class LaserIOLanguageProvider extends LanguageProvider {
 
         //Curios Card Holder slot
         add("curios.identifier.card_holder", "Card Holder");
+
+        //Advancement
+        add("laserio.advancement.root.title", "LaserIO");
+        add("laserio.advancement.root.description", "Obtain a Laser Node");
 
         //add("", "");
     }

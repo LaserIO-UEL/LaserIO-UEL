@@ -1,15 +1,17 @@
 {
-  "parent": "minecraft:story/root",
   "display": {
     "icon": {
       "item": "laserio:laser_node"
     },
-    "title": "Thinking With Lasers",
-    "description": "Obtain a Laser Node",
+    "title": {
+      "translate": "laserio.advancement.root.title"
+    },
     "frame": "goal",
     "show_toast": false,
-    "announce_to_chat": true,
-    "hidden": false
+    "background": "minecraft:textures/block/quartz_block_top.png",
+    "description": {
+      "translate": "laserio.advancement.root.description"
+    }
   },
   "criteria": {
     "requirement": {
