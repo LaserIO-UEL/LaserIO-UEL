@@ -150,6 +150,10 @@ public class LaserIOLanguageProvider extends LanguageProvider {
         add("laserio.advancement.root.title", "LaserIO");
         add("laserio.advancement.root.description", "Obtain a Laser Node");
 
+        //Advancement
+        add("laserio.advancement.root.title", "LaserIO");
+        add("laserio.advancement.root.description", "Obtain a Laser Node");
+
         //add("", "");
     }
 }

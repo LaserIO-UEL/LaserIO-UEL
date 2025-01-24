@@ -25,6 +25,8 @@
   "laserio.advancement.root.title": "LaserIO",
   "key.laserio.open_card_holder": "Open Card Holder",
   "key.laserio.toggle_card_holder_pulling": "Toggle Card Holder Pulling",
+  "laserio.advancement.root.description": "Obtain a Laser Node",
+  "laserio.advancement.root.title": "LaserIO",
   "laserio.tooltip.item.card.Filter": "Filter: ",
   "laserio.tooltip.item.card.None": "None",
   "laserio.tooltip.item.card.Overclocker": "Overclocker: ",
