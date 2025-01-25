@@ -21,9 +21,9 @@ public class MyRenderType extends RenderType {
     }
 
     public static final RenderType LASER_MAIN_BEAM = create("MiningLaserMainBeam",
-            DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, false,
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder().setTextureState(new TextureStateShard(laserBeam2, false, false))
-                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_SHADER)
+                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setLayeringState(NO_LAYERING)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
@@ -33,9 +33,9 @@ public class MyRenderType extends RenderType {
                     .createCompositeState(false));
 
     public static final RenderType LASER_MAIN_ADDITIVE = create("MiningLaserAdditiveBeam",
-            DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, false,
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder().setTextureState(new TextureStateShard(laserBeamGlow, false, false))
-                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_SHADER)
+                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setLayeringState(VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
@@ -45,9 +45,9 @@ public class MyRenderType extends RenderType {
                     .createCompositeState(false));
 
     public static final RenderType LASER_MAIN_CORE = create("MiningLaserCoreBeam",
-            DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, false,
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder().setTextureState(new TextureStateShard(laserBeam, false, false))
-                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_SHADER)
+                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setLayeringState(VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
@@ -57,9 +57,9 @@ public class MyRenderType extends RenderType {
                     .createCompositeState(false));
 
     public static final RenderType CONNECTING_LASER = create("ConnectingLaser",
-            DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, false,
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder().setTextureState(new TextureStateShard(laserBeam, false, false))
-                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_SHADER)
+                    .setShaderState(ShaderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setLayeringState(VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
