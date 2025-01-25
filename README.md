@@ -8,10 +8,11 @@ As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!
 
 # Basic Features:
 - Chemical Cards for use with Mekanism chemicals (if Mekanism is installed)
-- Energy Cards maximum FE/operation is now configurable via config (default: 1,000,000 FE/operation)
-- Removal of standard Overclockers from Energy Cards
+- Maximum extraction values for each Card are now configurable via config
+- Removal of standard Overclockers from Energy Cards (default transfer rate: 1,000,000 FE/operation)
 - Additional features to Redstone Cards
 - Better JEI dragging integration for filtering fluids and chemicals
+- Curios integration and keybinds for the Card Holder
 - Automatic maximum extract value on Overclocker insert
 - Show particles button inside Nodes
 - Up to date guide book
