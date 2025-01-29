@@ -24,6 +24,7 @@ public class LaserIO {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public LaserIO() {
+        // Load config for dynamic items registration
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
         // Register the deferred registry

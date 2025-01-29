@@ -75,12 +75,12 @@ public class CardHolder extends Item {
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int itemSlot, boolean isSelected) {
-        //if (world.getDayTime() % 20 == 0) return;
-        if (entity instanceof Player player && getActive(stack)) {
+        if (!world.isClientSide() && entity instanceof Player player && getActive(stack)) {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack cardStack = player.getInventory().getItem(i);
-                if (cardStack.getItem() instanceof BaseCard || cardStack.getItem() instanceof BaseFilter || cardStack.getItem() instanceof OverclockerCard || cardStack.getItem() instanceof OverclockerNode)
+                if (cardStack.getItem() instanceof BaseCard || cardStack.getItem() instanceof BaseFilter || cardStack.getItem() instanceof OverclockerCard || cardStack.getItem() instanceof OverclockerNode) {
                     addCardToInventory(stack, cardStack);
+                }
             }
         }
     }
@@ -93,7 +93,9 @@ public class CardHolder extends Item {
         List<Integer> emptySlots = new ArrayList<>();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack stackInSlot = handler.getStackInSlot(i);
-            if (stackInSlot.isEmpty()) emptySlots.add(i);
+            if (stackInSlot.isEmpty()) {
+                emptySlots.add(i);
+            }
             if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(stackInSlot, card)) {
                 int j = stackInSlot.getCount() + card.getCount();
                 int maxSize = 64;
@@ -126,15 +128,18 @@ public class CardHolder extends Item {
 
     public static boolean getActive(ItemStack stack) {
         CompoundTag compound = stack.getTag();
-        if (compound == null || !compound.contains("active")) return false;
+        if (compound == null || !compound.contains("active")) {
+            return false;
+        }
         return compound.getBoolean("active");
     }
 
     public static boolean setActive(ItemStack stack, boolean active) {
-        if (!active)
+        if (!active) {
             stack.removeTagKey("active");
-        else
+        } else {
             stack.getOrCreateTag().putBoolean("active", active);
+        }
         return active;
     }
 }

@@ -6,6 +6,7 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @EventBusSubscriber
@@ -122,7 +123,7 @@ public class Config {
     }
 
     //For dynamic config
-    public static void loadConfig(ForgeConfigSpec spec, java.nio.file.Path path) {
+    public static void loadConfig(ForgeConfigSpec spec, Path path) {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()
