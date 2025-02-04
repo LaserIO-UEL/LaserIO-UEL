@@ -15,7 +15,7 @@ public class ExtractorCardCache extends BaseCardCache {
     public int remainingSleep;
     public boolean exact;
     public int roundRobin;
-    public boolean externallyManaged;
+    public int energyReceivedExternally;
 
     public ExtractorCardCache(Direction direction, ItemStack cardItem, int cardSlot, LaserNodeBE be) {
         super(direction, cardItem, cardSlot, be);
@@ -38,7 +38,7 @@ public class ExtractorCardCache extends BaseCardCache {
 
         this.exact = BaseCard.getExact(cardItem);
         this.roundRobin = BaseCard.getRoundRobin(cardItem);
-        this.externallyManaged = false;
+        this.energyReceivedExternally = 0;
     }
 
     public int decrementSleep() {

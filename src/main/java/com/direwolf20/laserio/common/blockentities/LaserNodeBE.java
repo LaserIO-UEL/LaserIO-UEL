@@ -1209,18 +1209,17 @@ public class LaserNodeBE extends BaseLaserBE {
         for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
             if (extractorCardCache.remainingSleep > 1) continue;
             if (!extractorCardCache.enabled) continue;
-            if (extractorCardCache.externallyManaged) continue;
+            if (extractorCardCache.energyReceivedExternally >= extractorCardCache.extractAmt) continue;
             if (countCardsHandled > nodeSideCache.overclockers) return totalAmtSent;
             if (extractorCardCache instanceof StockerCardCache) {
                 //No-Op
             } else {
                 if (extractorCardCache.cardType.equals(BaseCard.CardType.ENERGY)) {
                     int amtSent = sendReceivedEnergy(extractorCardCache, totalAmtNeeded, simulate);
-                    if (amtSent > 0) {
-                        countCardsHandled++;
-                        if (!simulate) {
-                            extractorCardCache.externallyManaged = true;
-                        }
+                    if (amtSent <= 0) continue;
+                    countCardsHandled++;
+                    if (!simulate) {
+                        extractorCardCache.energyReceivedExternally += amtSent;
                     }
                     totalAmtNeeded -= amtSent;
                     totalAmtSent += amtSent;
@@ -1234,7 +1233,10 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public int sendReceivedEnergy(ExtractorCardCache extractorCardCache, int receiveAmt, boolean simulate) {
-        int totalAmtNeeded = Math.min(extractorCardCache.extractAmt, receiveAmt);
+        int totalAmtNeeded = Math.min(extractorCardCache.extractAmt - extractorCardCache.energyReceivedExternally, receiveAmt);
+        if (totalAmtNeeded <= 0) {
+            return 0;
+        }
         int totalFit = 0;
         List<InserterCardCache> inserterCardCaches = getChannelMatchInserters(extractorCardCache);
         int roundRobin = -1;
@@ -1245,8 +1247,6 @@ public class LaserNodeBE extends BaseLaserBE {
         for (InserterCardCache inserterCardCache : inserterCardCaches) {
             LaserNodeEnergyHandler laserNodeEnergyHandler = getLaserNodeHandlerEnergy(inserterCardCache);
             if (laserNodeEnergyHandler == null) continue;
-            BlockEntity targetBE = level.getBlockEntity(laserNodeEnergyHandler.be.getBlockPos().relative(inserterCardCache.direction));
-            if (targetBE instanceof LaserNodeBE) continue; //Don't let laser nodes insert into other laser nodes in this way
             IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
             int desired;
             if (inserterCardCache.insertLimit != 100) {
@@ -1365,8 +1365,8 @@ public class LaserNodeBE extends BaseLaserBE {
 
     /** Extractor Cards call this, and try to find an inserter card to send their items to **/
     public boolean sendEnergy(ExtractorCardCache extractorCardCache) {
-        if (extractorCardCache.externallyManaged) {
-            extractorCardCache.externallyManaged = false;
+        if (extractorCardCache.energyReceivedExternally != 0) {
+            extractorCardCache.energyReceivedExternally = 0;
             return true;
         }
         BlockPos adjacentPos = getBlockPos().relative(extractorCardCache.direction);
