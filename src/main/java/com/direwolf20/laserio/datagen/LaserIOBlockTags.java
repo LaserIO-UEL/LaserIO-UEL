@@ -23,9 +23,4 @@ public class LaserIOBlockTags extends BlockTagsProvider {
                 .add(Registration.LaserConnector.get())
                 .add(Registration.LaserConnectorAdv.get());
     }
-
-    @Override
-    public String getName() {
-        return "LaserIO Tags";
-    }
 }

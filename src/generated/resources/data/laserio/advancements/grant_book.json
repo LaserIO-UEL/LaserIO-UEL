@@ -1,0 +1,39 @@
+{
+  "advancements": [
+    {
+      "advancement": {
+        "criteria": {
+          "obtain_laser_node": {
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "laserio:laser_node"
+                  ]
+                }
+              ]
+            },
+            "trigger": "minecraft:inventory_changed"
+          }
+        },
+        "requirements": [
+          [
+            "obtain_laser_node"
+          ]
+        ],
+        "rewards": {
+          "loot": [
+            "laserio:advancement_rewards/grant_book"
+          ]
+        },
+        "sends_telemetry_event": true
+      },
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "patchouli"
+        }
+      ]
+    }
+  ]
+}

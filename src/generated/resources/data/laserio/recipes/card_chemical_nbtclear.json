@@ -11,7 +11,7 @@
       "recipe": {
         "type": "laserio:cardclear",
         "category": "misc",
-        "group": "laserio",
+        "group": "laserio_cards",
         "ingredients": [
           {
             "item": "laserio:card_chemical"

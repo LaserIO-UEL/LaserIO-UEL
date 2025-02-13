@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "group": "laserio",
+  "group": "laserio_filters",
   "ingredients": [
     {
       "item": "laserio:filter_nbt"

@@ -11,7 +11,7 @@
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "category": "misc",
-        "group": "laserio",
+        "group": "laserio_cards",
         "key": {
           "g": {
             "tag": "forge:nuggets/gold"

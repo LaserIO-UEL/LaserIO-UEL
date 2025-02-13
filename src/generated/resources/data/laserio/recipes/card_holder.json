@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "group": "laserio",
+  "group": "laserio_tools",
   "key": {
     "b": {
       "item": "laserio:logic_chip"

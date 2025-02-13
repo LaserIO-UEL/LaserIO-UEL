@@ -1,15 +1,21 @@
-package com.direwolf20.laserio.datagen;
+package com.direwolf20.laserio.datagen.loot;
 
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.setup.Registration;
-import net.minecraft.data.loot.packs.VanillaBlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class LaserIOLootTable extends VanillaBlockLoot {
+public class LaserIOBlockLootTables extends BlockLootSubProvider {
+    public LaserIOBlockLootTables() {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+    }
+
     @Override
     protected void generate() {
         dropSelf(Registration.LaserNode.get());

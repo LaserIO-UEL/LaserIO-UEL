@@ -37,7 +37,6 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('q', Tags.Items.STORAGE_BLOCKS_QUARTZ)
                 .define('g', Tags.Items.NUGGETS_GOLD)
                 .define('c', Items.CLAY_BALL)
-                .group("laserio")
                 .unlockedBy("has_quartz", InventoryChangeTrigger.TriggerInstance.hasItems(Items.QUARTZ_BLOCK))
                 .save(consumer);
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(Registration.Logic_Chip_Raw.get()), RecipeCategory.MISC,
@@ -54,7 +53,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('i', Tags.Items.INGOTS_IRON)
                 .define('r', Tags.Items.DUSTS_REDSTONE)
                 .define('b', Registration.Logic_Chip.get())
-                .group("laserio")
+                .group("laserio_network_blocks")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.LaserConnectorAdv.get(), 1)
@@ -66,7 +65,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('i', Tags.Items.INGOTS_GOLD)
                 .define('r', Tags.Items.DUSTS_REDSTONE)
                 .define('b', Registration.LaserConnector_ITEM.get())
-                .group("laserio")
+                .group("laserio_network_blocks")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.LaserNode.get(), 1)
@@ -76,8 +75,8 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('i', Tags.Items.INGOTS_IRON)
                 .define('g', Tags.Items.GLASS_PANES)
                 .define('b', Registration.LaserConnector.get())
-                .group("laserio")
-                .unlockedBy("has_logic_connector", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.LaserConnector.get()))
+                .group("laserio_network_blocks")
+                .unlockedBy("has_laser_connector", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.LaserConnector.get()))
                 .save(consumer);
 
         //Misc Items
@@ -87,7 +86,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .pattern(" i ")
                 .define('b', Registration.Logic_Chip.get())
                 .define('i', Tags.Items.INGOTS_IRON)
-                .group("laserio")
+                .group("laserio_tools")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Holder.get(), 1)
@@ -97,7 +96,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('b', Registration.Logic_Chip.get())
                 .define('i', Tags.Items.INGOTS_IRON)
                 .define('c', Tags.Items.CHESTS)
-                .group("laserio")
+                .group("laserio_tools")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Cloner.get(), 1)
@@ -107,7 +106,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('b', Registration.Logic_Chip.get())
                 .define('i', Tags.Items.INGOTS_IRON)
                 .define('c', Items.PAPER)
-                .group("laserio")
+                .group("laserio_tools")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
 
@@ -121,7 +120,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('g', Tags.Items.NUGGETS_GOLD)
                 .define('l', Tags.Items.GEMS_LAPIS)
                 .define('q', Tags.Items.GEMS_QUARTZ)
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Fluid.get(), 1)
@@ -133,7 +132,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('g', Tags.Items.NUGGETS_GOLD)
                 .define('l', Items.BUCKET)
                 .define('q', Tags.Items.GEMS_QUARTZ)
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Energy.get(), 1)
@@ -145,7 +144,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('g', Tags.Items.NUGGETS_GOLD)
                 .define('l', Tags.Items.STORAGE_BLOCKS_REDSTONE)
                 .define('q', Tags.Items.GEMS_QUARTZ)
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Card_Redstone.get(), 1)
@@ -156,7 +155,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('p', Registration.Logic_Chip.get())
                 .define('g', Tags.Items.NUGGETS_GOLD)
                 .define('q', Tags.Items.GEMS_QUARTZ)
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
 
@@ -173,7 +172,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                             .define('g', Tags.Items.NUGGETS_GOLD)
                             .define('l', LaserIOItemTags.CIRCUITS_BASIC)
                             .define('q', Tags.Items.GEMS_QUARTZ)
-                            .group("laserio")
+                            .group("laserio_cards")
                             .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                             .save(t))
                 .generateAdvancement(new ResourceLocation(LaserIO.MODID, "recipes/misc/" + Registration.Card_Chemical.getId().getPath()))
@@ -187,31 +186,31 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('i', Items.IRON_BARS)
                 .define('q', Registration.Logic_Chip.get())
                 .define('g', Tags.Items.GLASS_PANES)
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Count.get(), 1)
                 .requires(Registration.Filter_Basic.get(), 1)
                 .requires(Items.OBSERVER, 1)
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_basic", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Basic.get()))
                 .save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Tag.get(), 1)
                 .requires(Registration.Filter_Basic.get(), 1)
                 .requires(Items.PAPER, 1)
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_basic", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Basic.get()))
                 .save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_NBT.get(), 1)
                 .requires(Registration.Filter_Basic.get(), 1)
                 .requires(Items.WHITE_WOOL, 1)
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_basic", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Basic.get()))
                 .save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Mod.get(), 1)
                 .requires(Registration.Filter_Basic.get(), 1)
                 .requires(Items.BOOK, 1)
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_basic", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Basic.get()))
                 .save(consumer);
 
@@ -223,7 +222,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('r', Tags.Items.DUSTS_REDSTONE)
                 .define('p', Registration.Logic_Chip.get())
                 .define('g', Tags.Items.GEMS_DIAMOND)
-                .group("laserio")
+                .group("laserio_overclockers")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.Logistic_Overclocker_Card.get(), 1)
@@ -233,29 +232,29 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .define('r', Tags.Items.DUSTS_REDSTONE)
                 .define('p', Registration.Logic_Chip.get())
                 .define('g', Tags.Items.INGOTS_GOLD)
-                .group("laserio")
+                .group("laserio_overclockers")
                 .unlockedBy("has_logic_chip", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Logic_Chip.get()))
                 .save(consumer);
 
         //Cards NBT Clearing Recipes
         CardClearRecipeBuilder.shapeless(Registration.Card_Item.get())
                 .requires(Registration.Card_Item.get())
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_card_item", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Card_Item.get()))
                 .save(consumer, Registration.Card_Item.getId() + "_nbtclear");
         CardClearRecipeBuilder.shapeless(Registration.Card_Fluid.get())
                 .requires(Registration.Card_Fluid.get())
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_card_fluid", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Card_Fluid.get()))
                 .save(consumer, Registration.Card_Fluid.getId() + "_nbtclear");
         CardClearRecipeBuilder.shapeless(Registration.Card_Energy.get())
                 .requires(Registration.Card_Energy.get())
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_card_energy", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Card_Energy.get()))
                 .save(consumer, Registration.Card_Energy.getId() + "_nbtclear");
         CardClearRecipeBuilder.shapeless(Registration.Card_Redstone.get())
                 .requires(Registration.Card_Redstone.get())
-                .group("laserio")
+                .group("laserio_cards")
                 .unlockedBy("has_card_redstone", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Card_Redstone.get()))
                 .save(consumer, Registration.Card_Redstone.getId() + "_nbtclear");
 
@@ -265,7 +264,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
                 .addRecipe(t ->
                     CardClearRecipeBuilder.shapeless(Registration.Card_Chemical.get())
                             .requires(Registration.Card_Chemical.get())
-                            .group("laserio")
+                            .group("laserio_cards")
                             .unlockedBy("has_card_chemical", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Card_Chemical.get()))
                             .save(t))
                 .generateAdvancement(new ResourceLocation(LaserIO.MODID, "recipes/misc/" + Registration.Card_Chemical.getId().getPath() + "_nbtclear"))
@@ -274,27 +273,27 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
         //Filters NBT Clearing Recipes
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Basic.get())
                 .requires(Registration.Filter_Basic.get())
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_basic", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Basic.get()))
                 .save(consumer, Registration.Filter_Basic.getId() + "_nbtclear");
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Count.get())
                 .requires(Registration.Filter_Count.get())
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_count", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Count.get()))
                 .save(consumer, Registration.Filter_Count.getId() + "_nbtclear");
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Tag.get())
                 .requires(Registration.Filter_Tag.get())
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_tag", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Tag.get()))
                 .save(consumer, Registration.Filter_Tag.getId() + "_nbtclear");
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_NBT.get())
                 .requires(Registration.Filter_NBT.get())
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_nbt_tag", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_NBT.get()))
                 .save(consumer, Registration.Filter_NBT.getId() + "_nbtclear");
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.Filter_Mod.get())
                 .requires(Registration.Filter_Mod.get())
-                .group("laserio")
+                .group("laserio_filters")
                 .unlockedBy("has_filter_mod", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.Filter_Mod.get()))
                 .save(consumer, Registration.Filter_Mod.getId() + "_nbtclear");
     }
