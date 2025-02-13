@@ -150,7 +150,7 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
     public static ItemStack findFirstCardHolder(Player player) {
         ItemStack cardHolder = ItemStack.EMPTY;
         if (ModList.get().isLoaded("curios")) {
-            cardHolder = CuriosApi.getCuriosInventory(player).map(inv -> inv.findFirstCurio(stack -> stack.getItem() instanceof CardHolder).map(result -> result.stack()).orElse(ItemStack.EMPTY)).get();
+            cardHolder = CuriosApi.getCuriosInventory(player).map(inv -> inv.findFirstCurio(stack -> stack.getItem() instanceof CardHolder).map(result -> result.stack()).orElse(ItemStack.EMPTY)).orElse(ItemStack.EMPTY);
         }
         if (cardHolder.isEmpty()) {
             Inventory playerInventory = player.getInventory();
