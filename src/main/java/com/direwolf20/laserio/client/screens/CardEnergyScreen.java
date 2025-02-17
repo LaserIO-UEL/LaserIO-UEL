@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/energycard_" + ((CardEnergyContainer.SLOTS == 0) ? "no_" : "") + "slot.png");
+    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/" + ((CardEnergyContainer.SLOTS == 0) ? "redstone" : "energy") + "card.png");
 
     protected final CardEnergyContainer container;
     protected byte currentMode;
