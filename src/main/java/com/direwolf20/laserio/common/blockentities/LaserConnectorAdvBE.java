@@ -48,11 +48,9 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
         if (getPartnerDimBlockPos() != null) { //Advanced Connections are 1-1
             removePartnerConnection();
         }
-
         if (be.getPartnerDimBlockPos() != null) { //Advanced Connections are 1-1
             be.removePartnerConnection();
         }
-
         setPartnerDimBlockPos(connectingDimPos); // Add that node to this one
         be.setPartnerDimBlockPos(new DimBlockPos(getLevel(), getBlockPos())); // Add this node to that one
         if (getColor().equals(getDefaultColor()) && !(be.getColor().equals(be.getDefaultColor())))
@@ -62,7 +60,6 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
         else
             setColor(be.getColor(), getWrenchAlpha());
         discoverAllNodes(); //Re discover this new network
-
     }
 
     /**

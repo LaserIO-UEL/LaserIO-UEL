@@ -213,9 +213,7 @@ public class ClientSetup {
     public static void blockColors(RegisterColorHandlersEvent.Block event) {
         event.register(
                 (state, env, pos, index) -> {
-                    assert env != null;
-                    assert pos != null;
-                    if (env.getBlockEntity(pos) instanceof LaserNodeBE laserNodeBE) {
+                    if (env != null && pos != null && env.getBlockEntity(pos) instanceof LaserNodeBE laserNodeBE) {
                         Color color = laserNodeBE.getColor();
                         return FastColor.ARGB32.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
                     }
@@ -225,9 +223,7 @@ public class ClientSetup {
         );
         event.register(
                 (state, env, pos, index) -> {
-                    assert env != null;
-                    assert pos != null;
-                    if (env.getBlockEntity(pos) instanceof LaserConnectorBE laserConnectorBE) {
+                    if (env != null && pos != null && env.getBlockEntity(pos) instanceof LaserConnectorBE laserConnectorBE) {
                         Color color = laserConnectorBE.getColor();
                         return FastColor.ARGB32.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
                     }
@@ -237,9 +233,7 @@ public class ClientSetup {
         );
         event.register(
                 (state, env, pos, index) -> {
-                    assert env != null;
-                    assert pos != null;
-                    if (env.getBlockEntity(pos) instanceof LaserConnectorAdvBE laserConnectorAdvBE) {
+                    if (env != null && pos != null && env.getBlockEntity(pos) instanceof LaserConnectorAdvBE laserConnectorAdvBE) {
                         Color color = laserConnectorAdvBE.getColor();
                         return FastColor.ARGB32.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
                     }

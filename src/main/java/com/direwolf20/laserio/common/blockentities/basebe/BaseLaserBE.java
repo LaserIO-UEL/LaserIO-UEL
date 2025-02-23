@@ -50,8 +50,9 @@ public class BaseLaserBE extends BlockEntity {
     public void setColor(Color color, int wrenchAlpha) {
         laserColor = color;
         this.wrenchAlpha = wrenchAlpha;
-        if (level != null)
+        if (level != null) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 8);
+        }
     }
 
     public Color getColor() {
