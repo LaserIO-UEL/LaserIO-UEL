@@ -7,7 +7,6 @@ import com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandl
 import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.LaserWrench;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -182,6 +181,7 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
         };
     }
 
+    @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         //System.out.println("Neighbor changed at: " + pos + " from: " + fromPos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -218,8 +218,9 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
     public int getDirectSignal(BlockState pBlockState, BlockGetter pBlockAccess, BlockPos pPos, Direction pSide) {
         BlockEntity blockEntity = pBlockAccess.getBlockEntity(pPos);
         if (blockEntity instanceof LaserNodeBE laserNodeBE) {
-            if (laserNodeBE.getRedstoneSideStrong(pSide.getOpposite()))
+            if (laserNodeBE.getRedstoneSideStrong(pSide.getOpposite())) {
                 return laserNodeBE.getRedstoneSide(pSide.getOpposite());
+            }
         }
         return 0;
     }

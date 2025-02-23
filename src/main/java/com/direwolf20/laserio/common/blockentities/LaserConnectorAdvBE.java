@@ -44,7 +44,6 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
      * @param be               The block entity being connected to this one (And vice versa)
      *                         Connects This Pos -> Target Pos, and connects Target Pos -> This pos
      */
-
     public void addPartnerConnection(DimBlockPos connectingDimPos, LaserConnectorAdvBE be) {
         if (getPartnerDimBlockPos() != null) { //Advanced Connections are 1-1
             removePartnerConnection();
@@ -69,7 +68,6 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
     /**
      * Disconnects This Pos from Target Pos, and disconnects Target Pos from This pos
      */
-
     public void removePartnerConnection() {
         if (getPartnerDimBlockPos() != null) {
             DimBlockPos partnerDimPos = getPartnerDimBlockPos();

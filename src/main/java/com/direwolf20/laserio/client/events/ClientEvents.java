@@ -6,6 +6,7 @@ import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
 import com.direwolf20.laserio.common.blocks.LaserConnectorAdv;
 import com.direwolf20.laserio.common.items.LaserWrench;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.VectorHelper;
 import net.minecraft.client.Minecraft;
@@ -22,27 +23,25 @@ import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import static com.direwolf20.laserio.client.events.RenderGUIOverlay.renderLocation;
-
 public class ClientEvents {
     @SubscribeEvent
     static void renderWorldLastEvent(RenderLevelStageEvent evt) {
         if (evt.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             return;
         }
-
-        Player myplayer = Minecraft.getInstance().player;
-
-        ItemStack myItem = getWrench(myplayer);
-        if (myItem.getItem() instanceof LaserWrench) {
-            DimBlockPos selectedDimPos = LaserWrench.getConnectionPos(myItem, myplayer.level());
-            if (selectedDimPos != null && myplayer.level().dimension().equals(selectedDimPos.levelKey)) {
-                BlockEntity be = myplayer.level().getBlockEntity(selectedDimPos.blockPos);
-                if (!selectedDimPos.blockPos.equals(BlockPos.ZERO) && (be instanceof BaseLaserBE))
-                    BlockOverlayRender.renderSelectedBlock(evt, selectedDimPos.blockPos, (BaseLaserBE) be);
+        Player player = Minecraft.getInstance().player;
+        ItemStack wrench = getWrench(player);
+        if (!wrench.isEmpty()) {
+            Level level = player.level();
+            DimBlockPos selectedDimPos = LaserWrench.getConnectionPos(wrench, level);
+            if (selectedDimPos != null && level.dimension().equals(selectedDimPos.levelKey)) {
+                BlockPos selectedPos = selectedDimPos.blockPos;
+                BlockEntity selectedBE = level.getBlockEntity(selectedPos);
+                if (selectedBE instanceof BaseLaserBE baseLaserBE) {
+                    BlockOverlayRender.renderSelectedBlock(evt, selectedPos, baseLaserBE);
+                }
             }
         }
-
         //DelayedRenderer Renders
         DelayedRenderer.render(evt.getPoseStack());
         DelayedRenderer.renderConnections(evt.getPoseStack());
@@ -62,21 +61,23 @@ public class ClientEvents {
     @SubscribeEvent
     static void renderGUIOverlay(CustomizeGuiOverlayEvent.DebugText evt) {
         Player player = Minecraft.getInstance().player;
+        if (getWrench(player).isEmpty()) {
+            return;
+        }
+        BlockHitResult lookingAt = VectorHelper.getLookingAt(player, ClipContext.Fluid.NONE, Config.MAX_INTERACTION_RANGE.get());
+        if (lookingAt == null) {
+            return;
+        }
         Level level = player.level();
-        ItemStack wrench = getWrench(player);
-        if (!(wrench.getItem() instanceof LaserWrench)) {
+        BlockPos blockPos = lookingAt.getBlockPos();
+        if (!(level.getBlockState(blockPos).getBlock() instanceof LaserConnectorAdv)) {
             return;
         }
-        int range = 10; // How far away you can look at blocks from
-        BlockHitResult lookingAt = VectorHelper.getLookingAt(player, ClipContext.Fluid.NONE, range);
-        if (lookingAt == null || !((level.getBlockState(VectorHelper.getLookingAt(player, wrench, range).getBlockPos()).getBlock() instanceof LaserConnectorAdv))) {
-            return;
-        }
-        BlockEntity blockEntity = level.getBlockEntity(lookingAt.getBlockPos());
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof LaserConnectorAdvBE laserConnectorAdvBE) {
             GuiGraphics guiGraphics = evt.getGuiGraphics();
             Font font = Minecraft.getInstance().font;
-            renderLocation(font, guiGraphics, laserConnectorAdvBE);
+            RenderGUIOverlay.renderLocation(font, guiGraphics, laserConnectorAdvBE);
         }
     }
 }

@@ -18,6 +18,10 @@
       "text": "The currently selected block is highlighted green."
     },
     {
+      "type": "patchouli:text",
+      "text": "Linking Nodes one by one after you placed them can be tedious; luckily the Laser Wrench can automatically do that for you!$(br2)While placing Nodes, holding the Laser Wrench in your offhand automatically connects each node to the previously placed one!$(br2)Note: this feature works with (Advanced) Laser Connectors as well!"
+    },
+    {
       "type": "patchouli:crafting",
       "title": "Laser Wrench",
       "recipe": "laserio:laser_wrench"

@@ -102,6 +102,16 @@ public class LaserIOLanguage extends LanguageProvider {
         add("screen.laserio.nbttrue", "Match NBT");
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
+        //Items tooltips
+        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
+        add("laserio.tooltip.item.show_details", "Hold shift to show details");
+        add("laserio.tooltip.item.laser_wrench.select_node", "Select Node: ");
+        add("laserio.tooltip.item.laser_wrench.select_node.keys", "Shift + R-Click");
+        add("laserio.tooltip.item.laser_wrench.link_node", "Link Node: ");
+        add("laserio.tooltip.item.laser_wrench.link_node.keys", "R-Click");
+        add("laserio.tooltip.item.laser_wrench.autolink_node", "Auto-link Node: ");
+        add("laserio.tooltip.item.laser_wrench.autolink_node.keys", "Offhand + Place Node");
+
         //Cards tooltips
         add("laserio.tooltip.item.show_settings", "Hold shift to show settings");
         add("laserio.tooltip.item.card.mode", "Mode: ");
@@ -121,9 +131,6 @@ public class LaserIOLanguage extends LanguageProvider {
         add("laserio.tooltip.item.card.Overclocker", "Overclocker: ");
         add("laserio.tooltip.item.card.Overclockers", "Overclockers: ");
         add("laserio.tooltip.item.card.None", "None");
-
-        //Energy Overclockers tooltip
-        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
 
         //Filters tooltips
         add("laserio.tooltip.item.filter.type", "Type: ");

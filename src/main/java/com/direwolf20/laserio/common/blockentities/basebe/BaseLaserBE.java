@@ -161,7 +161,6 @@ public class BaseLaserBE extends BlockEntity {
      * @param be            The block entity being connected to this one (And vice versa)
      *                      Connects This Pos -> Target Pos, and connects Target Pos -> This pos
      */
-
     public void addConnection(BlockPos connectingPos, BaseLaserBE be) {
         addNode(connectingPos); // Add that node to this one
         be.addNode(getBlockPos()); // Add this node to that one
@@ -180,7 +179,6 @@ public class BaseLaserBE extends BlockEntity {
      * @param be            The block entity being disconnected from this one (And vice versa)
      *                      Disconnects This Pos from Target Pos, and disconnects Target Pos from This pos
      */
-
     public void removeConnection(BlockPos connectingPos, BaseLaserBE be) {
         removeNode(connectingPos); // Remove that node from this one
         be.removeNode(getBlockPos()); // Remove this node from that one
