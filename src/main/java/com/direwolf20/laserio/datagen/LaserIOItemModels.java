@@ -19,7 +19,7 @@ public class LaserIOItemModels extends ItemModelProvider {
         withExistingParent(Registration.LaserConnectorAdv_ITEM.getId().getPath(), modLoc("block/laser_connector_advanced"));
 
         //Item items
-        singleTexture(Registration.Laser_Wrench.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/laser_wrench"));
+        singleTexture(Registration.Laser_Wrench.getId().getPath(), mcLoc("item/handheld"), "layer0", modLoc("item/laser_wrench"));
         singleTexture(Registration.Card_Holder.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_holder"));
         singleTexture(Registration.Card_Cloner.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_cloner"));
         //singleTexture(Registration.Card_Item.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/card_item"));
