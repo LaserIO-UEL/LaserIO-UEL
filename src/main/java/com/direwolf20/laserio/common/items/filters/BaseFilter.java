@@ -41,21 +41,20 @@ public class BaseFilter extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(Component.translatable("laserio.tooltip.item.show_settings")
-                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
         } else {
-            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY.getColor());
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY);
             boolean allowMode = getAllowList(stack);
             String allowString = allowMode ? "laserio.tooltip.item.filter.type.allow" : "laserio.tooltip.item.filter.type.deny";
-            int allowColor = allowMode ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor();
+            ChatFormatting allowColor = allowMode ? ChatFormatting.GREEN : ChatFormatting.RED;
             toWrite.append(tooltipMaker(allowString, allowColor));
             tooltip.add(toWrite);
 
             if (!(stack.getItem() instanceof FilterTag) && !(stack.getItem() instanceof FilterNBT)) {
-                toWrite = tooltipMaker("laserio.tooltip.item.filter.nbt", ChatFormatting.GRAY.getColor());
+                toWrite = tooltipMaker("laserio.tooltip.item.filter.nbt", ChatFormatting.GRAY);
                 boolean nbtMode = getCompareNBT(stack);
                 String nbtString = nbtMode ? "laserio.tooltip.item.filter.nbt.allow" : "laserio.tooltip.item.filter.nbt.deny";
-                int nbtColor = nbtMode ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor();
+                ChatFormatting nbtColor = nbtMode ? ChatFormatting.GREEN : ChatFormatting.RED;
                 toWrite.append(tooltipMaker(nbtString, nbtColor));
                 tooltip.add(toWrite);
             }

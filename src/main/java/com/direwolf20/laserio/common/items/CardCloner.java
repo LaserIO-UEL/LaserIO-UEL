@@ -43,23 +43,22 @@ public class CardCloner extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(Component.translatable("laserio.tooltip.item.show_settings")
-                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
         } else {
             String cardType = getItemType(stack);
-            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY.getColor());
-            int cardColor = ChatFormatting.WHITE.getColor();
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY);
+            ChatFormatting cardColor = ChatFormatting.WHITE;
             boolean isEnergyCard = false;
             boolean isRedstoneCard = false;
             if (cardType.equals("card_item"))
-                cardColor = ChatFormatting.GREEN.getColor();
+                cardColor = ChatFormatting.GREEN;
             else if (cardType.equals("card_fluid"))
-                cardColor = ChatFormatting.BLUE.getColor();
+                cardColor = ChatFormatting.BLUE;
             else if (cardType.equals("card_energy")) {
-                cardColor = ChatFormatting.YELLOW.getColor();
+                cardColor = ChatFormatting.YELLOW;
                 isEnergyCard = true;
             } else if (cardType.equals("card_redstone")) {
-                cardColor = ChatFormatting.RED.getColor();
+                cardColor = ChatFormatting.RED;
                 isRedstoneCard = true;
             }
             if (cardType.equals(""))
@@ -74,20 +73,20 @@ public class CardCloner extends Item {
             CompoundTag compoundTag = stack.getOrCreateTag().getCompound("settings");
             int mode = !compoundTag.contains("mode") ? 0 : compoundTag.getByte("mode");;
             String currentMode = BaseCard.TransferMode.values()[mode].toString();
-            toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY.getColor());
-            int modeColor = ChatFormatting.GRAY.getColor();
+            toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY);
+            ChatFormatting modeColor = ChatFormatting.GRAY;
             if (currentMode.equals("EXTRACT"))
-                modeColor = ChatFormatting.RED.getColor();
+                modeColor = ChatFormatting.RED;
             else if (currentMode.equals("INSERT"))
-                modeColor = ChatFormatting.GREEN.getColor();
+                modeColor = ChatFormatting.GREEN;
             else if (currentMode.equals("STOCK"))
-                modeColor = ChatFormatting.BLUE.getColor();
+                modeColor = ChatFormatting.BLUE;
             else if (currentMode.equals("SENSOR"))
-                modeColor = ChatFormatting.YELLOW.getColor();
+                modeColor = ChatFormatting.YELLOW;
             toWrite.append(tooltipMaker("laserio.tooltip.item.card.mode." + currentMode, modeColor));
             tooltip.add(toWrite);
 
-            toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY.getColor());
+            toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY);
             int channel = !compoundTag.contains("channel") ? 0 : compoundTag.getByte("channel");;
             toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.colors[channel].getRGB()));
             tooltip.add(toWrite);
@@ -96,29 +95,29 @@ public class CardCloner extends Item {
             }
 
             if (!isEnergyCard) {
-                toWrite = tooltipMaker("laserio.tooltip.item.card.Filter", ChatFormatting.GRAY.getColor());
+                toWrite = tooltipMaker("laserio.tooltip.item.card.Filter", ChatFormatting.GRAY);
                 ItemStack filterStack = getFilter(stack);
                 if (filterStack.isEmpty())
-                    toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE.getColor()));
+                    toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE));
                 else
-                    toWrite.append(tooltipMaker("item.laserio." + filterStack.getItem(), ChatFormatting.DARK_AQUA.getColor()));
+                    toWrite.append(tooltipMaker("item.laserio." + filterStack.getItem(), ChatFormatting.DARK_AQUA));
                 tooltip.add(toWrite);
             }
 
             if (!isEnergyCard || (isEnergyCard && CardEnergyContainer.SLOTS == 1)) {
                 ItemStack overclockerStack = getOverclocker(stack);
                 if (isEnergyCard) {
-                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclocker", ChatFormatting.GRAY.getColor());
+                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclocker", ChatFormatting.GRAY);
                     if (overclockerStack.isEmpty())
-                        toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE.getColor()));
+                        toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", ChatFormatting.WHITE));
                     else
-                        toWrite.append(tooltipMaker("item.laserio." + overclockerStack.getItem(), ChatFormatting.DARK_AQUA.getColor()));
+                        toWrite.append(tooltipMaker("item.laserio." + overclockerStack.getItem(), ChatFormatting.DARK_AQUA));
                 } else {
-                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclockers", ChatFormatting.GRAY.getColor());
+                    toWrite = tooltipMaker("laserio.tooltip.item.card.Overclockers", ChatFormatting.GRAY);
                     if (overclockerStack.isEmpty())
-                        toWrite.append(tooltipMaker(String.valueOf(0), ChatFormatting.WHITE.getColor()));
+                        toWrite.append(tooltipMaker(String.valueOf(0), ChatFormatting.WHITE));
                     else
-                        toWrite.append(tooltipMaker(String.valueOf(overclockerStack.getCount()), ChatFormatting.DARK_AQUA.getColor()));
+                        toWrite.append(tooltipMaker(String.valueOf(overclockerStack.getCount()), ChatFormatting.DARK_AQUA));
                 }
                 tooltip.add(toWrite);
             }

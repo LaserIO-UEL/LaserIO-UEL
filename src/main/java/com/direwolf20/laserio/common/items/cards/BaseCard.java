@@ -67,32 +67,31 @@ public class BaseCard extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(Component.translatable("laserio.tooltip.item.show_settings")
-                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
         } else {
             String currentMode = getNamedTransferMode(stack).toString();
-            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY.getColor());
-            int modeColor = ChatFormatting.GRAY.getColor();
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY);
+            ChatFormatting modeColor = ChatFormatting.GRAY;
             if (currentMode.equals("EXTRACT"))
-                modeColor = ChatFormatting.RED.getColor();
+                modeColor = ChatFormatting.RED;
             else if (currentMode.equals("INSERT"))
-                modeColor = ChatFormatting.GREEN.getColor();
+                modeColor = ChatFormatting.GREEN;
             else if (currentMode.equals("STOCK"))
-                modeColor = ChatFormatting.BLUE.getColor();
+                modeColor = ChatFormatting.BLUE;
             else if (currentMode.equals("SENSOR"))
-                modeColor = ChatFormatting.YELLOW.getColor();
+                modeColor = ChatFormatting.YELLOW;
             toWrite.append(tooltipMaker("laserio.tooltip.item.card.mode." + currentMode, modeColor));
             tooltip.add(toWrite);
 
-            toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY.getColor());
+            toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY);
             int channel = getChannel(stack);
             toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.colors[channel].getRGB()));
             tooltip.add(toWrite);
 
             int sneakyMode = getSneaky(stack);
             if (sneakyMode != -1) {
-                toWrite = tooltipMaker("laserio.tooltip.item.card.sneaky", ChatFormatting.GRAY.getColor());
-                toWrite.append(tooltipMaker("laserio.tooltip.item.card.sneaky." + Direction.values()[sneakyMode].toString().toUpperCase(Locale.ROOT), ChatFormatting.DARK_GREEN.getColor()));
+                toWrite = tooltipMaker("laserio.tooltip.item.card.sneaky", ChatFormatting.GRAY);
+                toWrite.append(tooltipMaker("laserio.tooltip.item.card.sneaky." + Direction.values()[sneakyMode].toString().toUpperCase(Locale.ROOT), ChatFormatting.DARK_GREEN));
                 tooltip.add(toWrite);
             }
         }

@@ -115,17 +115,16 @@ public class LaserWrench extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(Component.translatable("laserio.tooltip.item.show_details")
-                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_details", ChatFormatting.GRAY));
         } else {
-            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.select_node", ChatFormatting.GRAY.getColor());
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.select_node.keys", ChatFormatting.WHITE.getColor()));
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.select_node", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.select_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
-            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.link_node", ChatFormatting.GRAY.getColor());
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.link_node.keys", ChatFormatting.WHITE.getColor()));
+            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.link_node", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.link_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
-            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node", ChatFormatting.GRAY.getColor());
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node.keys", ChatFormatting.WHITE.getColor()));
+            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
         }
     }

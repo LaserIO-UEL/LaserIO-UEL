@@ -2,6 +2,7 @@ package com.direwolf20.laserio.util;
 
 import com.mojang.math.Axis;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -75,6 +76,10 @@ public class MiscTools {
             list.add(tag.getString("list"));
         }
         return list;
+    }
+
+    public static MutableComponent tooltipMaker(String string, ChatFormatting color) {
+        return tooltipMaker(string, color.getColor());
     }
 
     public static MutableComponent tooltipMaker(String string, int color) {
