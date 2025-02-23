@@ -243,10 +243,12 @@ public class BaseCardCache {
                 }
             }
         } else if (filterCard.getItem() instanceof FilterNBT) {
-            for (String tag : testStack.getOrCreateTag().getAllKeys()) {
-                if (filterNBTs.contains(tag)) {
-                    filterCache.put(key, isAllowList);
-                    return isAllowList;
+            if (testStack.hasTag()) {
+                for (String tag : testStack.getOrCreateTag().getAllKeys()) {
+                    if (filterNBTs.contains(tag)) {
+                        filterCache.put(key, isAllowList);
+                        return isAllowList;
+                    }
                 }
             }
         } else {
