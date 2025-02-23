@@ -31,6 +31,7 @@ public class LaserIOAdvancementLootTables implements LootTableSubProvider {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void generateAdvancementLootTables(Consumer<LootTableWrapper> consumer) {
         ItemStack patchouliBook = PatchouliAPI.get().getBookStack(new ResourceLocation(LaserIO.MODID, "laseriobook"));
         LootTableWrapper.lootTable()

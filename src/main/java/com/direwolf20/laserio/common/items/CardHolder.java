@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -40,26 +39,26 @@ public class CardHolder extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
+        ItemStack cardHolder = player.getItemInHand(hand);
         if (level.isClientSide()) {
             if (player.isShiftKeyDown()) {
-                String translationKey = "message.laserio.card_holder_pulling_" + (CardHolder.getActive(itemStack) ? "disabled" : "enabled");
+                String translationKey = "message.laserio.card_holder_pulling_" + (CardHolder.getActive(cardHolder) ? "disabled" : "enabled");
                 player.displayClientMessage(Component.translatable(translationKey), true);
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
             }
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
+            return InteractionResultHolder.pass(cardHolder);
         }
         if (player.isShiftKeyDown()) {
-            setActive(itemStack, !getActive(itemStack));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
+            setActive(cardHolder, !getActive(cardHolder));
+            return InteractionResultHolder.pass(cardHolder);
         }
-        itemStack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
+        cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
             NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, player, itemStack, h), Component.translatable("")), (buf -> {
-                buf.writeItem(itemStack);
+                    (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, player, cardHolder, h), Component.translatable("")), (buf -> {
+                buf.writeItem(cardHolder);
             }));
         });
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
+        return InteractionResultHolder.pass(cardHolder);
     }
 
     @Override
