@@ -4,7 +4,6 @@ import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -88,7 +87,7 @@ public class CardCloner extends Item {
 
             toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY);
             int channel = !compoundTag.contains("channel") ? 0 : compoundTag.getByte("channel");;
-            toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.colors[channel].getRGB()));
+            toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.COLORS[channel].getRGB()));
             tooltip.add(toWrite);
             if (isRedstoneCard) {
                 return;

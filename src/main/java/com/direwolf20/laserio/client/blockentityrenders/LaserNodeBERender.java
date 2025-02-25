@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 import java.awt.Color;
 
 public class LaserNodeBERender extends BaseLaserBERender<LaserNodeBE> {
-    public static final Vector3f[] offsets = {
+    public static final Vector3f[] OFFSETS = {
             new Vector3f(0.65f, 0.65f, 0.5f),
             new Vector3f(0.5f, 0.65f, 0.5f),
             new Vector3f(0.35f, 0.65f, 0.5f),
@@ -22,7 +22,7 @@ public class LaserNodeBERender extends BaseLaserBERender<LaserNodeBE> {
             new Vector3f(0.5f, 0.35f, 0.5f),
             new Vector3f(0.35f, 0.35f, 0.5f)
     };
-    public static final Color colors[] = {
+    public static final Color[] COLORS = {
             new Color(255, 255, 255),
             new Color(249, 128, 29),
             new Color(198, 79, 189),
@@ -41,17 +41,16 @@ public class LaserNodeBERender extends BaseLaserBERender<LaserNodeBE> {
             new Color(29, 28, 33)
     };
 
-
     public LaserNodeBERender(BlockEntityRendererProvider.Context context) {
         super(context);
-
     }
 
     @Override
     public void render(LaserNodeBE blockentity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightsIn, int combinedOverlayIn) {
         super.render(blockentity, partialTicks, matrixStackIn, bufferIn, combinedLightsIn, combinedOverlayIn);
-        if (!blockentity.rendersChecked)
+        if (!blockentity.rendersChecked) {
             blockentity.populateRenderList();
+        }
         DelayedRenderer.addConnecting(blockentity);
     }
 }

@@ -71,7 +71,7 @@ public class CardRender {
             g /= 4f;
             b /= 4f;
         }
-        Vector3f offset = MiscTools.findOffset(direction, cardSlot, LaserNodeBERender.offsets);
+        Vector3f offset = MiscTools.findOffset(direction, cardSlot, LaserNodeBERender.OFFSETS);
         Vector3f shapeOffset = shapeOffset(offset, voxelShape, startBlock, endBlock, direction, level, targetState);
         diffX = shapeOffset.x();
         diffY = shapeOffset.y();
@@ -87,9 +87,9 @@ public class CardRender {
             }
         }
         if (cardItem instanceof CardRedstone || BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
-            floatColors = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(card)].getColorComponents(new float[3]);
+            floatColors = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(card)].getColorComponents(new float[3]);
         } else {
-            floatColors = LaserNodeBERender.colors[BaseCard.getChannel(card)].getColorComponents(new float[3]);
+            floatColors = LaserNodeBERender.COLORS[BaseCard.getChannel(card)].getColorComponents(new float[3]);
         }
         if (reverse) {
             endLaser = new Vector3f(offset.x(), offset.y(), offset.z());

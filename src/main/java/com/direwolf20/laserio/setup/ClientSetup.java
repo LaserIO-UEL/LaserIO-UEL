@@ -132,10 +132,10 @@ public class ClientSetup {
         colors.register((stack, index) -> {
             if (index == 2) {
                 if (BaseCard.getTransferMode(stack) == (byte) 3) {
-                    Color color = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
                     return color.getRGB();
                 } else {
-                    Color color = LaserNodeBERender.colors[BaseCard.getChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
                     return color.getRGB();
                 }
             }
@@ -144,10 +144,10 @@ public class ClientSetup {
         colors.register((stack, index) -> {
             if (index == 2) {
                 if (BaseCard.getTransferMode(stack) == (byte) 3) {
-                    Color color = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
                     return color.getRGB();
                 } else {
-                    Color color = LaserNodeBERender.colors[BaseCard.getChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
                     return color.getRGB();
                 }
             }
@@ -157,10 +157,10 @@ public class ClientSetup {
             colors.register((stack, index) -> {
                 if (index == 2) {
                     if (BaseCard.getTransferMode(stack) == (byte) 3) {
-                        Color color = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(stack)];
+                        Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
                         return color.getRGB();
                     } else {
-                        Color color = LaserNodeBERender.colors[BaseCard.getChannel(stack)];
+                        Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
                         return color.getRGB();
                     }
                 }
@@ -170,10 +170,10 @@ public class ClientSetup {
         colors.register((stack, index) -> {
             if (index == 2) {
                 if (BaseCard.getTransferMode(stack) == (byte) 3) {
-                    Color color = LaserNodeBERender.colors[BaseCard.getRedstoneChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
                     return color.getRGB();
                 } else {
-                    Color color = LaserNodeBERender.colors[BaseCard.getChannel(stack)];
+                    Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
                     return color.getRGB();
                 }
             }
@@ -181,7 +181,7 @@ public class ClientSetup {
         }, Registration.Card_Energy.get());
         colors.register((stack, index) -> {
             if (index == 2) {
-                Color color = LaserNodeBERender.colors[CardRedstone.getRedstoneChannel(stack)];
+                Color color = LaserNodeBERender.COLORS[CardRedstone.getRedstoneChannel(stack)];
                 return color.getRGB();
             }
             return 0xFFFFFFFF;

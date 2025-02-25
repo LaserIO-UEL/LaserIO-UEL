@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.integration.mekanism;
 
+import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE.SideConnection;
 import com.direwolf20.laserio.common.blocks.LaserNode;
@@ -15,6 +16,7 @@ import com.direwolf20.laserio.util.CardRender;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.ExtractorCardCache;
 import com.direwolf20.laserio.util.InserterCardCache;
+import com.direwolf20.laserio.util.MiscTools;
 import com.direwolf20.laserio.util.NodeSideCache;
 import com.direwolf20.laserio.util.SensorCardCache;
 import com.direwolf20.laserio.util.StockerCardCache;
@@ -44,10 +46,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender.offsets;
-import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.isValidChemicalForHandler;
-import static com.direwolf20.laserio.util.MiscTools.findOffset;
 
 public class MekanismCache {
     private record LaserNodeChemicalHandler(LaserNodeBE be, IChemicalHandler<?, ?> handler) {
@@ -223,7 +221,6 @@ public class MekanismCache {
                 boolean foundItems = findChemicalStackForStocker(stockerCardCache, chemicalHandler, entry.getKey()); //Start looking for this item
                 if (foundItems)
                     return true;
-
             } else if (filter.getItem() instanceof FilterTag) {
                 //No-Op
             }
@@ -252,7 +249,7 @@ public class MekanismCache {
 
     public boolean canAnyChemicalFiltersFit(IChemicalHandler chemicalHandler, StockerCardCache stockerCardCache) {
         for (ChemicalStack<?> chemicalStack : stockerCardCache.mekanismCardCache.getFilteredChemicals()) {
-            if (!isValidChemicalForHandler(chemicalHandler, chemicalStack)) //Don't Check disparate types
+            if (!MekanismStatics.isValidChemicalForHandler(chemicalHandler, chemicalStack)) //Don't Check disparate types
                 continue;
             long amtReturned = chemicalHandler.insertChemical(chemicalStack, Action.SIMULATE).getAmount();
             if (amtReturned < chemicalStack.getAmount()) //If any fit
@@ -290,7 +287,6 @@ public class MekanismCache {
 
         if (filteredChemicalsList.isEmpty()) //If we have nothing left to look for! Probably only happens when its a count card.
             return false;
-
 
         //At this point we should have a list of fluids that we need to satisfy the stock request
         for (ChemicalStack<?> chemicalStack : filteredChemicalsList) {
@@ -333,7 +329,7 @@ public class MekanismCache {
     }
 
     public boolean canChemicalFitInTank(IChemicalHandler stockerTank, ChemicalStack<?> chemicalStack) {
-        if (!isValidChemicalForHandler(stockerTank, chemicalStack)) //Don't Check disparate types
+        if (!MekanismStatics.isValidChemicalForHandler(stockerTank, chemicalStack)) //Don't Check disparate types
             return false;
         return (stockerTank.insertChemical(chemicalStack, Action.SIMULATE).getAmount() < chemicalStack.getAmount());
     }
@@ -380,7 +376,6 @@ public class MekanismCache {
         }
         return false;
     }
-
 
     public boolean extractChemicalStack(ExtractorCardCache extractorCardCache, IChemicalHandler fromInventory, ChemicalStack<?> extractStack, ChemicalType chemicalType) {
         long totalAmtNeeded = extractStack.getAmount();
@@ -672,7 +667,7 @@ public class MekanismCache {
         if (targetState.getBlock() instanceof LaserNode) {
             targetState = level.getBlockState(fromPos);
             VoxelShape voxelShape = targetState.getShape(level, fromPos);
-            Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+            Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
             Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
             ChemicalFlowParticleData data = new ChemicalFlowParticleData(chemicalStack, toPos.getX() + extractOffset.x(), toPos.getY() + extractOffset.y(), toPos.getZ() + extractOffset.z(), 10, chemicalStack.getType().toString());
             for (int i = 0; i < count; ++i) {
@@ -684,7 +679,7 @@ public class MekanismCache {
             }
         } else {
             VoxelShape voxelShape = targetState.getShape(level, toPos);
-            Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+            Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
             Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
             ChemicalFlowParticleData data = new ChemicalFlowParticleData(chemicalStack, fromPos.getX() + insertOffset.x(), fromPos.getY() + insertOffset.y(), fromPos.getZ() + insertOffset.z(), 10, chemicalStack.getType().toString());
             for (int i = 0; i < count; ++i) {

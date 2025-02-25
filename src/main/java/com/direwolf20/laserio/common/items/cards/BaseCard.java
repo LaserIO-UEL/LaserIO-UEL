@@ -85,7 +85,7 @@ public class BaseCard extends Item {
 
             toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY);
             int channel = getChannel(stack);
-            toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.colors[channel].getRGB()));
+            toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.COLORS[channel].getRGB()));
             tooltip.add(toWrite);
 
             int sneakyMode = getSneaky(stack);

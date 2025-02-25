@@ -100,21 +100,24 @@ public class MekanismStatics {
     }
 
     public static boolean isValidChemicalForHandler(IChemicalHandler<?, ?> handler, ChemicalStack<?> chemicalStack) {
-        // Check if the handler is a gas handler
+        //Check if the handler is a gas handler
         if (handler instanceof IGasHandler) {
-            // Ensure the chemical stack is also a gas stack
+            //Ensure the chemical stack is also a gas stack
             return chemicalStack instanceof GasStack;
         }
+        //Check if the handler is a slurry handler
         if (handler instanceof ISlurryHandler) {
-            // Ensure the chemical stack is also a gas stack
+            //Ensure the chemical stack is also a slurry stack
             return chemicalStack instanceof SlurryStack;
         }
+        //Check if the handler is a pigment handler
         if (handler instanceof IPigmentHandler) {
-            // Ensure the chemical stack is also a gas stack
+            //Ensure the chemical stack is also a pigment stack
             return chemicalStack instanceof PigmentStack;
         }
+        //Check if the handler is an infusion handler
         if (handler instanceof IInfusionHandler) {
-            // Ensure the chemical stack is also a gas stack
+            //Ensure the chemical stack is also an infusion stack
             return chemicalStack instanceof InfusionStack;
         }
 
