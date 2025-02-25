@@ -21,12 +21,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 
 public class ClientEvents {
+    public static final boolean IS_OCULUS_LOADED = ModList.get().isLoaded("oculus");
+    private static final Stage RENDERING_STAGE = IS_OCULUS_LOADED ? Stage.AFTER_TRANSLUCENT_BLOCKS : Stage.AFTER_CUTOUT_BLOCKS;
+
     @SubscribeEvent
     static void renderWorldLastEvent(RenderLevelStageEvent evt) {
-        if (evt.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+        if (evt.getStage() != RENDERING_STAGE) {
             return;
         }
         Player player = Minecraft.getInstance().player;

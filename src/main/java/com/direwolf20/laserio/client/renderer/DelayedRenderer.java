@@ -15,13 +15,13 @@ public class DelayedRenderer {
 
     public static void render(PoseStack matrixStackIn) {
         if (beRenders.size() > 0) {
-            RenderUtils.drawLasersLast2(beRenders, matrixStackIn);
+            RenderUtils.drawLasers(beRenders, matrixStackIn);
         }
     }
 
     public static void renderConnections(PoseStack matrixStackIn) {
         if (beConnectingRenders.isEmpty()) return;
-        RenderUtils.drawConnectingLasersLast4(beConnectingRenders, matrixStackIn);
+        RenderUtils.drawConnectingLasers(beConnectingRenders, matrixStackIn);
         beConnectingRenders.clear();
     }
 

@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-
 import org.joml.Matrix4f;
 
 import java.awt.Color;
@@ -30,9 +29,7 @@ public class BlockOverlayRender {
         matrix.pushPose();
         matrix.translate(-view.x(), -view.y(), -view.z());
 
-        VertexConsumer builder;
-        //MyRenderType.updateRenders();
-        builder = buffer.getBuffer(MyRenderType.BlockOverlay);
+        VertexConsumer builder = buffer.getBuffer(MyRenderType.BLOCK_OVERLAY);
 
         matrix.pushPose();
         matrix.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -45,7 +42,6 @@ public class BlockOverlayRender {
         matrix.popPose();
 
         matrix.popPose();
-        //RenderSystem.disableDepthTest();
-        buffer.endBatch(MyRenderType.BlockOverlay);
+        buffer.endBatch(MyRenderType.BLOCK_OVERLAY);
     }
 }
