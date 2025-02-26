@@ -1,7 +1,6 @@
 package com.direwolf20.laserio.util;
 
 import com.mojang.math.Axis;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

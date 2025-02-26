@@ -49,13 +49,14 @@ public class MyRenderType extends RenderType {
     public static final RenderType BLOCK_OVERLAY = create("MiningLaserBlockOverlay",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(ShaderStateShard.POSITION_COLOR_SHADER)
+                    .setTextureState(NO_TEXTURE)
+                    .setShaderState(POSITION_COLOR_SHADER)
                     .setLayeringState(VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                    .setTextureState(NO_TEXTURE)
                     .setDepthTestState(NO_DEPTH_TEST)
                     .setCullState(NO_CULL)
                     .setLightmapState(NO_LIGHTMAP)
                     .setWriteMaskState(COLOR_WRITE)
-                    .createCompositeState(false));
+                    .createCompositeState(false)
+    );
 }
