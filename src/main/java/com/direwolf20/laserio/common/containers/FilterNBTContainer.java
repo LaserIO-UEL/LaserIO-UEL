@@ -63,6 +63,9 @@ public class FilterNBTContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        if (clickTypeIn == ClickType.SWAP) {
+            return;
+        }
         if (slotId >= 0) {
             ItemStack stackInSlot = slots.get(slotId).getItem();
             Item itemInSlot = stackInSlot.getItem();

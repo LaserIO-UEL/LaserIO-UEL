@@ -92,7 +92,7 @@ public class CardItemContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (slotId >= SLOTS && slotId < SLOTS + FILTERSLOTS) {
+        if (clickTypeIn == ClickType.SWAP || (slotId >= SLOTS && slotId < SLOTS + FILTERSLOTS)) {
             return;
         }
         if (slotId >= 0) {
@@ -139,9 +139,6 @@ public class CardItemContainer extends AbstractContainerMenu {
             if (!(cardHolder.getItem() instanceof CardHolder) || !CardHolder.getUUID(cardHolder).equals(cardHolderUUID)) {
                 return false;
             }
-        }
-        if (sourceContainer.equals(BlockPos.ZERO)) {
-            return (playerIn.getMainHandItem().equals(cardItem) || playerIn.getOffhandItem().equals(cardItem));
         }
         return true;
     }

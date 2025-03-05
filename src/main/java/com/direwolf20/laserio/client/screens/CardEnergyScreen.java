@@ -161,8 +161,9 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         for (int i = CardEnergyContainer.SLOTS; i < (CardEnergyContainer.SLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
-            if (!(slot instanceof CardHolderSlot)) continue;
-            ((CardHolderSlot) slot).setEnabled(showCardHolderUI);
+            if (slot instanceof CardHolderSlot cardHolderSlot) {
+                cardHolderSlot.setEnabled(showCardHolderUI);
+            }
         }
     }
 

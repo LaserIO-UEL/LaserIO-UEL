@@ -213,8 +213,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         for (int i = (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
-            if (!(slot instanceof CardHolderSlot)) continue;
-            ((CardHolderSlot) slot).setEnabled(showCardHolderUI);
+            if (slot instanceof CardHolderSlot cardHolderSlot) {
+                cardHolderSlot.setEnabled(showCardHolderUI);
+            }
         }
     }
 
@@ -583,8 +584,9 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         for (int i = CardItemContainer.SLOTS; i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
-            if (!(slot instanceof FilterBasicSlot)) continue;
-            ((FilterBasicSlot) slot).setEnabled(showFilter);
+            if (slot instanceof FilterBasicSlot filterBasicSlot) {
+                filterBasicSlot.setEnabled(showFilter);
+            }
         }
     }
 

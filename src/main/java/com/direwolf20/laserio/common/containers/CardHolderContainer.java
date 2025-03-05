@@ -46,6 +46,9 @@ public class CardHolderContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        if (clickTypeIn == ClickType.SWAP) {
+            return;
+        }
         if (slotId >= 0) {
             Slot slot = slots.get(slotId);
             ItemStack stackInSlot = slot.getItem();

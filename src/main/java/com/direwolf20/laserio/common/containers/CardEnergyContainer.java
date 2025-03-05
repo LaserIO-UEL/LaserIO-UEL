@@ -86,6 +86,9 @@ public class CardEnergyContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        if (clickTypeIn == ClickType.SWAP) {
+            return;
+        }
         if (slotId >= 0) {
             Slot slot = slots.get(slotId);
             ItemStack stackInSlot = slot.getItem();
@@ -115,9 +118,6 @@ public class CardEnergyContainer extends AbstractContainerMenu {
             if (!(cardHolder.getItem() instanceof CardHolder) || !CardHolder.getUUID(cardHolder).equals(cardHolderUUID)) {
                 return false;
             }
-        }
-        if (sourceContainer.equals(BlockPos.ZERO)) {
-            return playerIn.getMainHandItem().equals(cardItem) || playerIn.getOffhandItem().equals(cardItem);
         }
         return true;
     }

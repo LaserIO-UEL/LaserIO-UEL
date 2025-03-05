@@ -163,8 +163,9 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         for (int i = LaserNodeContainer.CARDSLOTS; i < (LaserNodeContainer.CARDSLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
-            if (!(slot instanceof CardHolderSlot)) continue;
-            ((CardHolderSlot) slot).setEnabled(showCardHolderUI);
+            if (slot instanceof CardHolderSlot cardHolderSlot) {
+                cardHolderSlot.setEnabled(showCardHolderUI);
+            }
         }
     }
 
