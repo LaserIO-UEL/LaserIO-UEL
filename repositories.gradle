@@ -28,8 +28,8 @@ repositories {
         }
     }
 
-    maven { //Patchouli && JEI
-        url 'https://maven.blamejared.com'
+    maven { //Patchouli & JEI
+        url "https://maven.blamejared.com"
         content {
             includeGroup "vazkii.patchouli"
             includeGroup "mezz.jei"
@@ -37,14 +37,14 @@ repositories {
     }
 
     maven { //Mekanism
-        url = 'https://modmaven.dev'
+        url = "https://modmaven.dev"
         content {
             includeGroup "mekanism"
         }
     }
 
     maven { //Jade - used for testing
-        url = 'https://www.cursemaven.com'
+        url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
