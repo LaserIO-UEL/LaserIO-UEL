@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.client.screens;
 
 import com.direwolf20.laserio.common.items.filters.FilterCount;
+import com.direwolf20.laserio.integration.mekanism.MekanismStatics;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -13,7 +14,6 @@ import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,18 +23,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.getFirstChemicalOnItemStack;
-
 public class LaserGuiGraphicsChemical extends GuiGraphics {
-    public Minecraft minecraft;
-    protected final AbstractContainerScreen screen;
+    private final CardItemScreen screen;
 
-    public LaserGuiGraphicsChemical(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, AbstractContainerScreen screen) {
+    public LaserGuiGraphicsChemical(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, CardItemScreen screen) {
         super(minecraft, bufferSource);
-        this.minecraft = minecraft;
         this.screen = screen;
     }
 
@@ -81,7 +78,6 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
                 if (itemstack.getCount() != 1 || altText != null) {
                     String textToDraw = altText == null ? String.valueOf(itemstack.getCount()) : altText;
                     posestack.translate(0.0D, 0.0D, (double) (200.0F));
-                    //MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                     if (itemstack.getCount() > 99) {
                         posestack.pushPose();
                         posestack.translate(x, y, 300);
@@ -91,24 +87,17 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
                     } else {
                         this.drawString(font, textToDraw, (float) (x + 19 - 2 - font.width(textToDraw)), (float) (y + 6 + 3), 16777215, true);
                     }
-                    //multibuffersource$buffersource.endBatch();
                 }
-
                 if (!shouldRenderChemical(itemstack, x, y, true, true)) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
                     Tesselator tesselator1 = Tesselator.getInstance();
                     BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                     this.fillRect(bufferbuilder1, x, y, 16, Mth.ceil(16.0F), 255, 0, 0, 127);
-                    //RenderSystem.enableTexture();
-                    //RenderSystem.enableDepthTest();
                 }
-
                 if (itemstack.isBarVisible()) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.disableBlend();
                     Tesselator tesselator = Tesselator.getInstance();
                     BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -116,22 +105,16 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
                     int j = itemstack.getBarColor();
                     this.fillRect(bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                     this.fillRect(bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
-                    //RenderSystem.enableBlend();
-                    ////RenderSystem.enableTexture();
-                    //RenderSystem.enableDepthTest();
                 }
-
                 LocalPlayer localplayer = Minecraft.getInstance().player;
                 float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(itemstack.getItem(), Minecraft.getInstance().getFrameTime());
                 if (f > 0.0F) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
                     Tesselator tesselator1 = Tesselator.getInstance();
                     BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                     this.fillRect(bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                    //RenderSystem.enableTexture();
                     RenderSystem.enableDepthTest();
                 }
             }
@@ -144,8 +127,9 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
         }
         CardChemicalScreen cardChemicalScreen = (CardChemicalScreen) screen;
         if (cardChemicalScreen.getMenu().getCarried().equals(pStack)) {
-            if (includeCarried)
+            if (includeCarried) {
                 return reverseBounds;
+            }
         }
         if (reverseBounds) {
             return !(MiscTools.inBounds(cardChemicalScreen.filterStartX, cardChemicalScreen.filterStartY, cardChemicalScreen.filterEndX - cardChemicalScreen.filterStartX, cardChemicalScreen.filterEndY - cardChemicalScreen.filterStartY, pX, pY));
@@ -154,21 +138,16 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
                 return reverseBounds;
             }
         }
-        ChemicalStack<?> chemicalStack = getFirstChemicalOnItemStack(pStack);
+        ChemicalStack<?> chemicalStack = MekanismStatics.getFirstChemicalOnItemStack(pStack);
         if (chemicalStack.isEmpty()) {
             return reverseBounds;
         }
-
         ResourceLocation chemicalStill = chemicalStack.getType().getIcon();
         TextureAtlasSprite chemicalStillSprite = null;
         if (chemicalStill != null) {
             chemicalStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(chemicalStill);
         }
-
-        if (chemicalStillSprite == null) {
-            return reverseBounds;
-        }
-        return !reverseBounds;
+        return (chemicalStillSprite != null ^ reverseBounds);
     }
 
     @Override
@@ -177,17 +156,15 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
             super.renderItem(pStack, pX, pY, something);
             return;
         }
-        ChemicalStack<?> chemicalStack = getFirstChemicalOnItemStack(pStack); //We checked above to ensure this isn't empty
+        ChemicalStack<?> chemicalStack = MekanismStatics.getFirstChemicalOnItemStack(pStack); //We checked above to ensure this isn't empty
         ResourceLocation chemicalStill = chemicalStack.getType().getIcon();
         TextureAtlasSprite chamicalStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(chemicalStill);
         int chemicalColor = chemicalStack.getChemicalColorRepresentation();
-
         float red = (float) (chemicalColor >> 16 & 255) / 255.0F;
         float green = (float) (chemicalColor >> 8 & 255) / 255.0F;
         float blue = (float) (chemicalColor & 255) / 255.0F;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-
         PoseStack posestack = pose();
         posestack.pushPose();
         RenderSystem.setShaderColor(red, green, blue, 1.0f);
@@ -196,10 +173,8 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
         float uMax = chamicalStillSprite.getU1();
         float vMin = chamicalStillSprite.getV0();
         float vMax = chamicalStillSprite.getV1();
-
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuilder();
-
         vertexBuffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         vertexBuffer.vertex(posestack.last().pose(), pX, pY + 16.0F, zLevel).uv(uMin, vMax).endVertex();
         vertexBuffer.vertex(posestack.last().pose(), pX + 16.0F, pY + 16.0F, zLevel).uv(uMax, vMax).endVertex();

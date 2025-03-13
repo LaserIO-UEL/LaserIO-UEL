@@ -40,8 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/" + ((CardEnergyContainer.SLOTS == 0) ? "redstone" : "energy") + "card.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/" + ((CardEnergyContainer.SLOTS == 0) ? "redstone" : "energy") + "card.png");
     protected final CardEnergyContainer container;
     protected byte currentMode;
     protected byte currentChannel;
@@ -60,16 +59,6 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     protected byte currentRedstoneMode;
     private boolean showCardHolderUI;
     protected ItemStack lastOverclocker;
-
-    protected final String[] sneakyNames = {
-            "screen.laserio.default",
-            "screen.laserio.down",
-            "screen.laserio.up",
-            "screen.laserio.north",
-            "screen.laserio.south",
-            "screen.laserio.west",
-            "screen.laserio.east",
-    };
 
     public CardEnergyScreen(CardEnergyContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -104,7 +93,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         }
         Button sneakyButton = buttons.get("sneaky");
         if (MiscTools.inBounds(sneakyButton.getX(), sneakyButton.getY(), sneakyButton.getWidth(), sneakyButton.getHeight(), mouseX, mouseY)) {
-            guiGraphics.renderTooltip(font, Component.translatable(String.valueOf(sneakyNames[currentSneaky + 1])), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, CardItemScreen.SNEAKY_NAMES[currentSneaky + 1], mouseX, mouseY);
         }
         Button amountButton = buttons.get("amount");
         if (MiscTools.inBounds(amountButton.getX(), amountButton.getY(), amountButton.getWidth(), amountButton.getHeight(), mouseX, mouseY)) {

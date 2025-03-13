@@ -43,8 +43,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
     protected final FilterTagContainer container;
     private ItemStack filter;
     private boolean isAllowList;
@@ -53,10 +52,10 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
     private int maxPages = 0;
     private int overSlot = -1;
     private int selectedSlot = -1;
-    List<String> displayTags;
-    List<String> tags = new ArrayList<>();
-    List<String> stackInSlotTags = new ArrayList<>();
-    int cycleRenders = 0;
+    private List<String> displayTags;
+    private List<String> tags = new ArrayList<>();
+    private List<String> stackInSlotTags = new ArrayList<>();
+    private int cycleRenders = 0;
 
     public FilterTagScreen(FilterTagContainer container, Inventory inv, Component name) {
         super(container, inv, name);

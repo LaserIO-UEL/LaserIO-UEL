@@ -30,8 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/redstonecard.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/redstonecard.png");
     protected final CardRedstoneContainer container;
     protected byte currentMode;
     protected byte currentRedstoneChannel;

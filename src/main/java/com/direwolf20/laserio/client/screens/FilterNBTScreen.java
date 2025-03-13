@@ -33,8 +33,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
     protected final FilterNBTContainer container;
     private ItemStack filter;
     private boolean isAllowList;
@@ -43,10 +42,9 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
     private int maxPages = 0;
     private int overSlot = -1;
     private int selectedSlot = -1;
-    List<String> displayTags;
-    List<String> tags = new ArrayList<>();
-    List<String> stackInSlotTags = new ArrayList<>();
-    int cycleRenders = 0;
+    private List<String> displayTags;
+    private List<String> tags = new ArrayList<>();
+    private List<String> stackInSlotTags = new ArrayList<>();
 
     public FilterNBTScreen(FilterNBTContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -68,7 +66,6 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
             else
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.denylist"), mouseX, mouseY);
         }
-        cycleRenders++;
         int availableItemsStartX = getGuiLeft() + 7;
         int availableItemsStartY = getGuiTop() + 47;
         int color = 0x885B5B5B;

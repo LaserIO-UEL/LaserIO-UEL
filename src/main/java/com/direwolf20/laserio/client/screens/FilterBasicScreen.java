@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/basicfilter.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/basicfilter.png");
     protected final FilterBasicContainer container;
     private ItemStack filter;
     private boolean isAllowList;

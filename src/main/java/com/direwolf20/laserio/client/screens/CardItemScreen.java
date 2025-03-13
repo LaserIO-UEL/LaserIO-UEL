@@ -51,8 +51,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
-    private final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/itemcard.png");
-
+    private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/itemcard.png");
+    public static final MutableComponent[] SNEAKY_NAMES = {
+            Component.translatable("screen.laserio.default"),
+            Component.translatable("screen.laserio.down"),
+            Component.translatable("screen.laserio.up"),
+            Component.translatable("screen.laserio.north"),
+            Component.translatable("screen.laserio.south"),
+            Component.translatable("screen.laserio.west"),
+            Component.translatable("screen.laserio.east")
+    };
     protected final CardItemContainer container;
     protected byte currentMode;
     protected byte currentChannel;
@@ -78,16 +86,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     protected boolean renderChemicals = false;
     private boolean showCardHolderUI;
     protected int lastOverclockerCount;
-
-    protected final String[] sneakyNames = {
-            "screen.laserio.default",
-            "screen.laserio.down",
-            "screen.laserio.up",
-            "screen.laserio.north",
-            "screen.laserio.south",
-            "screen.laserio.west",
-            "screen.laserio.east",
-    };
 
     public CardItemScreen(CardItemContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -133,7 +131,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         }
         Button sneakyButton = buttons.get("sneaky");
         if (MiscTools.inBounds(sneakyButton.getX(), sneakyButton.getY(), sneakyButton.getWidth(), sneakyButton.getHeight(), mouseX, mouseY)) {
-            guiGraphics.renderTooltip(font, Component.translatable(String.valueOf(sneakyNames[currentSneaky + 1])), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, SNEAKY_NAMES[currentSneaky + 1], mouseX, mouseY);
         }
         Button amountButton = buttons.get("amount");
         if (MiscTools.inBounds(amountButton.getX(), amountButton.getY(), amountButton.getWidth(), amountButton.getHeight(), mouseX, mouseY)) {

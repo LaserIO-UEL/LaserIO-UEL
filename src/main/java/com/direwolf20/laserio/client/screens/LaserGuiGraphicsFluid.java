@@ -12,7 +12,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,31 +29,26 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public class LaserGuiGraphicsFluid extends GuiGraphics {
-    public Minecraft minecraft;
-    protected final AbstractContainerScreen screen;
+    private final CardItemScreen screen;
 
-    public LaserGuiGraphicsFluid(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, AbstractContainerScreen screen) {
+    public LaserGuiGraphicsFluid(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, CardItemScreen screen) {
         super(minecraft, bufferSource);
-        this.minecraft = minecraft;
         this.screen = screen;
     }
 
     private void fillRect(BufferBuilder p_115153_, int p_115154_, int p_115155_, int p_115156_, int p_115157_, int p_115158_, int p_115159_, int p_115160_, int p_115161_) {
         Matrix4f matrix4f = pose().last().pose();
         VertexConsumer vertexconsumer = bufferSource().getBuffer(RenderType.guiOverlay());
-        //RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        //p_115153_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         vertexconsumer.vertex(matrix4f, (float) (p_115154_ + 0), (float) (p_115155_ + 0), (float) 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
         vertexconsumer.vertex(matrix4f, (float) (p_115154_ + 0), (float) (p_115155_ + p_115157_), (float) 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
         vertexconsumer.vertex(matrix4f, (float) (p_115154_ + p_115156_), (float) (p_115155_ + p_115157_), (float) 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
         vertexconsumer.vertex(matrix4f, (float) (p_115154_ + p_115156_), (float) (p_115155_ + 0), (float) 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
         this.flush();
-        //p_115153_.end();
-        //BufferUploader.drawWithShader(p_115153_.end());
     }
 
     @Override
@@ -90,7 +84,6 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
                 if (itemstack.getCount() != 1 || altText != null) {
                     String textToDraw = altText == null ? String.valueOf(itemstack.getCount()) : altText;
                     posestack.translate(0.0D, 0.0D, (double) (200.0F));
-                    //MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                     if (itemstack.getCount() > 99) {
                         posestack.pushPose();
                         posestack.translate(x, y, 300);
@@ -100,24 +93,17 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
                     } else {
                         this.drawString(font, textToDraw, (float) (x + 19 - 2 - font.width(textToDraw)), (float) (y + 6 + 3), 16777215, true);
                     }
-                    //multibuffersource$buffersource.endBatch();
                 }
-
                 if (!shouldRenderFluid(itemstack, x, y, true, true)) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
                     Tesselator tesselator1 = Tesselator.getInstance();
                     BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                     this.fillRect(bufferbuilder1, x, y, 16, Mth.ceil(16.0F), 255, 0, 0, 127);
-                    //RenderSystem.enableTexture();
-                    //RenderSystem.enableDepthTest();
                 }
-
                 if (itemstack.isBarVisible()) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.disableBlend();
                     Tesselator tesselator = Tesselator.getInstance();
                     BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -125,22 +111,16 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
                     int j = itemstack.getBarColor();
                     this.fillRect(bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                     this.fillRect(bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
-                    //RenderSystem.enableBlend();
-                    ////RenderSystem.enableTexture();
-                    //RenderSystem.enableDepthTest();
                 }
-
                 LocalPlayer localplayer = Minecraft.getInstance().player;
                 float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(itemstack.getItem(), Minecraft.getInstance().getFrameTime());
                 if (f > 0.0F) {
                     RenderSystem.disableDepthTest();
-                    //RenderSystem.disableTexture();
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
                     Tesselator tesselator1 = Tesselator.getInstance();
                     BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                     this.fillRect(bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                    //RenderSystem.enableTexture();
                     RenderSystem.enableDepthTest();
                 }
             }
@@ -161,10 +141,8 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
                 posestack.popPose();
                 multibuffersource$buffersource.endBatch();
             }
-
             if (itemstack.isBarVisible()) {
                 RenderSystem.disableDepthTest();
-                //RenderSystem.disableTexture();
                 RenderSystem.disableBlend();
                 Tesselator tesselator = Tesselator.getInstance();
                 BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -173,24 +151,19 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
                 this.fillRect(bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                 this.fillRect(bufferbuilder, x + (int) (2 / scale), y + 13, (int) (i * scale), 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
                 RenderSystem.enableBlend();
-                //RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
-
             LocalPlayer localplayer = Minecraft.getInstance().player;
             float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(itemstack.getItem(), Minecraft.getInstance().getFrameTime());
             if (f > 0.0F) {
                 RenderSystem.disableDepthTest();
-                //RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 Tesselator tesselator1 = Tesselator.getInstance();
                 BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                 this.fillRect(bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                //RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
-
         }
     }
 
@@ -200,8 +173,9 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         }
         CardFluidScreen cardFluidScreen = (CardFluidScreen) screen;
         if (cardFluidScreen.getMenu().getCarried().equals(pStack)) {
-            if (includeCarried)
+            if (includeCarried) {
                 return reverseBounds;
+            }
         }
         if (reverseBounds) {
             return !(MiscTools.inBounds(cardFluidScreen.filterStartX, cardFluidScreen.filterStartY, cardFluidScreen.filterEndX - cardFluidScreen.filterStartX, cardFluidScreen.filterEndY - cardFluidScreen.filterStartY, pX, pY));
@@ -218,8 +192,9 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         IFluidHandler fluidHandler = fluidHandlerLazyOptional.resolve().get();
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             fluidStack = fluidHandler.getFluidInTank(tank);
-            if (!fluidStack.isEmpty())
+            if (!fluidStack.isEmpty()) {
                 break;
+            }
         }
         if (fluidStack.isEmpty()) {
             return reverseBounds;
@@ -234,11 +209,7 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         if (fluidStill != null) {
             fluidStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
         }
-
-        if (fluidStillSprite == null) {
-            return reverseBounds;
-        }
-        return !reverseBounds;
+        return (fluidStillSprite != null ^ reverseBounds);
     }
 
     public void renderFluid(FluidStack fluidStack, int pX, int pY, int size) {
@@ -246,13 +217,10 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         ResourceLocation fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture();
         TextureAtlasSprite fluidStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
         int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(fluidStack);
-
         float red = (float) (fluidColor >> 16 & 255) / 255.0F;
         float green = (float) (fluidColor >> 8 & 255) / 255.0F;
         float blue = (float) (fluidColor & 255) / 255.0F;
-
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-
         PoseStack posestack = pose();
         posestack.pushPose();
         RenderSystem.setShaderColor(red, green, blue, 1.0f);
@@ -261,10 +229,8 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         float uMax = fluidStillSprite.getU1();
         float vMin = fluidStillSprite.getV0();
         float vMax = fluidStillSprite.getV1();
-
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuilder();
-
         vertexBuffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         vertexBuffer.vertex(pX, pY + size, zLevel).uv(uMin, vMax).endVertex();
         vertexBuffer.vertex(pX + size, pY + size, zLevel).uv(uMax, vMax).endVertex();
@@ -286,20 +252,19 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         IFluidHandler fluidHandler = fluidHandlerLazyOptional.resolve().get();
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             fluidStack = fluidHandler.getFluidInTank(tank);
-            if (!fluidStack.isEmpty())
+            if (!fluidStack.isEmpty()) {
                 break;
+            }
         }
         Fluid fluid = fluidStack.getFluid();
         ResourceLocation fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture();
         TextureAtlasSprite fluidStillSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
         int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(fluidStack);
-
         float red = (float) (fluidColor >> 16 & 255) / 255.0F;
         float green = (float) (fluidColor >> 8 & 255) / 255.0F;
         float blue = (float) (fluidColor & 255) / 255.0F;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-
         PoseStack posestack = pose();
         posestack.pushPose();
         RenderSystem.setShaderColor(red, green, blue, 1.0f);
@@ -308,10 +273,8 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
         float uMax = fluidStillSprite.getU1();
         float vMin = fluidStillSprite.getV0();
         float vMax = fluidStillSprite.getV1();
-
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuilder();
-
         vertexBuffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         vertexBuffer.vertex(posestack.last().pose(), pX, pY + 16.0F, zLevel).uv(uMin, vMax).endVertex();
         vertexBuffer.vertex(posestack.last().pose(), pX + 16.0F, pY + 16.0F, zLevel).uv(uMax, vMax).endVertex();
