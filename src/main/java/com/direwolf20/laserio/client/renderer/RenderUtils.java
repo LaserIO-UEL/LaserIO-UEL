@@ -125,18 +125,13 @@ public class RenderUtils {
         return adjustedVec;
     }
 
-    public static void addVertexToBuilder(VertexConsumer builder, Matrix4f positionMatrix, Vector3f position,  float r, float g, float b, float alpha, float v1, float v2) {
-        builder.vertex(positionMatrix, position.x(), position.y(), position.z());
-        if (!ClientEvents.IS_OCULUS_LOADED) {
-            builder.color(r, g, b, alpha);
-        }
-        builder.uv(v1, v2)
+    public static void addVertexToBuilder(VertexConsumer builder, Matrix4f positionMatrix, Vector3f position, float r, float g, float b, float alpha, float v1, float v2) {
+        builder.vertex(positionMatrix, position.x(), position.y(), position.z())
+                .color(r, g, b, alpha)
+                .uv(v1, v2)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(15728880);
-        if (ClientEvents.IS_OCULUS_LOADED) {
-            builder.color(r, g, b, alpha);
-        }
-        builder.endVertex();
+                .uv2(15728880)
+                .endVertex();
     }
 
     public static void drawLaser(VertexConsumer builder, Matrix4f positionMatrix, Vector3f from, Vector3f to, float r, float g, float b, float alpha, float thickness, double v1, double v2, BlockEntity be) {
