@@ -36,29 +36,27 @@ dependencies {
         compileOnly "extra-api:$artifactId:$version"
     }
 
-    //Curios
+    // Curios
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    //Patchouli
+    // Patchouli
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
-    //JEI
-    // compile against the JEI API but do not include it at runtime
+    // JEI
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
-    // at runtime, use the full JEI jar for Forge
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
-    //Mekanism
+    // Mekanism
     compileOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:api")
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// Mekanism
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}") // Mekanism
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions") // Mekanism: Additions
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators") // Mekanism: Generators
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools") // Mekanism: Tools
 
-    //Jade - used for testing
+    // Jade - used for testing
     runtimeOnly fg.deobf("curse.maven:jade-324717:5876199")
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"

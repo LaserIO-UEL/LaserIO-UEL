@@ -21,14 +21,14 @@ repositories {
         dir file(extraAPIDir)
     }
 
-    maven { //Curios
+    maven { // Curios
         url = "https://maven.theillusivec4.top"
         content {
             includeGroup "top.theillusivec4.curios"
         }
     }
 
-    maven { //Patchouli & JEI
+    maven { // Patchouli & JEI
         url "https://maven.blamejared.com"
         content {
             includeGroup "vazkii.patchouli"
@@ -36,14 +36,14 @@ repositories {
         }
     }
 
-    maven { //Mekanism
+    maven { // Mekanism
         url = "https://modmaven.dev"
         content {
             includeGroup "mekanism"
         }
     }
 
-    maven { //Jade - used for testing
+    maven { // Jade - used for testing
         url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
