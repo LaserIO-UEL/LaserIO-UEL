@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ToggleButton extends Button {
-    private ResourceLocation[] textures;
+    private final ResourceLocation[] textures;
     private int texturePosition;
 
     public ToggleButton(int x, int y, int width, int height, ResourceLocation[] textures, int texturePosition, OnPress onPress) {
@@ -18,26 +18,13 @@ public class ToggleButton extends Button {
         setTexturePosition(texturePosition);
     }
 
-    /*public ToggleButton(int x, int y, int width, int height, ResourceLocation[] textures, int texturePosition, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, Component.empty(), onPress, onTooltip);
-
-        this.textures = textures;
-        setTexturePosition(texturePosition);
-    }*/
-
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //fill(stack, this.x, this.y, this.x + this.width, this.y + this.height, 0xFFa8a8a8);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, textures[texturePosition]);
         guiGraphics.blit(textures[texturePosition], this.getX(), this.getY(), 0, 0, width, height, width, height);
     }
-
-    /*@Override
-    public void renderToolTip(PoseStack stack, int x, int y) {
-        super.renderToolTip(stack, x, y);
-    }*/
 
     @Override
     public void onClick(double p_onClick_1_, double p_onClick_3_) {
@@ -48,11 +35,6 @@ public class ToggleButton extends Button {
     public boolean mouseClicked(double x, double y, int button) {
         return super.mouseClicked(x, y, button);
     }
-
-    /*@Override
-    public void updateNarration(NarrationElementOutput p_169152_) {
-
-    }*/
 
     public int getTexturePosition() {
         return texturePosition;

@@ -26,7 +26,6 @@ public class DireButton extends Button {
             guiGraphics.blit(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.width / 2, this.height);
             guiGraphics.blit(WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46, this.width / 2, this.height);
 
-
             int bottomToDraw = 2;
             guiGraphics.blit(WIDGETS_LOCATION, this.getX(), this.getY() + this.height - bottomToDraw, 0, 66 - bottomToDraw, this.width / 2, bottomToDraw);
             guiGraphics.blit(WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY() + this.height - bottomToDraw, 200 - this.width / 2, 66 - bottomToDraw, this.width / 2, bottomToDraw);

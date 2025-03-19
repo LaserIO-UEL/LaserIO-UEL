@@ -172,10 +172,10 @@ public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer>
 
         this.isAllowList = FilterTag.getAllowList(filter);
 
-        ResourceLocation[] allowListTextures = new ResourceLocation[2];
-        allowListTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png");
-        allowListTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png");
-
+        ResourceLocation[] allowListTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png")
+        };
         leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
             isAllowList = !isAllowList;
             ((ToggleButton) button).setTexturePosition(isAllowList ? 1 : 0);

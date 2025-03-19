@@ -76,19 +76,17 @@ public class PacketNodeParticlesFluid {
             //Extract
             if (data.fromData != null) {
                 DimBlockPos fromPos = data.fromData.node();
-                BlockEntity fromTE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
-                if (!(fromTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) fromTE).addParticleDataFluid(new ParticleRenderDataFluid(data.fluidStack, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
+                BlockEntity fromBE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
+                if (fromBE instanceof LaserNodeBE fromNodeBE) {
+                    fromNodeBE.addParticleDataFluid(new ParticleRenderDataFluid(data.fluidStack, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
                 }
             }
             if (data.toData != null) {
                 //Insert
                 DimBlockPos toPos = data.toData.node();
-                BlockEntity toTE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
-                if (!(toTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) toTE).addParticleDataFluid(new ParticleRenderDataFluid(data.fluidStack, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
+                BlockEntity toBE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
+                if (toBE instanceof LaserNodeBE toNodeBE) {
+                    toNodeBE.addParticleDataFluid(new ParticleRenderDataFluid(data.fluidStack, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
                 }
             }
         }

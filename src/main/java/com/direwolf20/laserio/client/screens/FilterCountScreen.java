@@ -70,10 +70,10 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
         this.isAllowList = FilterCount.getAllowList(filter);
         this.isCompareNBT = FilterCount.getCompareNBT(filter);
 
-        ResourceLocation[] nbtTextures = new ResourceLocation[2];
-        nbtTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png");
-        nbtTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png");
-
+        ResourceLocation[] nbtTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png")
+        };
         leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
             isCompareNBT = !isCompareNBT;
             ((ToggleButton) button).setTexturePosition(isCompareNBT ? 1 : 0);

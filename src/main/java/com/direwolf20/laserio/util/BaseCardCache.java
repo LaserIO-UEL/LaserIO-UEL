@@ -244,7 +244,7 @@ public class BaseCardCache {
             }
         } else if (filterCard.getItem() instanceof FilterNBT) {
             if (testStack.hasTag()) {
-                for (String tag : testStack.getOrCreateTag().getAllKeys()) {
+                for (String tag : testStack.getTag().getAllKeys()) {
                     if (filterNBTs.contains(tag)) {
                         filterCache.put(key, isAllowList);
                         return isAllowList;

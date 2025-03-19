@@ -43,7 +43,7 @@ public class ExtractorCardCache extends BaseCardCache {
 
     public int decrementSleep() {
         remainingSleep--;
-        if (remainingSleep <= 0) {
+        if (remainingSleep < 0) {
             remainingSleep = 0;
         }
         return remainingSleep;

@@ -66,20 +66,20 @@ public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContai
         this.isAllowList = FilterBasic.getAllowList(filter);
         this.isCompareNBT = FilterBasic.getCompareNBT(filter);
 
-        ResourceLocation[] allowListTextures = new ResourceLocation[2];
-        allowListTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png");
-        allowListTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png");
-
+        ResourceLocation[] allowListTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png")
+        };
         leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
             isAllowList = !isAllowList;
             ((ToggleButton) button).setTexturePosition(isAllowList ? 1 : 0);
         }));
 
         if (!(filter.getItem() instanceof FilterMod)) {
-            ResourceLocation[] nbtTextures = new ResourceLocation[2];
-            nbtTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png");
-            nbtTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png");
-
+            ResourceLocation[] nbtTextures = {
+                    new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png"),
+                    new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png")
+            };
             leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
                 isCompareNBT = !isCompareNBT;
                 ((ToggleButton) button).setTexturePosition(isCompareNBT ? 1 : 0);

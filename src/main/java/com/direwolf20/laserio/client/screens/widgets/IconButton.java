@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class IconButton extends Button {
-    private ResourceLocation texture;
+    private final ResourceLocation texture;
 
     public IconButton(int x, int y, int width, int height, ResourceLocation texture, OnPress onPress) {
         super(x, y, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION);
@@ -33,9 +33,4 @@ public class IconButton extends Button {
     public boolean mouseClicked(double x, double y, int button) {
         return super.mouseClicked(x, y, button);
     }
-
-    /*@Override
-    public void updateNarration(NarrationElementOutput p_169152_) {
-
-    }*/
 }

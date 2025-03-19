@@ -26,7 +26,7 @@ public class FluidFlowParticleData implements ParticleOptions {
     public final int ticksPerBlock;
 
     public FluidFlowParticleData(FluidStack fluidStack, double tx, double ty, double tz, int ticks) {
-        this.fluidStack = fluidStack.copy(); //Forge: Fix stack updating after the fact causing particle changes.
+        this.fluidStack = fluidStack.copy(); //Forge: Fix stack updating after the fact causing particle changes
         targetX = tx;
         targetY = ty;
         targetZ = tz;
@@ -55,10 +55,6 @@ public class FluidFlowParticleData implements ParticleOptions {
                 this.getType(), this.targetX, this.targetY, this.targetZ, this.ticksPerBlock);
     }
 
-    /*public String getParameters() {
-        return Registry.PARTICLE_TYPE.getKey(this.getType()) + " " + (new ItemInput(this.fluidStack.getFluid(), this.itemStack.getTag())).serialize();
-    }*/
-
     @OnlyIn(Dist.CLIENT)
     public FluidStack getFluidStack() {
         return this.fluidStack;
@@ -68,13 +64,6 @@ public class FluidFlowParticleData implements ParticleOptions {
         @Nonnull
         @Override
         public FluidFlowParticleData fromCommand(ParticleType<FluidFlowParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            //ItemParser itemparser = (new ItemParser(reader, false)).parse();
-            //ItemStack itemstack = (new ItemInput(itemparser.getItem(), itemparser.getNbt())).createItemStack(1, false);
-            ItemParser.ItemResult itemparser$itemresult = ItemParser.parseForItem(BuiltInRegistries.ITEM.asLookup(), reader);
-            ItemStack itemstack = (new ItemInput(itemparser$itemresult.item(), itemparser$itemresult.nbt())).createItemStack(1, false);
-
-
             reader.expect(' ');
             double tx = reader.readDouble();
             reader.expect(' ');

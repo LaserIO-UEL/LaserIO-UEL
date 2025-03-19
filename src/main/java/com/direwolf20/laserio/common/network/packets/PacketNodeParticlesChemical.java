@@ -89,24 +89,21 @@ public class PacketNodeParticlesChemical {
 
     public static void clientPacketHandler(PacketNodeParticlesChemical msg) {
         List<ParticleDataChemical> tempList = msg.particleList;
-
         for (ParticleDataChemical data : tempList) {
             //Extract
             if (data.fromData != null) {
                 DimBlockPos fromPos = data.fromData.node();
-                BlockEntity fromTE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
-                if (!(fromTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) fromTE).addParticleDataChemical(new ParticleRenderDataChemical(data.chemicalStack, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
+                BlockEntity fromBE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
+                if (fromBE instanceof LaserNodeBE fromNodeBE) {
+                    fromNodeBE.addParticleDataChemical(new ParticleRenderDataChemical(data.chemicalStack, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
                 }
             }
             if (data.toData != null) {
                 //Insert
                 DimBlockPos toPos = data.toData.node();
-                BlockEntity toTE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
-                if (!(toTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) toTE).addParticleDataChemical(new ParticleRenderDataChemical(data.chemicalStack, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
+                BlockEntity toBE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
+                if (toBE instanceof LaserNodeBE toNodeBE) {
+                    toNodeBE.addParticleDataChemical(new ParticleRenderDataChemical(data.chemicalStack, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
                 }
             }
         }

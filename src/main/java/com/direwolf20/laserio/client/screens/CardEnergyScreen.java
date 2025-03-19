@@ -75,11 +75,12 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         Button modeButton = buttons.get("mode");
         if (MiscTools.inBounds(modeButton.getX(), modeButton.getY(), modeButton.getWidth(), modeButton.getHeight(), mouseX, mouseY)) {
-            MutableComponent translatableComponents[] = new MutableComponent[4];
-            translatableComponents[0] = Component.translatable("screen.laserio.insert");
-            translatableComponents[1] = Component.translatable("screen.laserio.extract");
-            translatableComponents[2] = Component.translatable("screen.laserio.stock");
-            translatableComponents[3] = Component.translatable("screen.laserio.sensor");
+            MutableComponent[] translatableComponents = {
+                    Component.translatable("screen.laserio.insert"),
+                    Component.translatable("screen.laserio.extract"),
+                    Component.translatable("screen.laserio.stock"),
+                    Component.translatable("screen.laserio.sensor")
+            };
             guiGraphics.renderTooltip(font, translatableComponents[currentMode], mouseX, mouseY);
         }
         Button channelButton = buttons.get("channel");
@@ -113,19 +114,21 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         Button roundrobin = buttons.get("roundrobin");
         if (MiscTools.inBounds(roundrobin.getX(), roundrobin.getY(), roundrobin.getWidth(), roundrobin.getHeight(), mouseX, mouseY)) {
             if (showRoundRobin()) {
-                MutableComponent translatableComponents[] = new MutableComponent[3];
-                translatableComponents[0] = Component.translatable("screen.laserio.false");
-                translatableComponents[1] = Component.translatable("screen.laserio.true");
-                translatableComponents[2] = Component.translatable("screen.laserio.enforced");
+                MutableComponent[] translatableComponents = {
+                        Component.translatable("screen.laserio.false"),
+                        Component.translatable("screen.laserio.true"),
+                        Component.translatable("screen.laserio.enforced")
+                };
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.roundrobin").append(translatableComponents[currentRoundRobin]), mouseX, mouseY);
             }
         }
         Button redstoneMode = buttons.get("redstoneMode");
         if (MiscTools.inBounds(redstoneMode.getX(), redstoneMode.getY(), redstoneMode.getWidth(), redstoneMode.getHeight(), mouseX, mouseY)) {
-            MutableComponent translatableComponents[] = new MutableComponent[3];
-            translatableComponents[0] = Component.translatable("screen.laserio.ignored");
-            translatableComponents[1] = Component.translatable("screen.laserio.low");
-            translatableComponents[2] = Component.translatable("screen.laserio.high");
+            MutableComponent[] translatableComponents = {
+                    Component.translatable("screen.laserio.ignored"),
+                    Component.translatable("screen.laserio.low"),
+                    Component.translatable("screen.laserio.high")
+            };
             guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.redstoneMode").append(translatableComponents[currentRedstoneMode]), mouseX, mouseY);
         }
         Button exact = buttons.get("exact");
@@ -177,11 +180,12 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     public void addModeButton() {
-        ResourceLocation[] modeTextures = new ResourceLocation[4];
-        modeTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modeinserter.png");
-        modeTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modeextractor.png");
-        modeTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modestocker.png");
-        modeTextures[3] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modesensor.png");
+        ResourceLocation[] modeTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modeinserter.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modeextractor.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modestocker.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modesensor.png")
+        };
         buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = BaseCard.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
@@ -192,10 +196,11 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     public void addRedstoneButton() {
-        ResourceLocation[] redstoneTextures = new ResourceLocation[3];
-        redstoneTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneignore.png");
-        redstoneTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png");
-        redstoneTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png");
+        ResourceLocation[] redstoneTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneignore.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png")
+        };
         buttons.put("redstoneMode", new ToggleButton(getGuiLeft() + 105, getGuiTop() + 5, 16, 16, redstoneTextures, currentRedstoneMode, (button) -> {
             currentRedstoneMode = (byte) (currentRedstoneMode == 2 ? 0 : currentRedstoneMode + 1);
             ((ToggleButton) button).setTexturePosition(currentRedstoneMode);
@@ -238,26 +243,29 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             changeTick(-1);
         }));
 
-        ResourceLocation[] exactTextures = new ResourceLocation[2];
-        exactTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exactfalse.png");
-        exactTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exacttrue.png");
+        ResourceLocation[] exactTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exactfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exacttrue.png")
+        };
         buttons.put("exact", new ToggleButton(getGuiLeft() + 25, getGuiTop() + 25, 16, 16, exactTextures, currentExact ? 1 : 0, (button) -> {
             currentExact = !currentExact;
             ((ToggleButton) button).setTexturePosition(currentExact ? 1 : 0);
         }));
 
-        ResourceLocation[] roundRobinTextures = new ResourceLocation[3];
-        roundRobinTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobinfalse.png");
-        roundRobinTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobintrue.png");
-        roundRobinTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobinenforced.png");
+        ResourceLocation[] roundRobinTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobinfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobintrue.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobinenforced.png")
+        };
         buttons.put("roundrobin", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, roundRobinTextures, currentRoundRobin, (button) -> {
             currentRoundRobin = currentRoundRobin == 2 ? 0 : currentRoundRobin + 1;
             ((ToggleButton) button).setTexturePosition(currentRoundRobin);
         }));
 
-        ResourceLocation[] regulateTextures = new ResourceLocation[2];
-        regulateTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png");
-        regulateTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png");
+        ResourceLocation[] regulateTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png")
+        };
         buttons.put("regulate", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, regulateTextures, currentRegulate ? 1 : 0, (button) -> {
             currentRegulate = !currentRegulate;
             ((ToggleButton) button).setTexturePosition(currentRegulate ? 1 : 0);
@@ -272,14 +280,15 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             ((ChannelButton) button).setChannel(currentChannel);
         }));
 
-        ResourceLocation[] sneakyTextures = new ResourceLocation[7];
-        sneakyTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky.png");
-        sneakyTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-down.png");
-        sneakyTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-up.png");
-        sneakyTextures[3] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-north.png");
-        sneakyTextures[4] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-south.png");
-        sneakyTextures[5] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-west.png");
-        sneakyTextures[6] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-east.png");
+        ResourceLocation[] sneakyTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-down.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-up.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-north.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-south.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-west.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-east.png")
+        };
         buttons.put("sneaky", new ToggleButton(getGuiLeft() + 25, getGuiTop() + 5, 16, 16, sneakyTextures, currentSneaky + 1, (button) -> {
             currentSneaky = BaseCard.nextSneaky(card);
             ((ToggleButton) button).setTexturePosition(currentSneaky + 1);

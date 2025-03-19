@@ -58,9 +58,10 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         Button modeButton = buttons.get("mode");
         if (MiscTools.inBounds(modeButton.getX(), modeButton.getY(), modeButton.getWidth(), modeButton.getHeight(), mouseX, mouseY)) {
-            MutableComponent translatableComponents[] = new MutableComponent[3];
-            translatableComponents[0] = Component.translatable("screen.laserio.input");
-            translatableComponents[1] = Component.translatable("screen.laserio.output");
+            MutableComponent[] translatableComponents = {
+                    Component.translatable("screen.laserio.input"),
+                    Component.translatable("screen.laserio.output")
+            };
             guiGraphics.renderTooltip(font, translatableComponents[currentMode], mouseX, mouseY);
         }
         if (currentMode == 0) {
@@ -81,26 +82,29 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         } else {
             Button strongButton = buttons.get("strong");
             if (MiscTools.inBounds(strongButton.getX(), strongButton.getY(), strongButton.getWidth(), strongButton.getHeight(), mouseX, mouseY)) {
-                MutableComponent translatableComponents[] = new MutableComponent[2];
-                translatableComponents[0] = Component.translatable("screen.laserio.weak");
-                translatableComponents[1] = Component.translatable("screen.laserio.strong");
+                MutableComponent[] translatableComponents = {
+                        Component.translatable("screen.laserio.weak"),
+                        Component.translatable("screen.laserio.strong")
+                };
                 guiGraphics.renderTooltip(font, translatableComponents[currentStrong ? 1 : 0], mouseX, mouseY);
             }
             Button outputModeButton = buttons.get("outputMode");
             if (MiscTools.inBounds(outputModeButton.getX(), outputModeButton.getY(), outputModeButton.getWidth(), outputModeButton.getHeight(), mouseX, mouseY)) {
-                MutableComponent translatableComponents[] = new MutableComponent[3];
-                translatableComponents[0] = Component.translatable("screen.laserio.redstone.normal");
-                translatableComponents[1] = Component.translatable("screen.laserio.redstone.complementary");
-                translatableComponents[2] = Component.translatable("screen.laserio.redstone.not");
+                MutableComponent[] translatableComponents = {
+                        Component.translatable("screen.laserio.redstone.normal"),
+                        Component.translatable("screen.laserio.redstone.complementary"),
+                        Component.translatable("screen.laserio.redstone.not")
+                };
                 guiGraphics.renderTooltip(font, translatableComponents[currentOutputMode], mouseX, mouseY);
             }
             Button logicOperationButton = buttons.get("logicOperation");
             if (MiscTools.inBounds(logicOperationButton.getX(), logicOperationButton.getY(), logicOperationButton.getWidth(), logicOperationButton.getHeight(), mouseX, mouseY)) {
-                MutableComponent translatableComponents[] = new MutableComponent[4];
-                translatableComponents[0] = Component.translatable("screen.laserio.redstone.nologicoperation");
-                translatableComponents[1] = Component.translatable("screen.laserio.redstone.or");
-                translatableComponents[2] = Component.translatable("screen.laserio.redstone.and");
-                translatableComponents[3] = Component.translatable("screen.laserio.redstone.xor");
+                MutableComponent[] translatableComponents = {
+                        Component.translatable("screen.laserio.redstone.nologicoperation"),
+                        Component.translatable("screen.laserio.redstone.or"),
+                        Component.translatable("screen.laserio.redstone.and"),
+                        Component.translatable("screen.laserio.redstone.xor")
+                };
                 guiGraphics.renderTooltip(font, translatableComponents[currentLogicOperation], mouseX, mouseY);
             }
             if (currentLogicOperation != 0) {
@@ -117,9 +121,10 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addModeButton() {
-        ResourceLocation[] modeTextures = new ResourceLocation[2];
-        modeTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneinput.png");
-        modeTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneoutput.png");
+        ResourceLocation[] modeTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneinput.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneoutput.png")
+        };
         buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = CardRedstone.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
@@ -135,9 +140,10 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addThresholdToggleButton() {
-        ResourceLocation[] thresholdTextures = new ResourceLocation[2];
-        thresholdTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_thresholdfalse.png");
-        thresholdTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_thresholdtrue.png");
+        ResourceLocation[] thresholdTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_thresholdfalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_thresholdtrue.png")
+        };
         buttons.put("thresholdToggle", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, thresholdTextures, currentThreshold ? 1 : 0, (button) -> {
             currentThreshold = !currentThreshold;
             ((ToggleButton) button).setTexturePosition(currentThreshold ? 1 : 0);
@@ -158,9 +164,10 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addStrongButton() {
-        ResourceLocation[] strongTextures = new ResourceLocation[2];
-        strongTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png");
-        strongTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png");
+        ResourceLocation[] strongTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png")
+        };
         buttons.put("strong", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, strongTextures, currentStrong ? 1 : 0, (button) -> {
             currentStrong = !currentStrong;
             ((ToggleButton) button).setTexturePosition(currentStrong ? 1 : 0);
@@ -168,10 +175,11 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addOutputModeButton() {
-        ResourceLocation[] outputModeTextures = new ResourceLocation[3];
-        outputModeTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_normal.png");
-        outputModeTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_complementary.png");
-        outputModeTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_not.png");
+        ResourceLocation[] outputModeTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_normal.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_complementary.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_not.png")
+        };
         buttons.put("outputMode", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, outputModeTextures, currentOutputMode, (button) -> {
             currentOutputMode = (byte) (currentOutputMode == 2 ? 0 : currentOutputMode + 1);
             ((ToggleButton) button).setTexturePosition(currentOutputMode);
@@ -179,11 +187,12 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addLogicOperationButton() {
-        ResourceLocation[] logicOperationTextures = new ResourceLocation[4];
-        logicOperationTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_nologicoperation.png");
-        logicOperationTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_or.png");
-        logicOperationTextures[2] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_and.png");
-        logicOperationTextures[3] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_xor.png");
+        ResourceLocation[] logicOperationTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_nologicoperation.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_or.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_and.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstone_xor.png")
+        };
         buttons.put("logicOperation", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, logicOperationTextures, currentLogicOperation, (button) -> {
             currentLogicOperation = (byte) (currentLogicOperation == 3 ? 0 : currentLogicOperation + 1);
             ((ToggleButton) button).setTexturePosition(currentLogicOperation);
@@ -199,9 +208,10 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
     /*
     public void addSpecialFeatureButton() {
-        ResourceLocation[] specialFeatureTextures = new ResourceLocation[2];
-        specialFeatureTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png");
-        specialFeatureTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png");
+        ResourceLocation[] specialFeatureTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png")
+        };
         buttons.put("specialFeature", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 45, 16, 16, specialFeatureTextures, currentSpecialFeature, (button) -> {
             currentSpecialFeature = (byte) (currentSpecialFeature == 1 ? 0 : currentSpecialFeature + 1);
             ((ToggleButton) button).setTexturePosition(currentSpecialFeature);

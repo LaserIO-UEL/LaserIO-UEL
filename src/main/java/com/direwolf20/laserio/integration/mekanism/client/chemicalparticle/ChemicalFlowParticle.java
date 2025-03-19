@@ -12,29 +12,23 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Random;
 
 public class ChemicalFlowParticle extends BreakingItemParticle {
-    private double targetX, targetY, targetZ;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public ChemicalFlowParticle(ClientLevel world, double x, double y, double z, double targetX, double targetY, double targetZ, ChemicalStack<?> chemicalStack, int ticksPerBlock) {
         super(world, x, y, z, ItemStack.EMPTY);
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
-        this.targetX = targetX;
-        this.targetY = targetY;
-        this.targetZ = targetZ;
         Vec3 target = new Vec3(targetX, targetY, targetZ);
         Vec3 source = new Vec3(this.x, this.y, this.z);
         Vec3 path = target.subtract(source).normalize().multiply(1, 1, 1);
         this.gravity = 0.0f;
         double distance = target.distanceTo(source);
-        //System.out.println(source +":"+target);
         this.hasPhysics = false;
         float minSize = 0.15f;
         float maxSize = 0.25f;
         float partSize = minSize + random.nextFloat() * (maxSize - minSize);
         float speedModifier = (1f - 0.5f) * (partSize - minSize) / (maxSize - minSize) + 0.25f;
-        //float speedModifier = (0.5f - 1f) * (partSize - maxSize) / (minSize - maxSize) + 1f;
         float speedAdjust = ticksPerBlock * (1 / speedModifier);
         this.xd += path.x / speedAdjust;
         this.yd += path.y / speedAdjust;
@@ -42,7 +36,6 @@ public class ChemicalFlowParticle extends BreakingItemParticle {
         this.lifetime = (int) (distance * speedAdjust);
         this.scale(partSize);
         this.setSprite(Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(chemicalStack.getType().getIcon()));
-        //this.setSprite(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStack.getFluid().getAttributes().getStillTexture(fluidStack)));
         int i = chemicalStack.getChemicalColorRepresentation();
         this.rCol *= (float) (i >> 16 & 255) / 255.0F;
         this.gCol *= (float) (i >> 8 & 255) / 255.0F;

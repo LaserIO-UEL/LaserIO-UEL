@@ -9,9 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class WhitelistButton extends Button {
+    private static final ResourceLocation ALLOW_TEXTURE = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png");
+    private static final ResourceLocation BLOCK_TEXTURE = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png");
     private boolean isWhitelist;
-    private ResourceLocation allow = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png");
-    private ResourceLocation block = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png");
 
     public WhitelistButton(int widthIn, int heightIn, int width, int height, boolean isWhitelist, OnPress onPress) {
         super(widthIn, heightIn, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION);
@@ -21,7 +21,7 @@ public class WhitelistButton extends Button {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        guiGraphics.blit(isWhitelist ? allow : block, this.getX(), this.getY(), 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(isWhitelist ? ALLOW_TEXTURE : BLOCK_TEXTURE, this.getX(), this.getY(), 0, 0, 16, 16, 16, 16);
     }
 
     public void setWhitelist(boolean whitelist) {

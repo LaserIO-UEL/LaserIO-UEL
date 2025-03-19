@@ -73,24 +73,21 @@ public class PacketNodeParticles {
 
     public static void clientPacketHandler(PacketNodeParticles msg) {
         List<ParticleData> tempList = msg.particleList;
-
         for (ParticleData data : tempList) {
             //Extract
             if (data.fromData != null) {
                 DimBlockPos fromPos = data.fromData.node();
-                BlockEntity fromTE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
-                if (!(fromTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) fromTE).addParticleData(new ParticleRenderData(data.item, data.itemCount, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
+                BlockEntity fromBE = Minecraft.getInstance().level.getBlockEntity(fromPos.blockPos);
+                if (fromBE instanceof LaserNodeBE fromNodeBE) {
+                    fromNodeBE.addParticleData(new ParticleRenderData(data.item, data.itemCount, fromPos.blockPos.relative(Direction.values()[data.fromData.direction()]), data.fromData.direction(), data.fromData.node().blockPos, data.fromData.position()));
                 }
             }
             if (data.toData != null) {
                 //Insert
                 DimBlockPos toPos = data.toData.node();
-                BlockEntity toTE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
-                if (!(toTE instanceof LaserNodeBE)) {
-                } else {
-                    ((LaserNodeBE) toTE).addParticleData(new ParticleRenderData(data.item, data.itemCount, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
+                BlockEntity toBE = Minecraft.getInstance().level.getBlockEntity(toPos.blockPos);
+                if (toBE instanceof LaserNodeBE toNodeBE) {
+                    toNodeBE.addParticleData(new ParticleRenderData(data.item, data.itemCount, data.toData.node().blockPos, data.toData.direction(), toPos.blockPos.relative(Direction.values()[data.toData.direction()]), data.toData.position()));
                 }
             }
         }

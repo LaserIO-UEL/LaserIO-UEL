@@ -84,9 +84,10 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         });
         leftWidgets.add(settingsButton);
 
-        ResourceLocation[] regulateTextures = new ResourceLocation[2];
-        regulateTextures[0] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png");
-        regulateTextures[1] = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png");
+        ResourceLocation[] regulateTextures = {
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png"),
+                new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png")
+        };
         particlesButton = new ToggleButton(getGuiLeft() + 155, getGuiTop() + 45, 16, 16, regulateTextures, currentParticles ? 1 : 0, (button) -> {
             currentParticles = !currentParticles;
             ((ToggleButton) button).setTexturePosition(currentParticles ? 1 : 0);
@@ -113,9 +114,10 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         if (MiscTools.inBounds(particlesButton.getX(), particlesButton.getY(), particlesButton.getWidth(), particlesButton.getHeight(), mouseX, mouseY)) {
-            MutableComponent translatableComponents[] = new MutableComponent[2];
-            translatableComponents[0] = Component.translatable("screen.laserio.showparticles");
-            translatableComponents[1] = Component.translatable("screen.laserio.hideparticles");
+            MutableComponent[] translatableComponents = {
+                    Component.translatable("screen.laserio.showparticles"),
+                    Component.translatable("screen.laserio.hideparticles")
+            };
             guiGraphics.renderTooltip(font, currentParticles ? translatableComponents[0] : translatableComponents[1], mouseX, mouseY);
         }
     }

@@ -25,7 +25,7 @@ public class ChemicalFlowParticleData implements ParticleOptions {
     public final int ticksPerBlock;
 
     public ChemicalFlowParticleData(ChemicalStack<?> chemicalStack, double tx, double ty, double tz, int ticks, String type) {
-        this.chemicalStack = chemicalStack.copy(); //Forge: Fix stack updating after the fact causing particle changes.
+        this.chemicalStack = chemicalStack.copy(); //Forge: Fix stack updating after the fact causing particle changes
         targetX = tx;
         targetY = ty;
         targetZ = tz;
@@ -56,10 +56,6 @@ public class ChemicalFlowParticleData implements ParticleOptions {
                 this.getType(), this.targetX, this.targetY, this.targetZ, this.ticksPerBlock, this.type);
     }
 
-    /*public String getParameters() {
-        return Registry.PARTICLE_TYPE.getKey(this.getType()) + " " + (new ItemInput(this.fluidStack.getFluid(), this.itemStack.getTag())).serialize();
-    }*/
-
     @OnlyIn(Dist.CLIENT)
     public ChemicalStack<?> getChemicalStack() {
         return this.chemicalStack;
@@ -71,9 +67,6 @@ public class ChemicalFlowParticleData implements ParticleOptions {
         public ChemicalFlowParticleData fromCommand(ParticleType<ChemicalFlowParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             String type = reader.readString();
-            reader.expect(' ');
-
-
             reader.expect(' ');
             double tx = reader.readDouble();
             reader.expect(' ');

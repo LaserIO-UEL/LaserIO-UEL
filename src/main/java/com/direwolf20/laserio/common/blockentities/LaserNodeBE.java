@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.common.blockentities;
 
+import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.client.particles.fluidparticle.FluidFlowParticleData;
 import com.direwolf20.laserio.client.particles.itemparticle.ItemFlowParticleData;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
@@ -29,6 +30,7 @@ import com.direwolf20.laserio.util.FluidStackKey;
 import com.direwolf20.laserio.util.InserterCardCache;
 import com.direwolf20.laserio.util.ItemHandlerUtil;
 import com.direwolf20.laserio.util.ItemStackKey;
+import com.direwolf20.laserio.util.MiscTools;
 import com.direwolf20.laserio.util.NodeSideCache;
 import com.direwolf20.laserio.util.ParticleData;
 import com.direwolf20.laserio.util.ParticleDataFluid;
@@ -57,6 +59,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -90,22 +93,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import static com.direwolf20.laserio.util.MiscTools.findOffset;
-import static net.minecraft.world.level.block.Block.UPDATE_ALL;
-
 public class LaserNodeBE extends BaseLaserBE {
-    private static final Vector3f[] offsets = { //Used for where to draw particles from
-            new Vector3f(0.65f, 0.65f, 0.5f),
-            new Vector3f(0.5f, 0.65f, 0.5f),
-            new Vector3f(0.35f, 0.65f, 0.5f),
-            new Vector3f(0.65f, 0.5f, 0.5f),
-            new Vector3f(0.5f, 0.5f, 0.5f),
-            new Vector3f(0.35f, 0.5f, 0.5f),
-            new Vector3f(0.65f, 0.35f, 0.5f),
-            new Vector3f(0.5f, 0.35f, 0.5f),
-            new Vector3f(0.35f, 0.35f, 0.5f)
-    };
-
     /** A cache of this blocks sides - data we need to reference frequently **/
     public final NodeSideCache[] nodeSideCaches = new NodeSideCache[6];
     private final IItemHandler EMPTY = new ItemStackHandler(0);
@@ -540,7 +528,7 @@ public class LaserNodeBE extends BaseLaserBE {
             }
         }
         BlockState state = this.getBlockState();
-        state.updateNeighbourShapes(level, getBlockPos(), UPDATE_ALL);
+        state.updateNeighbourShapes(level, getBlockPos(), Block.UPDATE_ALL);
         if (firstTimeNodeLoaded) {
             firstTimeNodeLoaded = false;
         }
@@ -1922,7 +1910,7 @@ public class LaserNodeBE extends BaseLaserBE {
             if (targetState.getBlock() instanceof LaserNode) {
                 targetState = level.getBlockState(fromPos);
                 VoxelShape voxelShape = targetState.getShape(level, fromPos);
-                Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+                Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
                 Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
                 ItemFlowParticleData data = new ItemFlowParticleData(itemStack, toPos.getX() + extractOffset.x(), toPos.getY() + extractOffset.y(), toPos.getZ() + extractOffset.z(), 10);
                 for (int i = 0; i < count; ++i) {
@@ -1934,7 +1922,7 @@ public class LaserNodeBE extends BaseLaserBE {
                 }
             } else {
                 VoxelShape voxelShape = targetState.getShape(level, toPos);
-                Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+                Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
                 Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
                 ItemFlowParticleData data = new ItemFlowParticleData(itemStack, fromPos.getX() + insertOffset.x(), fromPos.getY() + insertOffset.y(), fromPos.getZ() + insertOffset.z(), 10);
                 for (int i = 0; i < count; ++i) {
@@ -1965,7 +1953,7 @@ public class LaserNodeBE extends BaseLaserBE {
             if (targetState.getBlock() instanceof LaserNode) {
                 targetState = level.getBlockState(fromPos);
                 VoxelShape voxelShape = targetState.getShape(level, fromPos);
-                Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+                Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
                 Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
                 FluidFlowParticleData data = new FluidFlowParticleData(fluidStack, toPos.getX() + extractOffset.x(), toPos.getY() + extractOffset.y(), toPos.getZ() + extractOffset.z(), 10);
                 for (int i = 0; i < count; ++i) {
@@ -1977,7 +1965,7 @@ public class LaserNodeBE extends BaseLaserBE {
                 }
             } else {
                 VoxelShape voxelShape = targetState.getShape(level, toPos);
-                Vector3f extractOffset = findOffset(direction, partData.position, offsets);
+                Vector3f extractOffset = MiscTools.findOffset(direction, partData.position, LaserNodeBERender.OFFSETS);
                 Vector3f insertOffset = CardRender.shapeOffset(extractOffset, voxelShape, fromPos, toPos, direction, level, targetState);
                 FluidFlowParticleData data = new FluidFlowParticleData(fluidStack, fromPos.getX() + insertOffset.x(), fromPos.getY() + insertOffset.y(), fromPos.getZ() + insertOffset.z(), 10);
                 for (int i = 0; i < count; ++i) {
@@ -2461,7 +2449,7 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         BlockState state = this.getBlockState();
         level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
-        state.updateNeighbourShapes(level, getBlockPos(), UPDATE_ALL);
+        state.updateNeighbourShapes(level, getBlockPos(), Block.UPDATE_ALL);
         rendersChecked = true;
     }
 
