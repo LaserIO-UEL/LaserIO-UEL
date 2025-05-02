@@ -1,0 +1,64 @@
+---
+navigation:
+  title: "Redstone Cards"
+  icon: "laserio:card_redstone"
+  position: 4
+  parent: laserio:cards/cards.md
+item_ids:
+  - laserio:card_redstone
+---
+
+# Redstone Cards
+
+Redstone cards are used to transmit redstone signals across the entire LaserIO network. 
+
+Redstone cards have a dedicated 'redstone channel', separate from the channels that other cards use. 
+
+Redstone cards have 2 modes:
+
+**Input**
+Input mode will accept a redstone signal from something like redstone dust, a lever, or a button, and transmit it across the network on the redstone channel configured on the card.
+
+**Output**
+Output will emit a redstone signal to blocks like redstone dust, lamp, or repeaters.
+
+Output mode has a toggle for Weak vs Strong. In weak mode, only directly adjacent blocks like redstone will get the signal, similar to how redstone dust works.
+
+In strong mode the redstone signal can transmit through an adjacent block and affect the block on the other side, like how levers work.
+
+All cards have a redstone mode toggle, which defaults to ignored, meaning the cards will always operate.
+
+If set to low, the cards will only function when there is NOT a redstone signal on the redstone channel (the channel button is to the right of the redstone toggle).
+
+On redstone high mode, the cards will only operate when there IS a redstone signal on the redstone channel.
+
+Some settings exist for more complex redstone needs:
+
+**Input side**
+Toggling Threshold mode will reveal two other buttons: Limit and Output.
+
+The Limit determines when (equal or greater than) a signal will be sent on the redstone channel.
+The signal strength will be equal to the specified Output when activated.
+
+**Output side**
+Complementary takes the channel signal and emits: 15 - that.
+NOT is similar to Complementary but only gives off a 15 signal strength when there is none on the channel. Any signal from the channel and nothing will be emitted.
+
+Lastly, the 'Logic Operation' mode. These settings utilize another redstone channel to perform a boolean operation with the already chosen one.
+
+The possible operations are documented in the following page.
+
+Logic Operation mode offers three types of boolean operators: OR, AND, XOR.
+
+OR emits a signal when either channel has power.
+AND only emits a signal when both channels are powered.
+XOR emits a signal when exactly one of the two channels has power.
+
+Logic Operation settings can be combined with Complementary/NOT to get their negated version (NOR, NAND, XNOR)!
+
+## Redstone Card
+
+
+
+<Recipe id="laserio:card_redstone" />
+
