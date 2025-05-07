@@ -10,9 +10,7 @@ navigation:
 
 Chemical Cards are used to send Chemicals between inventories, such as Mekanism Tanks. These cards are only available if Mekanism is installed.
 
-Overclocker values are documented on the following page.
-
-MB/t values (max) for Overclockers:
+mb/t values (max) for Overclockers:
 
 
 - 0 Overclockers: 15,000mb/20t
@@ -20,6 +18,8 @@ MB/t values (max) for Overclockers:
 - 2 Overclockers: 120,000mb/12t
 - 3 Overclockers: 180,000mb/8t
 - 4 Overclockers: 240,000mb/4t
+
+NOTE: These values are the default and can be changed by config.
 
 ## Chemical Card
 <Recipe id="laserio:card_chemical" />

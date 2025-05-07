@@ -18,13 +18,29 @@ Unlike Item/Fluid cards that require overclockers to operate faster than once ev
 
 Overclockers can't go into Energy cards. Energy cards always operate at 1,000,000 FE/tick max. This can be reduced if you wish.
 
-Energy cards also have an 'Energy Limit %' setting -- By default, on insert/stock modes this is 100%, and on extract modes this is 0%. On insert/stock mode it specifies how much to fill up the specified energy acceptor. 
+---
+
+## Limit
+
+Limit % only exists on Energy Cards. Limit % specifies the percentage of FE to operate with on the adjacent energy accepting block.
+
+There are two different metrics, Insert % for Stock/Insert mode, and Extract % for extract mode.
+
+**Insert/Stock Limit**
+
+By default, the limit% is set to 100%.  Specifies how much to fill up the specified energy block.
 
 For example: If the block can hold 1,000,000 FE, and you specify 50%, it will only fill up to 500,000FE.
 
-In extract mode, this designates what percent should be left behind.
+The default (100%) will fill it up completely.
 
-For example: If you are extracting FE from an energy cell that can hold 1,000,000FE, and specify a limit of 25%, it will not extract below 250,000 FE.
+**Extract Limit**
+
+By default, the limit% is set to 0%. Specifies how much to leave behind in the specified energy block.
+
+For example: If the block can hold 1,000,000 FE, and you specify 50%, it will extract until the block has 500,000fe remaining, and will not extract any more.
+
+The default (0%) will extract all energy.
 
 Technical Note: The Forge Energy system supports energy storage up to MAX_INT which is approximately 2.14 billion FE. If you are using a mod like Draconic Evolution or Mekanism, their storage cells can store greater than this amount by 'hacking' how Forge Energy works. As a result, this % indicator will not work on storage cells greater than 2.14 billion FE. Sorry! :)
 

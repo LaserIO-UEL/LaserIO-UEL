@@ -16,7 +16,8 @@ If you are new to LaserIO, the fundamentals are:
 Can't Have DireWire without Wires! 
 
 - [Blocks](./blocks/blocks.md)
+- [Tools](./tools/tools.md)
 - [Cards](./cards/cards.md)
-- [Filters](./filters/filters.md)
-- [Items](./items/items.md)
 - [Mechanics](./mechanics/mechanics.md)
+- [Upgrades](./upgrades/upgrades.md)
+- [Filters](./filters/filters.md)

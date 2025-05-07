@@ -12,8 +12,6 @@ item_ids:
 
 Item Cards are used to send items between inventories, such as chests and furnaces.
 
-Overclocker values are documented on the following page.
-
 Items/t values (max) for Overclockers:
 
 
@@ -22,6 +20,8 @@ Items/t values (max) for Overclockers:
 - 2 Overclockers: 32 Items/12t
 - 3 Overclockers: 48 Items/8t
 - 4 Overclockers: 64 Items/4t
+
+NOTE: These values are the default and can be changed by config.
 
 ## Item Card
 

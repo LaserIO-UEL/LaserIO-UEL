@@ -26,7 +26,7 @@ Linking Nodes one by one after you placed them can be tedious; luckily the Laser
 
 While placing Nodes, holding the Laser Wrench in your offhand automatically connects each node to the previously placed one!
 
-Note: this feature works with (Advanced) Laser Connectors as well!
+Note: This feature works with (Advanced) Laser Connectors as well!
 
 ## Laser Wrench
 
