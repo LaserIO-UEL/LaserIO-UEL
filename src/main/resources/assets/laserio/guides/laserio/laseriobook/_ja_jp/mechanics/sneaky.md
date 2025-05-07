@@ -3,7 +3,7 @@ navigation:
   title: "スニーキー"
   icon: "laserio:textures/gui/buttons/sneaky-up.png"
   position: 2
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # スニーキー

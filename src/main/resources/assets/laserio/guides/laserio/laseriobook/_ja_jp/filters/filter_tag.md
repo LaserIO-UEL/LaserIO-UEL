@@ -3,7 +3,7 @@ navigation:
   title: "タグフィルター"
   icon: "laserio:filter_tag"
   position: 2
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # タグフィルター
@@ -17,11 +17,9 @@ navigation:
 ## タグUI
 
 タグUI
-
-TODO: Unsupported flag 'border'
 ![](filter_tag.png)
 
-まず、右上のスロットにアイテムを配置します。このアイテムのタグのリストが <Color hex="#0000ff">青色</Color>で表示されます。追加したいタグをクリックし、+ボタンを押します。Shiftキーを押しながら+ボタンを押すと、すべてのタグがリストに追加されます。
+まず、右上のスロットにアイテムを配置します。このアイテムのタグのリストが <Color id="blue">**青色**</Color> で表示されます。追加したいタグをクリックし、+ボタンを押します。Shiftキーを押しながら+ボタンを押すと、すべてのタグがリストに追加されます。
 
 リストからタグを削除するには、タグを選択して-ボタンを押します。
 

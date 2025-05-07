@@ -3,7 +3,7 @@ navigation:
   title: "カードホルダー"
   icon: "laserio:card_holder"
   position: 2
-  parent: laserio:items.md
+  parent: laserio:items/items.md
 item_ids:
   - laserio:card_holder
 ---

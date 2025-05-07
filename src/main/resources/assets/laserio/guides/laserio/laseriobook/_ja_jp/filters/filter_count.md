@@ -3,7 +3,7 @@ navigation:
   title: "カウントフィルター"
   icon: "laserio:filter_count"
   position: 2
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # カウントフィルター

@@ -3,9 +3,9 @@ navigation:
   title: "エネルギーカード"
   icon: "laserio:card_energy"
   position: 3
-  parent: laserio:cards.md
+  parent: laserio:cards/cards.md
 item_ids:
-  - laserio:card_energy
+  - laserio:cards/card_energy
 ---
 
 # エネルギーカード

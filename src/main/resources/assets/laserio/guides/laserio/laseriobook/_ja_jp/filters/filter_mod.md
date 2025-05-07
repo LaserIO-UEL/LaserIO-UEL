@@ -3,7 +3,7 @@ navigation:
   title: "Modフィルター"
   icon: "laserio:filter_mod"
   position: 3
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # Modフィルター

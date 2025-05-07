@@ -3,7 +3,7 @@ navigation:
   title: "センサーモード"
   icon: "laserio:textures/gui/buttons/modesensor.png"
   position: 12
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # センサーモード

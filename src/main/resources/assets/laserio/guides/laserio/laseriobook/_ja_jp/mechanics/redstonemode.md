@@ -3,7 +3,7 @@ navigation:
   title: "レッドストーンモード"
   icon: "laserio:textures/gui/buttons/redstonehigh.png"
   position: 11
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # レッドストーンモード

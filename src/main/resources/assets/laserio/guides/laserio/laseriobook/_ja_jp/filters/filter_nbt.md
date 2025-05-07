@@ -3,7 +3,7 @@ navigation:
   title: "NBTフィルター"
   icon: "laserio:filter_nbt"
   position: 3
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # NBTフィルター
@@ -15,8 +15,6 @@ NBTフィルターは、[タグフィルター](./filter_tag.md)と非常によ�
 ## NBT UI
 
 NBT UI
-
-TODO: Unsupported flag 'border'
 ![](nbt_filter.png)
 
 たとえば、すべてのエンチャントされたアイテムには「エンチャント」タグが付いており、ドロップ増加、ダメージ増加などが指定されています。このリストに「エンチャント」タグを追加すると、フィルターによってすべてのエンチャントされたアイテムが除外されます。

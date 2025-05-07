@@ -6,7 +6,14 @@ navigation:
 
 # LaserIO UEL
 
-yes I love paper please work wor
+An encyclopedia on the items, blocks, and mechanics in LaserIO. 
+
+If you are new to LaserIO, the fundamentals are:
+- The [Laser Node](./blocks/laser_node.md)
+- The [Laser Wrench](tools/laser_wrench.md)
+- And the many [Cards](./cards/cards.md)
+
+Can't Have DireWire without Wires! 
 
 - [Blocks](./blocks/blocks.md)
 - [Cards](./cards/cards.md)

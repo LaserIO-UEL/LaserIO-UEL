@@ -3,7 +3,7 @@ navigation:
   title: "化学物質カード"
   icon: "laserio:card_chemical"
   position: 5
-  parent: laserio:cards.md
+  parent: laserio:cards/cards.md
 ---
 
 # 化学物質カード

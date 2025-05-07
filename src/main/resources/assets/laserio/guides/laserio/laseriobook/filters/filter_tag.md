@@ -16,12 +16,11 @@ The tag filter would allow you to sort on all ingots with a single entry!
 
 ## Tag UI
 
-Tag UI
+*Tag UI*
 
-TODO: Unsupported flag 'border'
 ![](filter_tag.png)
 
-First, start by placing an item in the slot on the top right. A list of tags on this item will appear in <Color hex="#0000ff">blue</Color>. Click on the tag you want added, and press the + button. Holding shift and pressing the + button will add all tags to the list.
+First, start by placing an item in the slot on the top right. A list of tags on this item will appear in <Color id="blue">**blue**</Color>. Click on the tag you want added, and press the + button. Holding shift and pressing the + button will add all tags to the list.
 
 To remove a tag from the list, select it and press the - button. 
 

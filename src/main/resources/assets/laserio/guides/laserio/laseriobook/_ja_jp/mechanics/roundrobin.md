@@ -3,7 +3,7 @@ navigation:
   title: "ラウンドロビン"
   icon: "laserio:textures/gui/buttons/roundrobintrue.png"
   position: 5
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # ラウンドロビン

@@ -154,7 +154,7 @@ public class LaserIOLanguage extends LanguageProvider {
 
         //GuideME
         add("guideme.laserio.bookname","LaserIO 101");
-        add("guideme.laserio.bookdescription", "Thinking with Lasers(IO)!");
+        add("guideme.laserio.bookdescription", "Can't have DireWire without Wires!");
         //add("", "");
     }
 }

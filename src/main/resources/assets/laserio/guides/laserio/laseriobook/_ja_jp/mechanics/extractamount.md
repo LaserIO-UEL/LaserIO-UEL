@@ -3,7 +3,7 @@ navigation:
   title: "転送量"
   icon: "laserio:textures/gui/buttons/modeextractor.png"
   position: 7
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # 転送量
@@ -14,7 +14,7 @@ navigation:
 
 たとえば、20ティックあたり8アイテムに設定すると、搬出機は20ティックごとに一度に8アイテムを搬出します。
 
-[カードオーバークロッカー](./overclocker_card.md) がインストールされていない限り、搬出カードとストックカードのデフォルト値は1で、最大値は8です。指定されたオーバークロッカーがインストールされている場合、次の抽出量が許可されます:
+[カードオーバークロッカー](../items/overclocker_card.md) がインストールされていない限り、搬出カードとストックカードのデフォルト値は1で、最大値は8です。指定されたオーバークロッカーがインストールされている場合、次の抽出量が許可されます:
 1. 16
 2. 32
 3. 48

@@ -8,17 +8,16 @@ navigation:
 
 # Network Settings
 
-The network settings screen is available from any [Laser Node](./laser_node.md) screen. In this settings screen, you may change the color of the network. This color will affect:
+The network settings screen is available from any [Laser Node](../blocks/laser_node.md) screen. In this settings screen, you may change the color of the network. This color will affect:
 - Laser Node Block (in world)
 - Laser Connector Block (in world)
 - Color of lasers between blocks. 
 
 ## Colored Nodes
 
-Different Colored networks
+*Different Colored networks*
 
-TODO: Unsupported flag 'border'
-![](settings1.png)
+![](images/settings1.png)
 
 The color of the lasers between the node and inventories (Like chests or tanks) will not be affected.
 

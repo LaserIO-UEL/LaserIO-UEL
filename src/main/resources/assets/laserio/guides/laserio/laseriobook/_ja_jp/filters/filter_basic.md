@@ -3,7 +3,7 @@ navigation:
   title: "基本フィルター"
   icon: "laserio:filter_basic"
   position: 1
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # 基本フィルター

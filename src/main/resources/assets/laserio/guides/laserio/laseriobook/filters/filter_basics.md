@@ -17,9 +17,8 @@ Filters allow you to restrict what items can be inserted, extracted, or stocked.
 
 ## Filter UI
 
-Basic Filter UI
+*Basic Filter UI*
 
-TODO: Unsupported flag 'border'
 ![](filter_basic.png)
 
 Allow vs Deny

@@ -22,8 +22,5 @@ MB/t values (max) for Overclockers:
 - 4 Overclockers: 240,000mb/4t
 
 ## Chemical Card
-
-
-
 <Recipe id="laserio:card_chemical" />
 

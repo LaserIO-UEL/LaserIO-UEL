@@ -3,7 +3,7 @@ navigation:
   title: "アイテムカード"
   icon: "laserio:card_item"
   position: 1
-  parent: laserio:cards.md
+  parent: laserio:cards/cards.md
 item_ids:
   - laserio:card_item
 ---

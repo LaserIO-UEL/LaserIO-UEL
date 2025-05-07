@@ -2,7 +2,7 @@
 navigation:
   title: "基本的な仕組み"
   icon: "laserio:logic_chip"
-  parent: laserio:filters.md
+  parent: laserio:filters/filters.md
 ---
 
 # 基本的な仕組み
@@ -18,8 +18,6 @@ navigation:
 ## フィルターUI
 
 基本フィルターUI
-
-TODO: Unsupported flag 'border'
 ![](filter_basic.png)
 
 許可と拒否

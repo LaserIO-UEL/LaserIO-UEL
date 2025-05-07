@@ -3,7 +3,7 @@ navigation:
   title: "優先度"
   icon: "laserio:textures/gui/buttons/modeinserter.png"
   position: 3
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # 優先度

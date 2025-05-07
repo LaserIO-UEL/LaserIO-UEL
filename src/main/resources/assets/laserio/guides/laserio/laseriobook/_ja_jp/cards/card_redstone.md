@@ -3,7 +3,7 @@ navigation:
   title: "レッドストーンカード"
   icon: "laserio:card_redstone"
   position: 4
-  parent: laserio:cards.md
+  parent: laserio:cards/cards.md
 item_ids:
   - laserio:card_redstone
 ---

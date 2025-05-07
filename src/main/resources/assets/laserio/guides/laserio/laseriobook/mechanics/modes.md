@@ -1,7 +1,7 @@
 ---
 navigation:
   title: "Modes"
-  icon: "laserio:modestocker.png"
+  icon: "laserio:mechanics/settings1.png"
   position: 1
   parent: laserio:mechanics/mechanics.md
 ---
@@ -14,43 +14,24 @@ Each type of card (Item/Fluid/Energy) supports the the following three modes. It
 
 [Redstone cards](laserio:cards/card_redstone.md) will support a different set of modes.
 
-<ItemImage id="laserio:card_item" float="left" scale="1.5"/> Insert Mode cards are a validate destination for objects being extracted by Extract Mode cards.
+Insert Mode cards are a validate destination for objects being extracted by Extract Mode cards.
 
 Stock mode cards will attempt to pull from Insert Mode cards.
 
-<ItemImage id="laserio:card_item" p:mode="1b"/>
+<ItemImage id="laserio:card_item" />
 
-<ItemImage id="laserio:card_item" float="left"/> Extract Mode cards attempt to remove objects from their adjacent block. Items, for example, will be removed from an adjacent chest and sent to an insert card.
+Extract Mode cards attempt to remove objects from their adjacent block. Items, for example, will be removed from an adjacent chest and sent to an insert card.
 
-<ItemImage id="laserio:card_item{channel:0b" />
-<ItemImage id="exact:0b" />
-<ItemImage id="inv:{Items:[]" />
-<ItemImage id="" />
-<ItemImage id="itemextractamt:1b" />
-<ItemImage id="itemextractspeed:20" />
-<ItemImage id="mode:2b" />
-<ItemImage id="priority:0s" />
-<ItemImage id="regulate:0b" />
-<ItemImage id="roundRobin:0" />
-<ItemImage id="" />
+<ItemImage id="laserio:card_item" tag="{mode:1b}"/>
 
 Stock Mode cards attempt to find the designated items in their filter, and pull them from other Insert Nodes in the same network.
 
 Stock mode cards require a filter set to Allow.
 
-<ItemImage id="laserio:card_item{channel:0b" />
-<ItemImage id="exact:0b" />
-<ItemImage id="inv:{Items:[]" />
-<ItemImage id="" />
-<ItemImage id="itemextractamt:1b" />
-<ItemImage id="itemextractspeed:20" />
-<ItemImage id="mode:3b" />
-<ItemImage id="priority:0s" />
-<ItemImage id="regulate:0b" />
-<ItemImage id="roundRobin:0" />
-<ItemImage id="" />
+<ItemImage id="laserio:card_item" tag="{mode:2b}"/>
 
 Sensor cards do not move objects around, but instead look at an adjacent inventory, and will emit a redstone signal on the redstone channel if the inventory matches the filter.
 
 Sensor mode cards require a filter.
 
+<ItemImage id="laserio:card_item" tag="{mode:3b}"/>

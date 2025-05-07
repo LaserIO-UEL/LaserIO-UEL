@@ -2,7 +2,7 @@
 navigation:
   title: "論理チップ"
   icon: "laserio:logic_chip"
-  parent: laserio:items.md
+  parent: laserio:items/items.md
 item_ids:
   - laserio:logic_chip_raw
 ---

@@ -1,11 +1,11 @@
 ---
 navigation:
-  title: "Items"
+  title: "Tools"
   icon: "laserio:laser_wrench"
 ---
 
-# Items
+# Tools
 
-A few items that are used in the mod!
+The tools of the mod.
 
 <SubPages />

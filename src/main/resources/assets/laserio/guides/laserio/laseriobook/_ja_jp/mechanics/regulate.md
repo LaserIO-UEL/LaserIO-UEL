@@ -3,7 +3,7 @@ navigation:
   title: "制御"
   icon: "laserio:textures/gui/buttons/regulatetrue.png"
   position: 9
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # 制御

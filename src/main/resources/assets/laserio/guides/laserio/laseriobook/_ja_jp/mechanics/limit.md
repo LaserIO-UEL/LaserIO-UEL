@@ -3,7 +3,7 @@ navigation:
   title: "制限"
   icon: "laserio:card_energy"
   position: 10
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # 制限

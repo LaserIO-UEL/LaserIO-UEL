@@ -3,7 +3,7 @@ navigation:
   title: "液体カード"
   icon: "laserio:card_fluid"
   position: 2
-  parent: laserio:cards.md
+  parent: laserio:cards/cards.md
 item_ids:
   - laserio:card_fluid
 ---

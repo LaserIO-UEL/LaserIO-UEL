@@ -3,12 +3,12 @@ navigation:
   title: "ネットワーク設定"
   icon: "laserio:textures/gui/buttons/settings.png"
   position: 1
-  parent: laserio:mechanics.md
+  parent: laserio:mechanics/mechanics.md
 ---
 
 # ネットワーク設定
 
-ネットワーク設定画面は、どの [レーザーノード](./laser_node.md)画面からでも利用できます。この設定画面では、ネットワークの色を変更できます。この色は、次のものに影響します:
+ネットワーク設定画面は、どの [レーザーノード](../blocks/laser_node.md)画面からでも利用できます。この設定画面では、ネットワークの色を変更できます。この色は、次のものに影響します:
 - レーザーノードブロック(ワールド内)
 - レーザー中継器ブロック(ワールド内)
 - ブロック間のレーザーの色。
@@ -16,8 +16,6 @@ navigation:
 ## カラフルなノード
 
 異なる色のネットワーク
-
-TODO: Unsupported flag 'border'
 ![](settings1.png)
 
 ノードとインベントリ(チェストやタンクなど)間のレーザーの色は影響を受けません。
