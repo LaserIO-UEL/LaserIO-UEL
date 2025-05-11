@@ -22,23 +22,23 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
     public static final KeyMapping OPEN_CARD_HOLDER = new KeyMapping(
-            "key.laserio.open_card_holder",
+            "key.laserio.card_holder.open",
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
             LaserIO.MODNAME
     );
     public static final KeyMapping TOGGLE_CARD_HOLDER_PULLING = new KeyMapping(
-            "key.laserio.toggle_card_holder_pulling",
+            "key.laserio.card_holder.toggle_pulling",
             KeyConflictContext.IN_GAME,
             KeyModifier.SHIFT,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
             LaserIO.MODNAME
     );
-    private static final MutableComponent[] CARD_HOLDER_MESSAGES = {
-            Component.translatable("message.laserio.card_holder_pulling_disabled"),
-            Component.translatable("message.laserio.card_holder_pulling_enabled")
+    private static final MutableComponent[] CARD_HOLDER_PULLING_MESSAGES = {
+            Component.translatable("message.laserio.card_holder.pulling.disabled"),
+            Component.translatable("message.laserio.card_holder.pulling.enabled")
     };
 
     @SubscribeEvent
@@ -57,7 +57,7 @@ public class KeybindHandler {
         } else if (TOGGLE_CARD_HOLDER_PULLING.isDown()) {
             ItemStack cardHolder = LaserNode.findFirstCardHolder(player);
             if (!cardHolder.isEmpty()) {
-                MutableComponent message = CARD_HOLDER_MESSAGES[CardHolder.getActive(cardHolder) ? 0 : 1];
+                MutableComponent message = CARD_HOLDER_PULLING_MESSAGES[CardHolder.getActive(cardHolder) ? 0 : 1];
                 player.displayClientMessage(message, true);
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
                 PacketHandler.sendToServer(new PacketKeybindPerformAction((byte) 1));

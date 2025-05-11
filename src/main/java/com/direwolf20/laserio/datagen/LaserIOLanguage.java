@@ -84,16 +84,17 @@ public class LaserIOLanguage extends LanguageProvider {
         add("screen.laserio.low", "Low");
         add("screen.laserio.high", "High");
 
-        add("screen.laserio.redstone.threshold", "Threshold");
-        add("screen.laserio.redstone.thresholdlimit", "Limit");
-        add("screen.laserio.redstone.thresholdoutput", "Output");
-        add("screen.laserio.redstone.normal", "Normal");
-        add("screen.laserio.redstone.complementary", "Complementary");
-        add("screen.laserio.redstone.not", "NOT");
-        add("screen.laserio.redstone.nologicoperation", "No logic operation");
-        add("screen.laserio.redstone.and", "AND");
-        add("screen.laserio.redstone.or", "OR");
-        add("screen.laserio.redstone.xor", "XOR");
+        add("screen.laserio.redstone.interval", "Interval");
+        add("screen.laserio.redstone.interval.lower_bound", "Lower bound");
+        add("screen.laserio.redstone.interval.upper_bound", "Upper bound");
+        add("screen.laserio.redstone.interval.output", "Output");
+        add("screen.laserio.redstone.output_mode.normal", "Normal");
+        add("screen.laserio.redstone.output_mode.complementary", "Complementary");
+        add("screen.laserio.redstone.output_mode.not", "NOT");
+        add("screen.laserio.redstone.logic_operation.none", "No logic operation");
+        add("screen.laserio.redstone.logic_operation.and", "AND");
+        add("screen.laserio.redstone.logic_operation.or", "OR");
+        add("screen.laserio.redstone.logic_operation.xor", "XOR");
 
         add("screen.laserio.showparticles", "Show Particles");
         add("screen.laserio.hideparticles", "Hide Particles");
@@ -102,15 +103,14 @@ public class LaserIOLanguage extends LanguageProvider {
         add("screen.laserio.nbttrue", "Match NBT");
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
-        //Items tooltips
-        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
+        //Laser Wrench tooltips
         add("laserio.tooltip.item.show_details", "Hold shift to show details");
         add("laserio.tooltip.item.laser_wrench.select_node", "Select Node: ");
         add("laserio.tooltip.item.laser_wrench.select_node.keys", "Shift + R-Click");
-        add("laserio.tooltip.item.laser_wrench.link_node", "Link Node: ");
-        add("laserio.tooltip.item.laser_wrench.link_node.keys", "R-Click");
-        add("laserio.tooltip.item.laser_wrench.autolink_node", "Auto-link Node: ");
-        add("laserio.tooltip.item.laser_wrench.autolink_node.keys", "Offhand + Place Node");
+        add("laserio.tooltip.item.laser_wrench.connect_node", "Connect Node: ");
+        add("laserio.tooltip.item.laser_wrench.connect_node.keys", "R-Click");
+        add("laserio.tooltip.item.laser_wrench.autoconnect_node", "Auto-connect Node: ");
+        add("laserio.tooltip.item.laser_wrench.autoconnect_node.keys", "Offhand + Place Node");
 
         //Cards tooltips
         add("laserio.tooltip.item.show_settings", "Hold shift to show settings");
@@ -140,14 +140,17 @@ public class LaserIOLanguage extends LanguageProvider {
         add("laserio.tooltip.item.filter.nbt.allow", "True");
         add("laserio.tooltip.item.filter.nbt.deny", "False");
 
+        //Energy Overclockers tooltip
+        add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
+
         //Client messages
         add("message.laserio.wrenchrange", "Connection exceeds maximum range of %d");
-        add("message.laserio.card_holder_pulling_enabled", "Card Holder pulling enabled");
-        add("message.laserio.card_holder_pulling_disabled", "Card Holder pulling disabled");
+        add("message.laserio.card_holder.pulling.enabled", "Card Holder pulling enabled");
+        add("message.laserio.card_holder.pulling.disabled", "Card Holder pulling disabled");
 
         //Keybinds
-        add("key.laserio.open_card_holder", "Open Card Holder");
-        add("key.laserio.toggle_card_holder_pulling", "Toggle Card Holder Pulling");
+        add("key.laserio.card_holder.open", "Open Card Holder");
+        add("key.laserio.card_holder.toggle_pulling", "Toggle Card Holder Pulling");
 
         //Curios Card Holder slot
         add("curios.identifier.card_holder", "Card Holder");

@@ -74,7 +74,7 @@ public class LaserWrench extends Item {
         DimBlockPos sourceDimPos = getConnectionPos(wrench, targetDim);
         Level sourceDim = sourceDimPos.getLevel(targetDim.getServer());
         BlockPos sourcePos = sourceDimPos.blockPos;
-        //Shift-click for selecting the first node, click for linking another node to the selected one
+        //Shift-click for selecting the first node, click for connecting another node to the selected one
         if (player.isShiftKeyDown()) {
             if (targetPos.equals(sourcePos) && targetDim.equals(sourceDim)) {
                 //If the wrench's position equals this one, erase it
@@ -85,7 +85,7 @@ public class LaserWrench extends Item {
             }
             return InteractionResultHolder.pass(wrench);
         } else {
-            //If the wrench's position equals this one, return (we don't want to link a node to itself)
+            //If the wrench's position equals this one, return (we don't want to connect a node to itself)
             if (targetPos.equals(sourcePos) && targetDim.equals(sourceDim)) {
                 return InteractionResultHolder.pass(wrench);
             }
@@ -120,11 +120,11 @@ public class LaserWrench extends Item {
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.select_node", ChatFormatting.GRAY);
             toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.select_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
-            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.link_node", ChatFormatting.GRAY);
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.link_node.keys", ChatFormatting.WHITE));
+            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.connect_node", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.connect_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
-            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node", ChatFormatting.GRAY);
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.autolink_node.keys", ChatFormatting.WHITE));
+            toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.autoconnect_node", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.autoconnect_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
         }
     }

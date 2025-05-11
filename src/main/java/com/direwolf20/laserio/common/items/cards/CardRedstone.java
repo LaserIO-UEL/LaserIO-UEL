@@ -1,7 +1,6 @@
 package com.direwolf20.laserio.common.items.cards;
 
 import com.direwolf20.laserio.common.containers.CardRedstoneContainer;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +12,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 public class CardRedstone extends BaseCard {
 
@@ -40,46 +42,90 @@ public class CardRedstone extends BaseCard {
         return setTransferMode(card, (byte) (mode == 1 ? 0 : mode + 1));
     }
 
-    public static boolean getThreshold(ItemStack stack) {
-        CompoundTag compound = stack.getTag();
+    @Deprecated(since = "1.5.0", forRemoval = true)
+    @MigrateThresholdToInterval
+    private static boolean migrateThresholdToInterval(ItemStack card, CompoundTag compound) {
         if (compound == null || !compound.contains("redstonethreshold")) return false;
-        return compound.getBoolean("redstonethreshold");
-    }
-
-    public static boolean setThreshold(ItemStack stack, boolean threshold) {
-        if (!threshold)
-            stack.removeTagKey("redstonethreshold");
-        else
-            stack.getOrCreateTag().putBoolean("redstonethreshold", threshold);
+        boolean threshold = compound.getBoolean("redstonethreshold");
+        card.removeTagKey("redstonethreshold");
+        card.getOrCreateTag().putBoolean("redstoneinterval", threshold);
         return threshold;
     }
 
-    public static byte getThresholdLimit(ItemStack card) {
+    public static boolean getInterval(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonethresholdlimit")) return (byte) 0;
-        return compound.getByte("redstonethresholdlimit");
+        if (compound == null || !compound.contains("redstoneinterval")) return migrateThresholdToInterval(card, compound);
+        return compound.getBoolean("redstoneinterval");
     }
 
-    public static byte setThresholdLimit(ItemStack card, byte thresholdLimit) {
-        if (thresholdLimit == 0)
-            card.removeTagKey("redstonethresholdlimit");
+    public static boolean setInterval(ItemStack card, boolean interval) {
+        if (!interval)
+            card.removeTagKey("redstoneinterval");
         else
-            card.getOrCreateTag().putByte("redstonethresholdlimit", thresholdLimit);
+            card.getOrCreateTag().putBoolean("redstoneinterval", interval);
+        return interval;
+    }
+
+    @Deprecated(since = "1.5.0", forRemoval = true)
+    @MigrateThresholdToInterval
+    private static byte migrateThresholdLimitToIntervalLowerBound(ItemStack card, CompoundTag compound) {
+        if (compound == null || !compound.contains("redstonethresholdlimit")) return 0;
+        byte thresholdLimit = compound.getByte("redstonethresholdlimit");
+        card.removeTagKey("redstonethresholdlimit");
+        card.getOrCreateTag().putByte("redstoneintervallowerbound", thresholdLimit);
         return thresholdLimit;
     }
 
-    public static byte getThresholdOutput(ItemStack card) {
+    public static byte getIntervalLowerBound(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonethresholdoutput")) return (byte) 15;
-        return compound.getByte("redstonethresholdoutput");
+        if (compound == null || !compound.contains("redstoneintervallowerbound")) return migrateThresholdLimitToIntervalLowerBound(card, compound);
+        return compound.getByte("redstoneintervallowerbound");
     }
 
-    public static byte setThresholdOutput(ItemStack card, byte thresholdOutput) {
-        if (thresholdOutput == 15)
-            card.removeTagKey("redstonethresholdoutput");
+    public static byte setIntervalLowerBound(ItemStack card, byte intervalLowerBound) {
+        if (intervalLowerBound == 0)
+            card.removeTagKey("redstoneintervallowerbound");
         else
-            card.getOrCreateTag().putByte("redstonethresholdoutput", thresholdOutput);
+            card.getOrCreateTag().putByte("redstoneintervallowerbound", intervalLowerBound);
+        return intervalLowerBound;
+    }
+
+    public static byte getIntervalUpperBound(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("redstoneintervalupperbound")) return 15;
+        return compound.getByte("redstoneintervalupperbound");
+    }
+
+    public static byte setIntervalUpperBound(ItemStack card, byte intervalUpperBound) {
+        if (intervalUpperBound == 15)
+            card.removeTagKey("redstoneintervalupperbound");
+        else
+            card.getOrCreateTag().putByte("redstoneintervalupperbound", intervalUpperBound);
+        return intervalUpperBound;
+    }
+
+    @Deprecated(since = "1.5.0", forRemoval = true)
+    @MigrateThresholdToInterval
+    private static byte migrateThresholdOutputToIntervalOutput(ItemStack card, CompoundTag compound) {
+        if (compound == null || !compound.contains("redstonethresholdoutput")) return 15;
+        byte thresholdOutput = compound.getByte("redstonethresholdoutput");
+        card.removeTagKey("redstonethresholdoutput");
+        card.getOrCreateTag().putByte("redstoneintervaloutput", thresholdOutput);
         return thresholdOutput;
+    }
+
+    public static byte getIntervalOutput(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("redstoneintervaloutput")) return migrateThresholdOutputToIntervalOutput(card, compound);
+        return compound.getByte("redstoneintervaloutput");
+    }
+
+    public static byte setIntervalOutput(ItemStack card, byte intervalOutput) {
+        if (intervalOutput == 15)
+            card.removeTagKey("redstoneintervaloutput");
+        else
+            card.getOrCreateTag().putByte("redstoneintervaloutput", intervalOutput);
+        return intervalOutput;
     }
 
     public static boolean getStrong(ItemStack stack) {
@@ -98,7 +144,7 @@ public class CardRedstone extends BaseCard {
 
     public static byte getOutputMode(ItemStack stack) {
         CompoundTag compound = stack.getTag();
-        if (compound == null || !compound.contains("redstoneoutputmode")) return (byte) 0;
+        if (compound == null || !compound.contains("redstoneoutputmode")) return 0;
         return compound.getByte("redstoneoutputmode");
     }
 
@@ -112,7 +158,7 @@ public class CardRedstone extends BaseCard {
 
     public static byte getLogicOperation(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonelogicoperation")) return (byte) 0;
+        if (compound == null || !compound.contains("redstonelogicoperation")) return 0;
         return compound.getByte("redstonelogicoperation");
     }
 
@@ -126,7 +172,7 @@ public class CardRedstone extends BaseCard {
 
     public static byte getRedstoneChannelOperation(ItemStack card) {
         CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("redstonechanneloperation")) return (byte) 0;
+        if (compound == null || !compound.contains("redstonechanneloperation")) return 0;
         return compound.getByte("redstonechanneloperation");
     }
 
@@ -147,19 +193,7 @@ public class CardRedstone extends BaseCard {
         byte k = getRedstoneChannelOperation(card);
         return setRedstoneChannelOperation(card, (byte) (k == 0 ? 15 : k - 1));
     }
-    /*
-    public static byte getSpecialFeature(ItemStack card) {
-        CompoundTag compound = card.getTag();
-        if (compound == null || !compound.contains("specialfeature")) return (byte) 0;
-        return compound.getByte("specialfeature");
-    }
 
-    public static byte setSpecialFeature(ItemStack card, byte specialFeature) {
-        if (specialFeature == 0)
-            card.removeTagKey("specialfeature");
-        else
-            card.getOrCreateTag().putByte("specialfeature", specialFeature);
-        return specialFeature;
-    }
-    */
+    @Target(ElementType.METHOD)
+    private @interface MigrateThresholdToInterval {}
 }

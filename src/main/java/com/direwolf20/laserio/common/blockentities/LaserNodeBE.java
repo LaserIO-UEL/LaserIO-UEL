@@ -349,8 +349,12 @@ public class LaserNodeBE extends BaseLaserBE {
                 ItemStack card = nodeSideCache.itemHandler.getStackInSlot(slot);
                 if (card.getItem() instanceof CardRedstone && BaseCard.getTransferMode(card) == 0) { //Redstone mode and input mode
                     int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
-                    if (CardRedstone.getThreshold(card)) {
-                        redstoneStrength = (redstoneStrength >= CardRedstone.getThresholdLimit(card)) ? CardRedstone.getThresholdOutput(card) : 0;
+                    if (CardRedstone.getInterval(card)) {
+                        if (redstoneStrength >= CardRedstone.getIntervalLowerBound(card) && redstoneStrength <= CardRedstone.getIntervalUpperBound(card)) {
+                            redstoneStrength = CardRedstone.getIntervalOutput(card);
+                        } else {
+                            redstoneStrength = 0;
+                        }
                     }
                     //System.out.println("Input: " + getBlockPos() + ":" + direction + ":" + redstoneStrength);
                     if (redstoneStrength > 0) {
@@ -2388,10 +2392,15 @@ public class LaserNodeBE extends BaseLaserBE {
                 }
                 boolean enabled;
                 if (cardItem instanceof CardRedstone) {
-                    byte channelStrength = getRedstoneChannelStrength(BaseCard.getRedstoneChannel(card));
                     if (BaseCard.getTransferMode(card) == 0) {
-                        enabled = (channelStrength >= (CardRedstone.getThreshold(card) ? CardRedstone.getThresholdLimit(card) : 1));
+                        int redstoneStrength = level.getSignal(getBlockPos().relative(direction), direction);
+                        if (CardRedstone.getInterval(card)) {
+                            enabled = (redstoneStrength >= CardRedstone.getIntervalLowerBound(card) && redstoneStrength <= CardRedstone.getIntervalUpperBound(card));
+                        } else {
+                            enabled = (redstoneStrength >= 1);
+                        }
                     } else {
+                        byte channelStrength = getRedstoneChannelStrength(BaseCard.getRedstoneChannel(card));
                         byte logicOperationChannelStrength = redstoneNetwork.get(CardRedstone.getRedstoneChannelOperation(card));
                         channelStrength = switch(CardRedstone.getLogicOperation(card)) {
                             case 1 -> (byte) (((channelStrength + logicOperationChannelStrength) > 0) ? 15 : 0); //OR
