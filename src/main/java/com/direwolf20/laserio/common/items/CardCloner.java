@@ -4,6 +4,7 @@ import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -45,21 +46,23 @@ public class CardCloner extends Item {
             tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
         } else {
             String cardType = getItemType(stack);
-            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY);
-            ChatFormatting cardColor = ChatFormatting.WHITE;
             boolean isEnergyCard = false;
             boolean isRedstoneCard = false;
-            if (cardType.equals("card_item"))
-                cardColor = ChatFormatting.GREEN;
-            else if (cardType.equals("card_fluid"))
-                cardColor = ChatFormatting.BLUE;
-            else if (cardType.equals("card_energy")) {
-                cardColor = ChatFormatting.YELLOW;
-                isEnergyCard = true;
-            } else if (cardType.equals("card_redstone")) {
-                cardColor = ChatFormatting.RED;
-                isRedstoneCard = true;
-            }
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY);
+            ChatFormatting cardColor = switch(cardType) {
+                case "card_item" -> ChatFormatting.GREEN;
+                case "card_fluid" -> ChatFormatting.BLUE;
+                case "card_energy" -> {
+                    isEnergyCard = true;
+                    yield ChatFormatting.YELLOW;
+                }
+                case "card_redstone" -> {
+                    isRedstoneCard = true;
+                    yield ChatFormatting.RED;
+                }
+                case "card_chemical" -> ChatFormatting.LIGHT_PURPLE;
+                default -> ChatFormatting.WHITE;
+            };
             if (cardType.equals(""))
                 toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", cardColor));
             else
@@ -70,23 +73,21 @@ public class CardCloner extends Item {
             }
 
             CompoundTag compoundTag = stack.getOrCreateTag().getCompound("settings");
-            int mode = !compoundTag.contains("mode") ? 0 : compoundTag.getByte("mode");;
-            String currentMode = BaseCard.TransferMode.values()[mode].toString();
+            int mode = !compoundTag.contains("mode") ? 0 : compoundTag.getByte("mode");
+            TransferMode currentMode = BaseCard.TransferMode.values()[mode];
             toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY);
-            ChatFormatting modeColor = ChatFormatting.GRAY;
-            if (currentMode.equals("EXTRACT"))
-                modeColor = ChatFormatting.RED;
-            else if (currentMode.equals("INSERT"))
-                modeColor = ChatFormatting.GREEN;
-            else if (currentMode.equals("STOCK"))
-                modeColor = ChatFormatting.BLUE;
-            else if (currentMode.equals("SENSOR"))
-                modeColor = ChatFormatting.YELLOW;
+            ChatFormatting modeColor = switch(currentMode) {
+                case EXTRACT -> ChatFormatting.RED;
+                case INSERT -> ChatFormatting.GREEN;
+                case STOCK -> ChatFormatting.BLUE;
+                case SENSOR -> ChatFormatting.YELLOW;
+                default -> ChatFormatting.GRAY;
+            };
             toWrite.append(tooltipMaker("laserio.tooltip.item.card.mode." + currentMode, modeColor));
             tooltip.add(toWrite);
 
             toWrite = tooltipMaker("laserio.tooltip.item.card.channel", ChatFormatting.GRAY);
-            int channel = !compoundTag.contains("channel") ? 0 : compoundTag.getByte("channel");;
+            int channel = !compoundTag.contains("channel") ? 0 : compoundTag.getByte("channel");
             toWrite.append(tooltipMaker(String.valueOf(channel), LaserNodeBERender.COLORS[channel].getRGB()));
             tooltip.add(toWrite);
             if (isRedstoneCard) {

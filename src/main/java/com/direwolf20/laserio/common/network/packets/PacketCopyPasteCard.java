@@ -8,7 +8,6 @@ import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
-
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,8 +27,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketCopyPasteCard {
-    int slot;
-    boolean copy;
+    private int slot;
+    private boolean copy;
 
     public PacketCopyPasteCard(int slot, boolean copy) {
         this.slot = slot;
@@ -140,30 +139,29 @@ public class PacketCopyPasteCard {
     public static class Handler {
         public static void handle(PacketCopyPasteCard msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null) {
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) {
                     return;
                 }
-                AbstractContainerMenu container = player.containerMenu;
-                if (container == null) {
-                    return;
-                }
+                AbstractContainerMenu container = sender.containerMenu;
                 if (!(container instanceof LaserNodeContainer)) {
                     return;
                 }
                 LaserNodeContainer laserNodeContainer = (LaserNodeContainer) container;
-
-                if (player.containerMenu.getCarried().isEmpty()) {
+                ItemStack clonerStack = container.getCarried();
+                if (!(clonerStack.getItem() instanceof CardCloner)) {
                     return;
                 }
                 ItemStack slotStack = container.getSlot(msg.slot).getItem();
-                ItemStack clonerStack = container.getCarried();
-                if (msg.copy) { //copy mode
+                if (!(slotStack.getItem() instanceof BaseCard)) {
+                    return;
+                }
+                if (msg.copy) { //Copy mode
                     CardCloner.setItemType(clonerStack, slotStack.getItem().toString());
                     CompoundTag compoundTag = slotStack.getTag() == null ? new CompoundTag() : slotStack.getTag();
                     CardCloner.saveSettings(clonerStack, compoundTag);
-                    playSound(player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
-                } else {
+                    playSound(sender, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
+                } else { //Paste mode
                     Item slotItem = slotStack.getItem();
                     if (slotItem.toString().equals(CardCloner.getItemType(clonerStack))) {
                         ItemStack filterNeeded = CardCloner.getFilter(clonerStack);
@@ -204,8 +202,8 @@ public class PacketCopyPasteCard {
                             if (!existingFilter.is(filterNeeded.getItem())) {
                                 if (returnItemToHolder(laserNodeContainer, existingFilter, false) != 0) {
                                     //Drop item in world
-                                    ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), existingFilter);
-                                    player.level().addFreshEntity(itemEntity);
+                                    ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), existingFilter);
+                                    sender.level().addFreshEntity(itemEntity);
                                 }
                                 getItemFromHolder(laserNodeContainer, filterNeeded, false);
                             }
@@ -215,8 +213,8 @@ public class PacketCopyPasteCard {
                                 if (remaining > 0) {
                                     //Drop item in world
                                     returnStack.setCount(remaining);
-                                    ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), returnStack);
-                                    player.level().addFreshEntity(itemEntity);
+                                    ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), returnStack);
+                                    sender.level().addFreshEntity(itemEntity);
                                 }
                             }
                             if (amtNeeded > 0) {
@@ -231,13 +229,13 @@ public class PacketCopyPasteCard {
                                 tempStack.setTag(compoundTag.copy());
                             }
                             container.getSlot(msg.slot).set(tempStack);
-                            playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE);
+                            playSound(sender, SoundEvents.ENCHANTMENT_TABLE_USE);
                             ((LaserNodeContainer)container).tile.updateThisNode();
                         } else {
-                            playSound(player, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
+                            playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                         }
                     } else {
-                        playSound(player, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
+                        playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                     }
                 }
             });

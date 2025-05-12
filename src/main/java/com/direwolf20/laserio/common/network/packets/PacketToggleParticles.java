@@ -27,13 +27,13 @@ public class PacketToggleParticles {
         public static void handle(PacketToggleParticles msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer sender = ctx.get().getSender();
-                if (sender == null)
+                if (sender == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = sender.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
+                }
                 if (container instanceof LaserNodeContainer laserNodeContainer) {
                     laserNodeContainer.tile.setShowParticles(msg.renderParticles);
                 }

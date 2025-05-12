@@ -3,7 +3,6 @@ package com.direwolf20.laserio.common.network.packets;
 import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.containers.CardHolderContainer;
 import com.direwolf20.laserio.common.items.CardHolder;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,18 +15,23 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.function.Supplier;
 
 public class PacketKeybindPerformAction {
-    private byte keybindAction;
+    private KeybindAction keybindAction;
 
-    public PacketKeybindPerformAction(byte keybindAction) {
+    public enum KeybindAction {
+        OPEN_CARD_HOLDER,
+        TOGGLE_CARD_HOLDER_PULLING
+    }
+
+    public PacketKeybindPerformAction(KeybindAction keybindAction) {
         this.keybindAction = keybindAction;
     }
 
     public static void encode(PacketKeybindPerformAction msg, FriendlyByteBuf buffer) {
-        buffer.writeByte(msg.keybindAction);
+        buffer.writeEnum(msg.keybindAction);
     }
 
     public static PacketKeybindPerformAction decode(FriendlyByteBuf buffer) {
-        return new PacketKeybindPerformAction(buffer.readByte());
+        return new PacketKeybindPerformAction(buffer.readEnum(KeybindAction.class));
     }
 
     public static class Handler {
@@ -41,15 +45,16 @@ public class PacketKeybindPerformAction {
                 if (cardHolder.isEmpty()) {
                     return;
                 }
-                if (msg.keybindAction == 0) {
-                    cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
-                        NetworkHooks.openScreen(sender, new SimpleMenuProvider(
-                                (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, sender, cardHolder, handler), Component.translatable("")), (buf -> {
-                            buf.writeItem(cardHolder);
-                        }));
-                    });
-                } else {
-                    CardHolder.setActive(cardHolder, !CardHolder.getActive(cardHolder));
+                switch (msg.keybindAction) {
+                    case OPEN_CARD_HOLDER -> {
+                        cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
+                            NetworkHooks.openScreen(sender, new SimpleMenuProvider(
+                                    (windowId, playerInventory, playerEntity) -> new CardHolderContainer(windowId, playerInventory, sender, cardHolder, handler), Component.translatable("")), (buf -> {
+                                buf.writeItem(cardHolder);
+                            }));
+                        });
+                    }
+                    case TOGGLE_CARD_HOLDER_PULLING -> CardHolder.setActive(cardHolder, !CardHolder.getActive(cardHolder));
                 }
             });
 

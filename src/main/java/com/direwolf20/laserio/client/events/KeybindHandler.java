@@ -5,6 +5,7 @@ import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketKeybindPerformAction;
+import com.direwolf20.laserio.common.network.packets.PacketKeybindPerformAction.KeybindAction;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,6 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
@@ -52,7 +52,7 @@ public class KeybindHandler {
         }
         if (OPEN_CARD_HOLDER.isDown()) {
             if (!LaserNode.findFirstCardHolder(player).isEmpty()) {
-                PacketHandler.sendToServer(new PacketKeybindPerformAction((byte) 0));
+                PacketHandler.sendToServer(new PacketKeybindPerformAction(KeybindAction.OPEN_CARD_HOLDER));
             }
         } else if (TOGGLE_CARD_HOLDER_PULLING.isDown()) {
             ItemStack cardHolder = LaserNode.findFirstCardHolder(player);
@@ -60,7 +60,7 @@ public class KeybindHandler {
                 MutableComponent message = CARD_HOLDER_PULLING_MESSAGES[CardHolder.getActive(cardHolder) ? 0 : 1];
                 player.displayClientMessage(message, true);
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
-                PacketHandler.sendToServer(new PacketKeybindPerformAction((byte) 1));
+                PacketHandler.sendToServer(new PacketKeybindPerformAction(KeybindAction.TOGGLE_CARD_HOLDER_PULLING));
             }
         }
     }

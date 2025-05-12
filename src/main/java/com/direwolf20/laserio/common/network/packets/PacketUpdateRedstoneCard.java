@@ -11,16 +11,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketUpdateRedstoneCard {
-    byte mode;
-    byte channel;
-    boolean interval;
-    byte intervalLowerBound;
-    byte intervalUpperBound;
-    byte intervalOutput;
-    boolean strong;
-    byte outputMode;
-    byte logicOperation;
-    byte logicOperationChannel;
+    private byte mode;
+    private byte channel;
+    private boolean interval;
+    private byte intervalLowerBound;
+    private byte intervalUpperBound;
+    private byte intervalOutput;
+    private boolean strong;
+    private byte outputMode;
+    private byte logicOperation;
+    private byte logicOperationChannel;
 
     public PacketUpdateRedstoneCard(byte mode, byte channel, boolean interval, byte intervalLowerBound, byte intervalUpperBound, byte intervalOutput, boolean strong, byte outputMode, byte logicOperation, byte logicOperationChannel) {
         this.mode = mode;
@@ -55,19 +55,15 @@ public class PacketUpdateRedstoneCard {
     public static class Handler {
         public static void handle(PacketUpdateRedstoneCard msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null)
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) {
                     return;
-
-                AbstractContainerMenu container = player.containerMenu;
-                if (container == null)
+                }
+                AbstractContainerMenu container = sender.containerMenu;
+                if (!(container instanceof CardRedstoneContainer)) {
                     return;
-
-                if (!(container instanceof CardRedstoneContainer))
-                    return;
-
-                ItemStack stack;
-                stack = ((CardRedstoneContainer) container).cardItem;
+                }
+                ItemStack stack = ((CardRedstoneContainer) container).cardItem;
                 CardRedstone.setTransferMode(stack, msg.mode);
                 CardRedstone.setRedstoneChannel(stack, msg.channel);
                 CardRedstone.setInterval(stack, msg.interval);

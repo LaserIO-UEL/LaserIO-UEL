@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PacketUpdateFilterTag {
-    boolean allowList;
-    List<String> tags;
+    private boolean allowList;
+    private List<String> tags;
 
     public PacketUpdateFilterTag(boolean allowList, List<String> tags) {
         this.allowList = allowList;
@@ -35,21 +35,20 @@ public class PacketUpdateFilterTag {
     public static class Handler {
         public static void handle(PacketUpdateFilterTag msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null)
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) {
                     return;
-
-                AbstractContainerMenu container = player.containerMenu;
-                if (container == null)
+                }
+                AbstractContainerMenu container = sender.containerMenu;
+                if (container == null) {
                     return;
-
-                if (container instanceof FilterTagContainer) {
-                    ItemStack stack = ((FilterTagContainer) container).filterItem;
+                }
+                if (container instanceof FilterTagContainer filterTagContainer) {
+                    ItemStack stack = filterTagContainer.filterItem;
                     FilterTag.setAllowList(stack, msg.allowList);
                     FilterTag.setTags(stack, msg.tags);
-                }
-                if (container instanceof FilterNBTContainer) {
-                    ItemStack stack = ((FilterNBTContainer) container).filterItem;
+                } else if (container instanceof FilterNBTContainer filterNBTContainer) {
+                    ItemStack stack = filterNBTContainer.filterItem;
                     FilterNBT.setAllowList(stack, msg.allowList);
                     FilterNBT.setTags(stack, msg.tags);
                 }

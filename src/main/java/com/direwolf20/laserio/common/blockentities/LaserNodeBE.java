@@ -2537,8 +2537,9 @@ public class LaserNodeBE extends BaseLaserBE {
                 }
             }
         }
-        if (tag.contains("showParticles"))
+        if (tag.contains("showParticles")) {
             showParticles = tag.getBoolean("showParticles");
+        }
         super.load(tag);
         rendersChecked = false;
     }

@@ -35,16 +35,15 @@ public class PacketChangeColor {
         public static void handle(PacketChangeColor msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer sender = ctx.get().getSender();
-                if (sender == null)
+                if (sender == null) {
                     return;
-
+                }
                 BlockEntity blockEntity = sender.level().getBlockEntity(msg.sourcePos);
                 if (blockEntity instanceof LaserNodeBE laserNodeBE) {
                     laserNodeBE.setColor(new Color(msg.color, true), msg.wrenchAlpha);
                     laserNodeBE.discoverAllNodes();
                 }
             });
-
 
             ctx.get().setPacketHandled(true);
         }
