@@ -71,10 +71,7 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
 
-    final guidePath = file('src/main/resources/assets/laserio/guides/laserio/laseriobook').absolutePath
-
     runs {
-
         client {
             workingDirectory project.file('run')
 
@@ -104,9 +101,14 @@ minecraft {
                     source sourceSets.main
                 }
             }
-            
+        }
+
+        guide {
+            // Use client run configuration
+            parent runs.client
+
             // Allows for GuideME Live Editor
-            property "guideme.laserio.laseriobook.sources", guidePath
+            property "guideme.laserio.laseriobook.sources", file('src/main/resources/assets/laserio/guides/laserio/laseriobook').absolutePath
         }
 
         server {
@@ -166,21 +168,6 @@ minecraft {
                 }
             }
         }
-                /*
-        guide {
-            client {
-                // GuideME live editor
-
-                //systemProperty "guideme.laserio.laseriobook.sources", file("guidebook").absolutePath
-                //systemProperty "guideme.laserio.laseriobook.sourcesNamespace", "laserio"
-
-                //property 'guideme.ae2.guide.sources', file('guidebook').absolutePath
-                // This is only needed if you are developing an addon and it should be your mod id
-                // property "guideme.ae2.guide.sourcesNamespace", "ae2addon"
-                //systemProperty('guideme.showOnStartup', 'ae2:index.md') // Start at index.md
-            }
-        }
-        */
     }
 }
 

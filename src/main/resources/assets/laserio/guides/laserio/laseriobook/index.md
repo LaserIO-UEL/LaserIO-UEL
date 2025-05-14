@@ -21,3 +21,4 @@ Can't Have DireWire without Wires!
 - [Mechanics](./mechanics/mechanics.md)
 - [Upgrades](./upgrades/upgrades.md)
 - [Filters](./filters/filters.md)
+- [Advanced Tips and Concepts](./advanced/advanced.md)

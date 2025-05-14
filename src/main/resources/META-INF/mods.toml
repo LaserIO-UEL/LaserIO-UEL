@@ -44,6 +44,13 @@ description='''
     side="BOTH"
 
 [[dependencies.laserio]]
+    modId="guideme"
+    mandatory=false
+    versionRange="${guideme_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.laserio]]
     modId="jei"
     mandatory=false
     versionRange="${jei_version_range}"
