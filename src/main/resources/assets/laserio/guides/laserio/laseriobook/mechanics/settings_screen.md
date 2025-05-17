@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Network Settings"
-  icon: "laserio:textures/gui/buttons/settings.png"
   position: 1
   parent: laserio:mechanics/mechanics.md
 ---

@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Channel"
-  icon: "laserio:textures/gui/buttons/blankbutton.png"
   position: 4
   parent: laserio:mechanics/mechanics.md
 ---

@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Energy Card Subnets"
-  icon: "laserio:card_energy"
   parent: laserio:advanced/advanced.md
 ---
 

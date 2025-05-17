@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Regulate"
-  icon: "laserio:textures/gui/buttons/regulatetrue.png"
   position: 9
   parent: laserio:mechanics/mechanics.md
 ---

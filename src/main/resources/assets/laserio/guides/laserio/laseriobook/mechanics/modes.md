@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Modes"
-  icon: "laserio:mechanics/settings1.png"
   position: 1
   parent: laserio:mechanics/mechanics.md
 ---

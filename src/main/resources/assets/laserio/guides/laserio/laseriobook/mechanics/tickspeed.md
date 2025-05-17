@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Tick Speed"
-  icon: "minecraft:textures/item/clock_00.png"
   position: 8
   parent: laserio:mechanics/mechanics.md
 ---

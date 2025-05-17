@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Extract Amount"
-  icon: "laserio:textures/gui/buttons/modeextractor.png"
   position: 7
   parent: laserio:mechanics/mechanics.md
 ---

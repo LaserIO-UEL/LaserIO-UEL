@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Performance T(i)PS"
-  icon: "minecraft:clock"
   parent: laserio:advanced/advanced.md
 ---
 

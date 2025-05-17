@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Redstone Mode"
-  icon: "laserio:textures/gui/buttons/redstonehigh.png"
   position: 11
   parent: laserio:mechanics/mechanics.md
 ---

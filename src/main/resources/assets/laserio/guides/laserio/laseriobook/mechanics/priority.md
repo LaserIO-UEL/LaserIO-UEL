@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Priority"
-  icon: "laserio:textures/gui/buttons/modeinserter.png"
   position: 3
   parent: laserio:mechanics/mechanics.md
 ---

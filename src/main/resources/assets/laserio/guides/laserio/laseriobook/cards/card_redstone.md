@@ -34,9 +34,9 @@ Some settings exist for more complex redstone needs:
 
 **Input mode**
 
-Toggling Threshold mode will reveal two other buttons: Limit and Output.
+Interval mode will reveal three other buttons: Lower bound, Upper bound, and Output.
 
-The Limit determines when (equal or greater than) a signal will be sent on the redstone channel.
+The Lower and Upper bounds determine when (Lower bound <= signal <= Upper bound) a signal will be sent on the redstone channel.
 The signal strength will be equal to the specified Output when activated.
 
 **Output mode**

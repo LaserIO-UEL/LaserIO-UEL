@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Basics"
-  icon: "laserio:logic_chip"
   parent: laserio:mechanics/mechanics.md
 ---
 

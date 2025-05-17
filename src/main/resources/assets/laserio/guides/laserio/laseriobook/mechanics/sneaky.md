@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "Sneaky"
-  icon: "laserio:textures/gui/buttons/sneaky-up.png"
   position: 2
   parent: laserio:mechanics/mechanics.md
 ---
