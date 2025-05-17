@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "カードの仕組み"
-  icon: "laserio:logic_chip"
   position: 2
 ---
 

@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "レッドストーンチャンネル"
-  icon: "laserio:textures/gui/buttons/redstoneignore.png"
   position: 11
   parent: laserio:mechanics/mechanics.md
 ---

@@ -3,7 +3,7 @@ navigation:
   title: "ノードオーバークロッカー"
   icon: "laserio:overclocker_node"
   position: 2
-  parent: laserio:items/items.md
+  parent: laserio:upgrades/upgrades.md
 item_ids:
   - laserio:overclocker_node
 ---
@@ -18,7 +18,8 @@ item_ids:
 
 ## ノードオーバークロッカー無し
 
-ノードオーバークロッカー未インストールのノード
+*ノードオーバークロッカー未インストールのノード*
+
 ![](overclocker_node1.png)
 
 ノードの側面にインストールされたノードオーバークロッカーにより、その側面は1ティック当たりより多くのカードが動作できます。合計8つのノードオーバークロッカーをインストールして9つのカード全てが動作できます。
@@ -27,7 +28,8 @@ item_ids:
 
 ## 二つのノードオーバークロッカー
 
-2つのノードオーバークロッカーがインストールされたノード
+*2つのノードオーバークロッカーがインストールされたノード*
+
 ![](overclocker_node2.png)
 
 ## ノードオーバークロッカー

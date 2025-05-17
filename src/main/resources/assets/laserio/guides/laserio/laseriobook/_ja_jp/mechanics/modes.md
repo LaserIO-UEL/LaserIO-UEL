@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "モード"
-  icon: "laserio:textures/gui/buttons/modestocker.png"
   position: 1
   parent: laserio:mechanics/mechanics.md
 ---

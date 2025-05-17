@@ -3,7 +3,7 @@ navigation:
   title: "ロジスティックオーバークロッカー"
   icon: "laserio:overclocker_card"
   position: 3
-  parent: laserio:items/items.md
+  parent: laserio:upgrades/upgrades.md
 item_ids:
   - laserio:overclocker_card
 ---

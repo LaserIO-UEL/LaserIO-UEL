@@ -17,7 +17,8 @@ navigation:
 
 ## フィルターUI
 
-基本フィルターUI
+*基本フィルターUI*
+
 ![](filter_basic.png)
 
 許可と拒否

@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "ネットワーク設定"
-  icon: "laserio:textures/gui/buttons/settings.png"
   position: 1
   parent: laserio:mechanics/mechanics.md
 ---
@@ -15,8 +14,9 @@ navigation:
 
 ## カラフルなノード
 
-異なる色のネットワーク
-![](settings1.png)
+*異なる色のネットワーク*
+
+![](images/settings1.png)
 
 ノードとインベントリ(チェストやタンクなど)間のレーザーの色は影響を受けません。
 

@@ -1,7 +1,6 @@
 ---
 navigation:
   title: "正確"
-  icon: "laserio:textures/gui/buttons/exacttrue.png"
   position: 6
   parent: laserio:mechanics/mechanics.md
 ---

@@ -3,7 +3,7 @@ navigation:
   title: "レーザーレンチ"
   icon: "laserio:laser_wrench"
   position: 1
-  parent: laserio:items/items.md
+  parent: laserio:tools/tools.md
 item_ids:
   - laserio:laser_wrench
 ---
@@ -18,7 +18,8 @@ item_ids:
 
 ## レーザーレンチ
 
-現在選択されているブロックは緑色で強調表示されます。
+*現在選択されているブロックは緑色で強調表示されます。*
+
 ![](laser_wrench.png)
 
 ## レーザーレンチ

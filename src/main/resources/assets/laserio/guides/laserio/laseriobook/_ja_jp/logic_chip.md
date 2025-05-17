@@ -1,8 +1,8 @@
 ---
 navigation:
   title: "論理チップ"
+  position: 100
   icon: "laserio:logic_chip"
-  parent: laserio:items/items.md
 item_ids:
   - laserio:logic_chip_raw
 ---
