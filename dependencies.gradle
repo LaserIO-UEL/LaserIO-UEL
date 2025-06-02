@@ -63,6 +63,9 @@ dependencies {
     // Jade - used for testing
     runtimeOnly fg.deobf("curse.maven:jade-324717:5876199")
 
+    // Antiblocks - used for pictures
+    runtimeOnly fg.deobf("curse.maven:antiblocksrechiseled-715567:6116668")
+
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 
     // For more info...

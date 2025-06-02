@@ -12,7 +12,7 @@ item_ids:
 
 The Laser Wrench is primarily used to connect multiple Blocks together.
 
-[Nodes](../blocks/laser_node.md) and [Connectors](../blocks/laser_connector.md) can be connected by Shift-RightClicking to select a block, and then right-clicking another block to form a connection.
+[Nodes](../blocks/laser_node.md) and [Connectors](../blocks/laser_connector.md) can be connected by holding shift and right-clicking to select a block, and then right-clicking another block to form a connection.
 
 The max connection range is 8 blocks.
 

@@ -19,3 +19,5 @@ This opens up many operations to be used in a "reversed" way. For example, inser
 3. Set the priority of the secondary source to be higher than the priority on the primary source
 
 NOTE: only two sources were used in this example, but you can use this for more than two sources.
+
+[A more detailed example.](https://github.com/LaserIO-UEL/LaserIO-UEL/issues/41)
