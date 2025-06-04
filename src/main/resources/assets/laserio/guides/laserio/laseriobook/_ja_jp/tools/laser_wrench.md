@@ -20,7 +20,7 @@ item_ids:
 
 *現在選択されているブロックは緑色で強調表示されます。*
 
-![](laser_wrench.png)
+![](laserio:assets/tools/laser_wrench/laser_wrench.png)
 
 ## レーザーレンチ
 

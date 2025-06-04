@@ -17,7 +17,7 @@ item_ids:
 
 *チェストと相互作用するノード*
 
-![](laser_node1.png)
+![](laserio:assets/blocks/laser_node/laser_node1.png)
 
 ノードの各面には、カードを受け入れる3x3グリッドのインベントリスロットがあります。ノードのサイドを右クリックすると、そのUIが開きます。
 
@@ -29,7 +29,7 @@ item_ids:
 
 *カードとノードUI*
 
-![](laser_node_gui1.png)
+![](laserio:assets/blocks/laser_node/laser_node_gui1.png)
 
 ノードは複数の隣接するインベントリと同時に干渉できます。
 
@@ -37,7 +37,7 @@ item_ids:
 
 *2つのチェスト間のノード*
 
-![](laser_node2.png)
+![](laserio:assets/blocks/laser_node/laser_node2.png)
 
 ノードは [レーザー レンチ](../tools/laser_wrench.md)を使用して接続でき、離れたインベントリ間の接続が可能になります。接続間の最大範囲は8ブロックです。
 
@@ -47,7 +47,7 @@ item_ids:
 
 *接続された二つのノード*
 
-![](laser_node3.png)
+![](laserio:assets/blocks/laser_node/laser_node3.png)
 
 ## レーザーノード
 <Recipe id="laserio:laser_node" />

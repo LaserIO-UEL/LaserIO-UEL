@@ -18,7 +18,7 @@ item_ids:
 
 2つのノード間の中継器
 
-![](laser_connector1.png)
+![](laserio:assets/blocks/laser_connector/laser_connector1.png)
 
 ## レーザー中継器
 <Recipe id="laserio:laser_connector" />

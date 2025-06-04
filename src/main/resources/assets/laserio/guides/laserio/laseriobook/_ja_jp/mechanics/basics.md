@@ -22,7 +22,7 @@ navigation:
 
 *搬入モードに設定されたアイテムカード。*
 
-![](images/basics1.png)
+![](laserio:assets/mechanics/basics/basics1.png)
 
 搬出モード:
 
@@ -40,7 +40,7 @@ navigation:
 
 *搬出モードに設定されたアイテムカード。*
 
-![](images/basics-extract.png)
+![](laserio:assets/mechanics/basics/basics-extract.png)
 
 ストックモード:
 
@@ -58,5 +58,5 @@ navigation:
 
 *ストックモードに設定されたアイテムカード。*
 
-![](images/basics-stock.png)
+![](laserio:assets/mechanics/basics/basics-stock.png)
 

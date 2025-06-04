@@ -16,7 +16,7 @@ Placing an item in the top right slot will show you all nbt tag labels on that i
 
 *NBT UI*
 
-![](../assets/filters/filter_nbt/nbt_filter.png)
+![](laserio:assets/filters/filter_nbt/nbt_filter.png)
 
 For example, all enchanted items have an 'Enchantments' tag, which specifies things like Looting, sharpness, etc. If you add the 'enchantments' tag to this list, the filter will filter out all enchanted items.
 

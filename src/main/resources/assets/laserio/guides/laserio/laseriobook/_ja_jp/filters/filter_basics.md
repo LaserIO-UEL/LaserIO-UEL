@@ -19,7 +19,7 @@ navigation:
 
 *基本フィルターUI*
 
-![](filter_basic.png)
+![](laserio:assets/filters/filter_basics/filter_basic.png)
 
 許可と拒否
 

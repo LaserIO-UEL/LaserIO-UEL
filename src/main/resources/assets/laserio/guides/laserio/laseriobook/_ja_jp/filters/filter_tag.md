@@ -18,7 +18,7 @@ navigation:
 
 *タグUI*
 
-![](filter_tag.png)
+![](laserio:assets/filters/filter_tag/filter_tag.png)
 
 まず、右上のスロットにアイテムを配置します。このアイテムのタグのリストが <Color id="blue">**青色**</Color> で表示されます。追加したいタグをクリックし、+ボタンを押します。Shiftキーを押しながら+ボタンを押すと、すべてのタグがリストに追加されます。
 

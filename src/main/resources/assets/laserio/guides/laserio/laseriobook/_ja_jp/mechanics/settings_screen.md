@@ -16,7 +16,7 @@ navigation:
 
 *異なる色のネットワーク*
 
-![](images/settings1.png)
+![](laserio:assets/mechanics/settings_screen/settings1.png)
 
 ノードとインベントリ(チェストやタンクなど)間のレーザーの色は影響を受けません。
 

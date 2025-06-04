@@ -18,7 +18,7 @@ item_ids:
 
 *相互に接続された2つの発展中継器*
 
-![](laser_connector_advanced1.png)
+![](laserio:assets/blocks/laser_connector_advanced/laser_connector_advanced1.png)
 
 発展中継器にすでにペアが存在する状態で、新たに他の発展中継器と接続しようとすると、元の接続が切断され、新たなペアリングが形成されます。
 
@@ -28,7 +28,7 @@ item_ids:
 
 *パートナー中継器の座標を表示*
 
-![](laser_connector_advanced2.png)
+![](laserio:assets/blocks/laser_connector_advanced/laser_connector_advanced2.png)
 
 発展レーザー中継器はチャンクのロードは行いません。チャンクのロードはすべて自分で処理する必要があります。ロードされていないチャンク内のノードは動作しません。
 

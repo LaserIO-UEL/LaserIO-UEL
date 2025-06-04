@@ -20,7 +20,7 @@ item_ids:
 
 *ノードオーバークロッカー未インストールのノード*
 
-![](overclocker_node1.png)
+![](laserio:assets/upgrades/oveclocker_node/overclocker_node1.png)
 
 ノードの側面にインストールされたノードオーバークロッカーにより、その側面は1ティック当たりより多くのカードが動作できます。合計8つのノードオーバークロッカーをインストールして9つのカード全てが動作できます。
 
@@ -30,7 +30,7 @@ item_ids:
 
 *2つのノードオーバークロッカーがインストールされたノード*
 
-![](overclocker_node2.png)
+![](laserio:assets/upgrades/oveclocker_node/overclocker_node2.png)
 
 ## ノードオーバークロッカー
 
