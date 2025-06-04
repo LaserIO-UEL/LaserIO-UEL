@@ -22,7 +22,7 @@ Insert Mode:
 
 *An item card set to Insert Mode*
 
-![](images/basics1.png)
+![](../assets/mechanics/basics/basics1.png)
 
 Extract Mode:
 
@@ -40,7 +40,7 @@ Extract Mode:
 
 *An item card set to Extract Mode.*
 
-![](images/basics-extract.png)
+![](../assets/mechanics/basics/basics-extract.png)
 
 Stock Mode:
 
@@ -58,5 +58,5 @@ Stock Mode:
 
 *An item card set to Stock Mode.*
 
-![](images/basics-stock.png)
+![](../assets/mechanics/basics/basics-stock.png)
 

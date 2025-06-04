@@ -20,7 +20,7 @@ If there are 3 extractor cards in the side of a node, only the first one will op
 
 *There are zero Node Overclockers installed*
 
-![](overclocker_node1.png)
+![](../assets/upgrades/oveclocker_node/overclocker_node1.png)
 
 Each Node Overclocker installed on the side of a Node allows that side to operate on more cards per tick. A total of 8 Node Overclockers can be installed, allowing all 9 nodes to be operated on. 
 
@@ -30,7 +30,7 @@ Inserter cards do <Color id="red">**NOT**</Color> need overclockers to function,
 
 *There are two Node Overclockers installed*
 
-![](overclocker_node2.png)
+![](../assets/upgrades/oveclocker_node/overclocker_node2.png)
 
 ## Node Overclocker
 

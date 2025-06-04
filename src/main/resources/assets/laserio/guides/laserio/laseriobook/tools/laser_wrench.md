@@ -20,7 +20,7 @@ The max connection range is 8 blocks.
 
 *The currently selected block is highlighted green.*
 
-![](laser_wrench.png)
+![](../assets/tools/laser_wrench/laser_wrench.png)
 
 Connecting Nodes one by one after you placed them can be tedious; luckily the Laser Wrench can automatically do that for you!
 

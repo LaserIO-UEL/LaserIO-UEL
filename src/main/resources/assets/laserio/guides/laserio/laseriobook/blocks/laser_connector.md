@@ -18,7 +18,7 @@ Laser Connectors can act as a cheaper intermediary point between nodes, allowing
 
 *Connector between 2 nodes*
 
-![](./laser_connector1.png)
+![](laserio:assets/blocks/laser_connector/laser_connector1.png)
 
 ## Laser Connector
 <Recipe id="laserio:laser_connector" />

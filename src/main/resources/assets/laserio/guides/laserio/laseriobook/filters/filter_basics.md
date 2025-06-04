@@ -19,7 +19,7 @@ Filters allow you to restrict what items can be inserted, extracted, or stocked.
 
 *Basic Filter UI*
 
-![](filter_basic.png)
+![](../assets/filters/filter_basic/filter_basic.png)
 
 Allow vs Deny
 

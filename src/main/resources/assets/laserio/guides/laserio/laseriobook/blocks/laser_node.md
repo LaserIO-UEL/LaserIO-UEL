@@ -17,7 +17,7 @@ By using Cards such as the [Item Card](../cards/card_item.md), you can interact 
 
 *Node interacting with Chest*
 
-![](laser_node1.png)
+![](../assets/blocks/laser_node/laser_node1.png)
 
 Each side of a node has a 3x3 grid of inventory slots that accept Cards. Right click a node's side to open it's UI. 
 
@@ -29,7 +29,7 @@ The adjacent screenshot shows a node interacting with an inventory on it's west 
 
 *Node UI with Card*
 
-![](laser_node_gui1.png)
+![](../assets/blocks/laser_node/laser_node_gui1.png)
 
 Nodes can interact with multiple adjacent inventories at the same time.
 
@@ -37,7 +37,7 @@ Nodes can interact with multiple adjacent inventories at the same time.
 
 *Node between 2 chests*
 
-![](laser_node2.png)
+![](../assets/blocks/laser_node/laser_node2.png)
 
 Nodes can be connected together using the [Laser Wrench](../tools/laser_wrench.md), allowing connections between distant inventories.  The maximum range between connections is 8 blocks.
 
@@ -47,7 +47,7 @@ If your nodes are father apart, it is recommended to use [Laser Connectors](../b
 
 *Two Nodes Connected*
 
-![](laser_node3.png)
+![](../assets/blocks/laser_node/laser_node3.png)
 
 ## Laser Node
 <Recipe id="laserio:laser_node" />

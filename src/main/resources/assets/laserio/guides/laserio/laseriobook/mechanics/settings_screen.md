@@ -16,7 +16,7 @@ The network settings screen is available from any [Laser Node](../blocks/laser_n
 
 *Different Colored networks*
 
-![](images/settings1.png)
+![](../assets/mechanics/settings_screen/settings1.png)
 
 The color of the lasers between the node and inventories (Like chests or tanks) will not be affected.
 
