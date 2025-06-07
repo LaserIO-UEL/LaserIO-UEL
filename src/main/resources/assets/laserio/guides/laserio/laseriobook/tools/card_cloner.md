@@ -29,7 +29,7 @@ While in world, (with the Card Cloner in hand) shift+right-click on a Node to co
 While **not** looking at a Node, right-click can be used to change the paste mode. There are two paste modes:
 
 - Node contents: will paste only card settings (including Filters and Overclockers) and placement
-- Network settings: will paste only the [Network Settings](../mechanics/settings_screen.md) (this will also update all connected Nodes with these new settings)
+- Network settings: will paste only the [Network Settings](../mechanics/settings_screen.md)
 
 While looking at a Node, right-click to paste a copied Node.
 
