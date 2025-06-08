@@ -29,6 +29,7 @@ import com.direwolf20.laserio.util.ExtractorCardCache;
 import com.direwolf20.laserio.util.FluidStackKey;
 import com.direwolf20.laserio.util.InserterCardCache;
 import com.direwolf20.laserio.util.ItemHandlerUtil;
+import com.direwolf20.laserio.util.ItemHandlerUtil.InventoryCardCounts;
 import com.direwolf20.laserio.util.ItemStackKey;
 import com.direwolf20.laserio.util.MiscTools;
 import com.direwolf20.laserio.util.NodeSideCache;
@@ -2462,6 +2463,14 @@ public class LaserNodeBE extends BaseLaserBE {
         rendersChecked = true;
     }
 
+    public InventoryCardCounts getNodeContents() {
+        InventoryCardCounts nodeContents = new InventoryCardCounts();
+        for (int i = 0; i < Direction.values().length; i++) {
+            nodeContents.addHandler(nodeSideCaches[i].itemHandler);
+        }
+        return nodeContents;
+    }
+
     public void setShowParticles(boolean show) {
         this.showParticles = show;
         markDirtyClient();
@@ -2540,8 +2549,10 @@ public class LaserNodeBE extends BaseLaserBE {
         if (tag.contains("showParticles")) {
             showParticles = tag.getBoolean("showParticles");
         }
-        super.load(tag);
-        rendersChecked = false;
+        if (!tag.contains("dimension")) {
+            super.load(tag);
+            rendersChecked = false;
+        }
     }
 
     @Override

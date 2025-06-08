@@ -8,14 +8,11 @@ import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
-import net.minecraft.core.Holder;
+import com.direwolf20.laserio.util.SoundUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
@@ -42,26 +39,6 @@ public class PacketCopyPasteCard {
 
     public static PacketCopyPasteCard decode(FriendlyByteBuf buffer) {
         return new PacketCopyPasteCard(buffer.readInt(), buffer.readBoolean());
-    }
-
-    public static void playSound(ServerPlayer player, SoundEvent soundEvent) {
-        // Get player's position
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-
-        // Create the packet
-        ClientboundSoundPacket packet = new ClientboundSoundPacket(
-                Holder.direct(soundEvent), // The sound event
-                SoundSource.PLAYERS, // The sound category
-                x, y, z, // The sound location
-                1, // The volume, 1 is normal, higher is louder
-                1, // The pitch, 1 is normal, higher is higher pitch
-                1 // A random for some reason? (Some sounds have different variants, like the enchanting table success)
-        );
-
-        // Send the packet to the player
-        player.connection.send(packet);
     }
 
     public static int returnItemToHolder(LaserNodeContainer container, ItemStack returnStack, boolean simulate) {
@@ -159,13 +136,13 @@ public class PacketCopyPasteCard {
                 if (msg.copy) { //Copy mode
                     CardCloner.setItemType(clonerStack, slotStack.getItem().toString());
                     CompoundTag compoundTag = slotStack.getTag() == null ? new CompoundTag() : slotStack.getTag();
-                    CardCloner.saveSettings(clonerStack, compoundTag);
-                    playSound(sender, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
+                    CardCloner.setSettings(clonerStack, compoundTag);
+                    SoundUtil.playSound(sender, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
                 } else { //Paste mode
                     Item slotItem = slotStack.getItem();
                     if (slotItem.toString().equals(CardCloner.getItemType(clonerStack))) {
-                        ItemStack filterNeeded = CardCloner.getFilter(clonerStack);
-                        ItemStack overclockersNeeded = CardCloner.getOverclocker(clonerStack);
+                        ItemStack neededFilter = CardCloner.getCopiedCardFilter(clonerStack);
+                        ItemStack neededOverclockers = CardCloner.getCopiedCardOverclocker(clonerStack);
                         ItemStack existingFilter = ItemStack.EMPTY;
                         ItemStack existingOverclockers = ItemStack.EMPTY;
                         if (slotItem instanceof CardEnergy && CardEnergyContainer.SLOTS == 1) {
@@ -177,38 +154,38 @@ public class PacketCopyPasteCard {
                             existingOverclockers = cardItemHandler.getStackInSlot(1);
                         }
                         boolean filterSatisfied = true;
-                        if (!existingFilter.is(filterNeeded.getItem())) {
-                            filterSatisfied = getItemFromHolder(laserNodeContainer, filterNeeded, true);
+                        if (!existingFilter.is(neededFilter.getItem())) {
+                            filterSatisfied = getItemFromHolder(laserNodeContainer, neededFilter, true);
                         }
-                        int amtReturn = 0;
-                        int amtNeeded = 0;
-                        if (!existingOverclockers.is(overclockersNeeded.getItem())) {
-                            amtReturn = existingOverclockers.getCount();
-                            amtNeeded = overclockersNeeded.getCount();
+                        int returnAmt = 0;
+                        int neededAmt = 0;
+                        if (!existingOverclockers.is(neededOverclockers.getItem())) {
+                            returnAmt = existingOverclockers.getCount();
+                            neededAmt = neededOverclockers.getCount();
                         } else {
-                            int amt = existingOverclockers.getCount() - overclockersNeeded.getCount();
+                            int amt = existingOverclockers.getCount() - neededOverclockers.getCount();
                             if (amt > 0) {
-                                amtReturn = amt;
+                                returnAmt = amt;
                             } else {
-                                amtNeeded = -amt;
+                                neededAmt = -amt;
                             }
                         }
                         boolean overclockSatisfied = true;
-                        if (amtNeeded > 0) {
-                            ItemStack neededStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
+                        if (neededAmt > 0) {
+                            ItemStack neededStack = new ItemStack(neededOverclockers.getItem(), neededAmt);
                             overclockSatisfied = getItemFromHolder(laserNodeContainer, neededStack, true);
                         }
                         if (filterSatisfied && overclockSatisfied) {
-                            if (!existingFilter.is(filterNeeded.getItem())) {
+                            if (!existingFilter.is(neededFilter.getItem())) {
                                 if (returnItemToHolder(laserNodeContainer, existingFilter, false) != 0) {
                                     //Drop item in world
                                     ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), existingFilter);
                                     sender.level().addFreshEntity(itemEntity);
                                 }
-                                getItemFromHolder(laserNodeContainer, filterNeeded, false);
+                                getItemFromHolder(laserNodeContainer, neededFilter, false);
                             }
-                            if (amtReturn > 0) {
-                                ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), amtReturn);
+                            if (returnAmt > 0) {
+                                ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), returnAmt);
                                 int remaining = returnItemToHolder(laserNodeContainer, returnStack, false);
                                 if (remaining > 0) {
                                     //Drop item in world
@@ -217,8 +194,8 @@ public class PacketCopyPasteCard {
                                     sender.level().addFreshEntity(itemEntity);
                                 }
                             }
-                            if (amtNeeded > 0) {
-                                ItemStack neededStack = new ItemStack(overclockersNeeded.getItem(), amtNeeded);
+                            if (neededAmt > 0) {
+                                ItemStack neededStack = new ItemStack(neededOverclockers.getItem(), neededAmt);
                                 getItemFromHolder(laserNodeContainer, neededStack, false);
                             }
                             ItemStack tempStack = slotStack.copy();
@@ -229,13 +206,13 @@ public class PacketCopyPasteCard {
                                 tempStack.setTag(compoundTag.copy());
                             }
                             container.getSlot(msg.slot).set(tempStack);
-                            playSound(sender, SoundEvents.ENCHANTMENT_TABLE_USE);
+                            SoundUtil.playSound(sender, SoundEvents.ENCHANTMENT_TABLE_USE);
                             ((LaserNodeContainer)container).tile.updateThisNode();
                         } else {
-                            playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
+                            SoundUtil.playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                         }
                     } else {
-                        playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
+                        SoundUtil.playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                     }
                 }
             });

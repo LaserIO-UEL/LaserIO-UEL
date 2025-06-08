@@ -1,11 +1,14 @@
 package com.direwolf20.laserio.util;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.CardEnergy;
+import com.direwolf20.laserio.common.items.cards.CardRedstone;
+import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
+import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.google.common.collect.ArrayListMultimap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.NonNullList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Item;
@@ -256,21 +259,6 @@ public class ItemHandlerUtil {
         return ItemHandlerHelper.copyStackWithSize(stack, size);
     }
 
-    public static class InventoryInfo {
-
-        private final NonNullList<ItemStack> inventory;
-        private final IntList stackSizes = new IntArrayList();
-
-        public InventoryInfo(IItemHandler handler) {
-            inventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
-            for (int i = 0; i < handler.getSlots(); i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                inventory.set(i, stack);
-                stackSizes.add(stack.getCount());
-            }
-        }
-    }
-
     public static class InventoryCounts {
         private final ArrayListMultimap<Item, ItemStack> itemMap = ArrayListMultimap.create();
         private int totalCount = 0;
@@ -374,6 +362,131 @@ public class ItemHandlerUtil {
 
         public int getTotalCount() {
             return totalCount;
+        }
+    }
+
+    public static class InventoryCardCounts {
+        private final Object2IntOpenHashMap<Item> cardCounts;
+        private final Object2IntOpenHashMap<Item> cardModifierCounts;
+
+        private InventoryCardCounts(Object2IntOpenHashMap<Item> cardCounts, Object2IntOpenHashMap<Item> cardModifierCounts) {
+            this.cardCounts = cardCounts;
+            this.cardModifierCounts = cardModifierCounts;
+        }
+
+        public InventoryCardCounts() {
+            cardCounts = new Object2IntOpenHashMap<> ();
+            cardModifierCounts = new Object2IntOpenHashMap<> ();
+        }
+
+        public InventoryCardCounts(IItemHandler handler) {
+            this();
+            addHandler(handler);
+        }
+
+        public InventoryCardCounts(IItemHandler handler, boolean deepSearch) {
+            this();
+            addHandler(handler, deepSearch);
+        }
+
+        public void addCardModifiersFromCard(ItemStack cardStack) {
+            Item cardItem = cardStack.getItem();
+            if (cardItem instanceof BaseCard && !(cardItem instanceof CardRedstone)) {
+                IItemHandler cardHandler;
+                if (cardItem instanceof CardEnergy) {
+                    cardHandler = CardEnergy.getInventory(cardStack);
+                } else {
+                    cardHandler = BaseCard.getInventory(cardStack);
+                }
+                addHandler(cardHandler, false, cardStack.getCount());
+            }
+        }
+
+        private void addCard(ItemStack cardStack, boolean deepSearch, int containerStackCount) {
+            if (cardStack.isEmpty()) {
+                return;
+            }
+            Item cardItem = cardStack.getItem();
+            int cardStackCount = containerStackCount * cardStack.getCount();
+            if (cardItem instanceof BaseFilter || cardItem instanceof OverclockerCard) {
+                cardModifierCounts.addTo(cardItem, cardStackCount);
+            } else {
+                cardCounts.addTo(cardItem, cardStackCount);
+                if (deepSearch) {
+                    addCardModifiersFromCard(cardStack);
+                }
+            }
+        }
+
+        public void addCard(ItemStack cardStack) {
+            addCard(cardStack, true, 1);
+        }
+
+        public void addCard(ItemStack cardStack, boolean deepSearch) {
+            addCard(cardStack, deepSearch, 1);
+        }
+
+        private void addHandler(IItemHandler handler, boolean deepSearch, int containerStackCount) {
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack cardStack = handler.getStackInSlot(i);
+                addCard(cardStack, deepSearch, containerStackCount);
+            }
+        }
+
+        public void addHandler(IItemHandler handler) {
+            addHandler(handler, true, 1);
+        }
+
+        public void addHandler(IItemHandler handler, boolean deepSearch) {
+            addHandler(handler, deepSearch, 1);
+        }
+
+        private void addItemCounts(Object2IntOpenHashMap<Item> first, Object2IntOpenHashMap<Item> second) {
+            second.object2IntEntrySet().fastForEach(
+                    entry -> first.mergeInt(entry.getKey(), entry.getIntValue(), Integer::sum)
+            );
+        }
+
+        public void addInventoryCardCounts(InventoryCardCounts inventoryCardCounts) {
+            addItemCounts(cardCounts, inventoryCardCounts.getCardCounts());
+            addItemCounts(cardModifierCounts, inventoryCardCounts.getCardModifierCounts());
+        }
+
+        private void subtractItemCounts(Object2IntOpenHashMap<Item> first, Object2IntOpenHashMap<Item> second) {
+            second.object2IntEntrySet().fastForEach(
+                    entry -> first.mergeInt(entry.getKey(), -entry.getIntValue(), Integer::sum)
+            );
+        }
+
+        public void subtractInventoryCardCounts(InventoryCardCounts inventoryCardCounts) {
+            subtractItemCounts(cardCounts, inventoryCardCounts.getCardCounts());
+            subtractItemCounts(cardModifierCounts, inventoryCardCounts.getCardModifierCounts());
+        }
+
+        public Object2IntOpenHashMap<Item> getCardCounts() {
+            return cardCounts;
+        }
+
+        public Object2IntOpenHashMap<Item> getCardModifierCounts() {
+            return cardModifierCounts;
+        }
+
+        private boolean hasNegativeValues(Object2IntOpenHashMap<Item> itemCounts) {
+            for (int value : itemCounts.values()) {
+                if (value < 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean hasNegativeValues() {
+            return (hasNegativeValues(cardCounts) || hasNegativeValues(cardModifierCounts));
+        }
+
+        @Override
+        public InventoryCardCounts clone() {
+            return new InventoryCardCounts(cardCounts.clone(), cardModifierCounts.clone());
         }
     }
 }

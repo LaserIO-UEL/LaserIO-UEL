@@ -35,22 +35,7 @@ public class LaserWrench extends Item {
     public static final BlockPos NULL_CONNECTION_POS = new BlockPos(0, -1000, 0);
 
     public LaserWrench() {
-        super(new Item.Properties()
-                .stacksTo(1));
-    }
-
-    public static DimBlockPos storeConnectionPos(ItemStack wrench, Level level, BlockPos pos) {
-        DimBlockPos dimBlockPos = new DimBlockPos(level, pos);
-        wrench.getOrCreateTag().put("connectiondimpos", dimBlockPos.toNBT());
-        return dimBlockPos;
-    }
-
-    public static DimBlockPos getConnectionPos(ItemStack wrench, Level level) {
-        CompoundTag compound = wrench.getOrCreateTag();
-        if (level == null) {
-            return null;
-        }
-        return !compound.contains("connectiondimpos") ? storeConnectionPos(wrench, level, NULL_CONNECTION_POS) : new DimBlockPos(compound.getCompound("connectiondimpos"));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override
@@ -102,7 +87,7 @@ public class LaserWrench extends Item {
             }
             //If we're too far away, send an error to the client
             if (!targetPos.closerThan(sourcePos, Config.MAX_NODES_DISTANCE.get()) || !targetDim.equals(sourceDim)) {
-                player.displayClientMessage(Component.translatable("message.laserio.wrenchrange", Config.MAX_NODES_DISTANCE.get()), true);
+                player.displayClientMessage(Component.translatable("message.laserio.laser_wrench.exceeded_maximum_connection_range", Config.MAX_NODES_DISTANCE.get()), true);
                 return InteractionResultHolder.pass(wrench);
             }
             //Connect or disconnect the nodes, depending on current state
@@ -118,14 +103,28 @@ public class LaserWrench extends Item {
             tooltip.add(tooltipMaker("laserio.tooltip.item.show_details", ChatFormatting.GRAY));
         } else {
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.select_node", ChatFormatting.GRAY);
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.select_node.keys", ChatFormatting.WHITE));
+            toWrite.append(tooltipMaker("laserio.tooltip.item.keys.shift_right_click", ChatFormatting.WHITE));
             tooltip.add(toWrite);
             toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.connect_node", ChatFormatting.GRAY);
-            toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.connect_node.keys", ChatFormatting.WHITE));
+            toWrite.append(tooltipMaker("laserio.tooltip.item.keys.right_click", ChatFormatting.WHITE));
             tooltip.add(toWrite);
             toWrite = tooltipMaker("laserio.tooltip.item.laser_wrench.autoconnect_node", ChatFormatting.GRAY);
             toWrite.append(tooltipMaker("laserio.tooltip.item.laser_wrench.autoconnect_node.keys", ChatFormatting.WHITE));
             tooltip.add(toWrite);
         }
+    }
+
+    public static DimBlockPos storeConnectionPos(ItemStack wrench, Level level, BlockPos pos) {
+        DimBlockPos dimBlockPos = new DimBlockPos(level, pos);
+        wrench.getOrCreateTag().put("connectiondimpos", dimBlockPos.toNBT());
+        return dimBlockPos;
+    }
+
+    public static DimBlockPos getConnectionPos(ItemStack wrench, Level level) {
+        CompoundTag compound = wrench.getOrCreateTag();
+        if (level == null) {
+            return null;
+        }
+        return !compound.contains("connectiondimpos") ? storeConnectionPos(wrench, level, NULL_CONNECTION_POS) : new DimBlockPos(compound.getCompound("connectiondimpos"));
     }
 }

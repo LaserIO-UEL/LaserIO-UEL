@@ -45,8 +45,7 @@ public class BaseCard extends Item {
     }
 
     public BaseCard() {
-        super(new Item.Properties()
-                .stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public CardType getCardType() {
@@ -67,7 +66,7 @@ public class BaseCard extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings.shift_key", ChatFormatting.GRAY));
         } else {
             TransferMode currentMode = getNamedTransferMode(stack);
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY);

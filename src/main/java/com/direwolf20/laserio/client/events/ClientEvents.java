@@ -3,8 +3,10 @@ package com.direwolf20.laserio.client.events;
 import com.direwolf20.laserio.client.renderer.BlockOverlayRender;
 import com.direwolf20.laserio.client.renderer.DelayedRenderer;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
+import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
 import com.direwolf20.laserio.common.blocks.LaserConnectorAdv;
+import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.LaserWrench;
 import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.DimBlockPos;
@@ -13,7 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -25,6 +31,8 @@ import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 
+import java.awt.Color;
+
 public class ClientEvents {
     public static final boolean IS_OCULUS_LOADED = ModList.get().isLoaded("oculus");
     private static final Stage RENDERING_STAGE = IS_OCULUS_LOADED ? Stage.AFTER_TRANSLUCENT_BLOCKS : Stage.AFTER_CUTOUT_BLOCKS;
@@ -35,15 +43,30 @@ public class ClientEvents {
             return;
         }
         Player player = Minecraft.getInstance().player;
-        ItemStack wrench = getWrench(player);
+        Level level = player.level();
+        ResourceKey<Level> dimension = level.dimension();
+        ItemStack wrench = findWrench(player);
         if (!wrench.isEmpty()) {
-            Level level = player.level();
             DimBlockPos selectedDimPos = LaserWrench.getConnectionPos(wrench, level);
-            if (selectedDimPos != null && level.dimension().equals(selectedDimPos.levelKey)) {
+            if (selectedDimPos != null && dimension.equals(selectedDimPos.levelKey)) {
                 BlockPos selectedPos = selectedDimPos.blockPos;
                 BlockEntity selectedBE = level.getBlockEntity(selectedPos);
                 if (selectedBE instanceof BaseLaserBE baseLaserBE) {
-                    BlockOverlayRender.renderSelectedBlock(evt, selectedPos, baseLaserBE);
+                    BlockOverlayRender.renderSelectedBlock(evt, selectedPos, baseLaserBE, Color.GREEN);
+                }
+            }
+        }
+        ItemStack cardCloner = findCardHolder(player);
+        if (!cardCloner.isEmpty()) {
+            CompoundTag copiedNodeTag = CardCloner.getNodeData(cardCloner);
+            if (!copiedNodeTag.isEmpty()) {
+                String copiedNodeDim = copiedNodeTag.getString("dimension");
+                if (dimension.location().toShortLanguageKey().equals(copiedNodeDim)) {
+                    BlockPos copiedNodePos = NbtUtils.readBlockPos(copiedNodeTag.getCompound("myWorldPos"));
+                    BlockEntity copiedNodeBE = level.getBlockEntity(copiedNodePos);
+                    if (copiedNodeBE instanceof LaserNodeBE laserNodeBE) {
+                        BlockOverlayRender.renderSelectedBlock(evt, copiedNodePos, laserNodeBE, Color.CYAN);
+                    }
                 }
             }
         }
@@ -52,21 +75,29 @@ public class ClientEvents {
         DelayedRenderer.renderConnections(evt.getPoseStack());
     }
 
-    public static ItemStack getWrench(Player player) {
+    public static ItemStack findItemInHands(Player player, Class<? extends Item> itemClass) {
         ItemStack heldItem = player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof LaserWrench)) {
+        if (!(itemClass.isInstance(heldItem.getItem()))) {
             heldItem = player.getOffhandItem();
-            if (!(heldItem.getItem() instanceof LaserWrench)) {
+            if (!(itemClass.isInstance(heldItem.getItem()))) {
                 return ItemStack.EMPTY;
             }
         }
         return heldItem;
     }
 
+    public static ItemStack findWrench(Player player) {
+        return findItemInHands(player, LaserWrench.class);
+    }
+
+    public static ItemStack findCardHolder(Player player) {
+        return findItemInHands(player, CardCloner.class);
+    }
+
     @SubscribeEvent
     static void renderGUIOverlay(CustomizeGuiOverlayEvent.DebugText evt) {
         Player player = Minecraft.getInstance().player;
-        if (getWrench(player).isEmpty()) {
+        if (findWrench(player).isEmpty()) {
             return;
         }
         BlockHitResult lookingAt = VectorHelper.getLookingAt(player, ClipContext.Fluid.NONE, Config.MAX_INTERACTION_RANGE.get());

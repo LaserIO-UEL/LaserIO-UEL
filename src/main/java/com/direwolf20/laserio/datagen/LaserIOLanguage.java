@@ -103,17 +103,39 @@ public class LaserIOLanguage extends LanguageProvider {
         add("screen.laserio.nbttrue", "Match NBT");
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
-        //Laser Wrench tooltips
+        //General tooltips
         add("laserio.tooltip.item.show_details", "Hold shift to show details");
+        add("laserio.tooltip.item.show_settings.shift_key", "Hold shift to show settings");
+        add("laserio.tooltip.item.show_settings.ctrl_key", "Hold ctrl to show settings");
+        add("laserio.tooltip.item.keys.left_click", "L-Click");
+        add("laserio.tooltip.item.keys.right_click", "R-Click");
+        add("laserio.tooltip.item.keys.shift_right_click", "Shift + R-Click");
+
+        //Laser Wrench tooltips
         add("laserio.tooltip.item.laser_wrench.select_node", "Select Node: ");
-        add("laserio.tooltip.item.laser_wrench.select_node.keys", "Shift + R-Click");
         add("laserio.tooltip.item.laser_wrench.connect_node", "Connect Node: ");
-        add("laserio.tooltip.item.laser_wrench.connect_node.keys", "R-Click");
         add("laserio.tooltip.item.laser_wrench.autoconnect_node", "Auto-connect Node: ");
-        add("laserio.tooltip.item.laser_wrench.autoconnect_node.keys", "Offhand + Place Node");
+        add("laserio.tooltip.item.laser_wrench.autoconnect_node.keys", "Offhand Wrench + Place Node");
+
+        //Card Holder tooltips
+        add("laserio.tooltip.item.card_holder.open", "Open: ");
+        add("laserio.tooltip.item.card_holder.toggle_pulling", "Toggle pulling: ");
+
+        //Card Cloner tooltips
+        add("laserio.tooltip.item.card_cloner.in_node_ui", "In Node UI:");
+        add("laserio.tooltip.item.card_cloner.in_node_ui.copy_card", "Copy Card: ");
+        add("laserio.tooltip.item.card_cloner.in_node_ui.paste_card", "Paste Card: ");
+        add("laserio.tooltip.item.card_cloner.in_world", "In world:");
+        add("laserio.tooltip.item.card_cloner.in_world.copy_node", "Copy Node: ");
+        add("laserio.tooltip.item.card_cloner.in_world.paste_node", "Paste Node: ");
+        add("laserio.tooltip.item.card_cloner.in_world.clear", "Clear: ");
+        add("laserio.tooltip.item.card_cloner.in_world.change_paste_mode", "Change paste mode: ");
+        add("laserio.tooltip.item.card_cloner.copied_card", "Copied Card: ");
+        add("laserio.tooltip.item.card_cloner.copied_node", "Copied Node: ");
+        add("laserio.tooltip.item.card_cloner.copied_node.position", "Position: ");
+        add("laserio.tooltip.item.card_cloner.copied_node.dimension", "Dimension: ");
 
         //Cards tooltips
-        add("laserio.tooltip.item.show_settings", "Hold shift to show settings");
         add("laserio.tooltip.item.card.mode", "Mode: ");
         add("laserio.tooltip.item.card.channel", "Channel: ");
         add("laserio.tooltip.item.card.mode.EXTRACT", "Extract");
@@ -143,10 +165,24 @@ public class LaserIOLanguage extends LanguageProvider {
         //Energy Overclockers tooltip
         add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
 
-        //Client messages
-        add("message.laserio.wrenchrange", "Connection exceeds maximum range of %d");
-        add("message.laserio.card_holder.pulling.enabled", "Card Holder pulling enabled");
-        add("message.laserio.card_holder.pulling.disabled", "Card Holder pulling disabled");
+        //Laser Wrench client messages
+        add("message.laserio.laser_wrench.exceeded_maximum_connection_range", "Connection exceeds maximum range of %d!");
+
+        //Card Holder client messages
+        add("message.laserio.card_holder.pulling", "Card Holder pulling: ");
+        add("message.laserio.card_holder.pulling.enabled", "Enabled");
+        add("message.laserio.card_holder.pulling.disabled", "Disabled");
+
+        //Card Cloner client messages
+        add("message.laserio.card_cloner.paste_mode", "Paste mode: ");
+        add("message.laserio.card_cloner.paste_mode.network_settings", "Network settings");
+        add("message.laserio.card_cloner.paste_mode.node_contents", "Node contents");
+        add("message.laserio.card_cloner.copy_node_first", "Copy a Node before pasting!");
+        add("message.laserio.card_cloner.node_copied", "Node copied!");
+        add("message.laserio.card_cloner.network_settings_pasted", "Network settings pasted!");
+        add("message.laserio.card_cloner.insufficient_materials", "Insufficient materials to paste!");
+        add("message.laserio.card_cloner.node_contents_pasted", "Node contents pasted!");
+        add("message.laserio.card_cloner.stored_settings_cleared", "Stored settings cleared!");
 
         //Keybinds
         add("key.laserio.card_holder.open", "Open Card Holder");

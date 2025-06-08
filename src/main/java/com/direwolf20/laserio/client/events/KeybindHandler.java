@@ -9,7 +9,6 @@ import com.direwolf20.laserio.common.network.packets.PacketKeybindPerformAction.
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -36,10 +35,6 @@ public class KeybindHandler {
             GLFW.GLFW_KEY_O,
             LaserIO.MODNAME
     );
-    private static final MutableComponent[] CARD_HOLDER_PULLING_MESSAGES = {
-            Component.translatable("message.laserio.card_holder.pulling.disabled"),
-            Component.translatable("message.laserio.card_holder.pulling.enabled")
-    };
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.Key event) {
@@ -57,7 +52,7 @@ public class KeybindHandler {
         } else if (TOGGLE_CARD_HOLDER_PULLING.isDown()) {
             ItemStack cardHolder = LaserNode.findFirstCardHolder(player);
             if (!cardHolder.isEmpty()) {
-                MutableComponent message = CARD_HOLDER_PULLING_MESSAGES[CardHolder.getActive(cardHolder) ? 0 : 1];
+                MutableComponent message = CardHolder.PULLING_MESSAGES[CardHolder.getActive(cardHolder) ? 0 : 1];
                 player.displayClientMessage(message, true);
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
                 PacketHandler.sendToServer(new PacketKeybindPerformAction(KeybindAction.TOGGLE_CARD_HOLDER_PULLING));

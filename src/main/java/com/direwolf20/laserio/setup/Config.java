@@ -66,9 +66,9 @@ public class Config {
     //Config build
     static {
         COMMON_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
-        MAX_INTERACTION_RANGE = COMMON_BUILDER.comment("Maximum interaction range with nodes when using a Laser Wrench")
+        MAX_INTERACTION_RANGE = COMMON_BUILDER.comment("Maximum interaction range with Nodes when using a Laser Wrench or Card Cloner")
                 .defineInRange("max_interaction_range", 10, 1, Integer.MAX_VALUE);
-        MAX_NODES_DISTANCE = COMMON_BUILDER.comment("Maximum distance between two linked nodes")
+        MAX_NODES_DISTANCE = COMMON_BUILDER.comment("Maximum distance between two connected Nodes")
                 .defineInRange("max_nodes_distance", 8, 2, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 

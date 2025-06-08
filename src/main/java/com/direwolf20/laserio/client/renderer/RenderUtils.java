@@ -175,7 +175,7 @@ public class RenderUtils {
                 BlockPos endBlock = be.getWorldPos(target);
                 Color color = be.getColor();
                 Player player = Minecraft.getInstance().player;
-                ItemStack wrench = ClientEvents.getWrench(player);
+                ItemStack wrench = ClientEvents.findWrench(player);
                 int alpha = wrench.isEmpty() ? color.getAlpha() : Math.min(color.getAlpha() + be.getWrenchAlpha(), 255);
                 float diffX = endBlock.getX() + .5f - startBlock.getX();
                 float diffY = endBlock.getY() + .5f - startBlock.getY();
@@ -189,7 +189,7 @@ public class RenderUtils {
                 BlockPos endBlock = laserConnectorAdvBE.getBlockPos().relative(facing);
                 Color color = be.getColor();
                 Player player = Minecraft.getInstance().player;
-                ItemStack wrench = ClientEvents.getWrench(player);
+                ItemStack wrench = ClientEvents.findWrench(player);
                 int alpha = wrench.isEmpty() ? color.getAlpha() : Math.min(color.getAlpha() + be.getWrenchAlpha(), 255);
                 Vector3f endLaser = calculateEndAdvConnector(startBlock, endBlock, facing);
                 drawLaser(builder, positionMatrix, endLaser, startLaser, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, alpha / 255f, 0.025f, v, v + endLaser.y() * 1.5, be);

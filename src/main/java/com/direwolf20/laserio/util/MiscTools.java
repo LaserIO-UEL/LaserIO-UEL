@@ -71,15 +71,49 @@ public class MiscTools {
         return list;
     }
 
-    public static MutableComponent tooltipMaker(String string, ChatFormatting color) {
-        return tooltipMaker(string, color.getColor());
+    public static MutableComponent tooltipMaker(String translationKey, String prefix, int color) {
+        MutableComponent component = Component.translatable(translationKey);
+        if (!prefix.isBlank()) {
+            component = Component.literal(prefix).append(component);
+        }
+        Style style = Style.EMPTY.withColor(color);
+        component.setStyle(style);
+        return component;
     }
 
-    public static MutableComponent tooltipMaker(String string, int color) {
-        Style style = Style.EMPTY;
-        style = style.withColor(color);
-        MutableComponent current = Component.translatable(string);
-        current.setStyle(style);
-        return current;
+    public static MutableComponent tooltipMaker(String translationKey, String prefix, ChatFormatting color) {
+        return tooltipMaker(translationKey, prefix, color.getColor());
+    }
+
+    public static MutableComponent tooltipMaker(String translationKey, int color) {
+        return tooltipMaker(translationKey, "", color);
+    }
+
+    public static MutableComponent tooltipMaker(String translationKey, ChatFormatting color) {
+        return tooltipMaker(translationKey, "", color.getColor());
+    }
+
+    public static MutableComponent tooltipMakerLiteral(String literal, String prefix, int color) {
+        MutableComponent component;
+        if (prefix.isBlank()) {
+            component = Component.literal(literal);
+        } else {
+            component = Component.literal(prefix + literal);
+        }
+        Style style = Style.EMPTY.withColor(color);
+        component.setStyle(style);
+        return component;
+    }
+
+    public static MutableComponent tooltipMakerLiteral(String literal, String prefix, ChatFormatting color) {
+        return tooltipMakerLiteral(literal, prefix, color.getColor());
+    }
+
+    public static MutableComponent tooltipMakerLiteral(String literal, int color) {
+        return tooltipMakerLiteral(literal, "", color);
+    }
+
+    public static MutableComponent tooltipMakerLiteral(String literal, ChatFormatting color) {
+        return tooltipMakerLiteral(literal, "", color.getColor());
     }
 }

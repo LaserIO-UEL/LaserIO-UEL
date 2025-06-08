@@ -5,9 +5,15 @@ import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
+import com.direwolf20.laserio.util.ItemHandlerUtil.InventoryCardCounts;
 import com.direwolf20.laserio.util.ItemStackHandlerProvider;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +23,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.IItemHandler;
@@ -31,10 +40,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.direwolf20.laserio.util.MiscTools.tooltipMaker;
+
 public class CardHolder extends Item {
+    public static final MutableComponent[] PULLING_MESSAGES = {
+            Component.translatable("message.laserio.card_holder.pulling").append(Component.translatable("message.laserio.card_holder.pulling.disabled")),
+            Component.translatable("message.laserio.card_holder.pulling").append(Component.translatable("message.laserio.card_holder.pulling.enabled"))
+    };
+
     public CardHolder() {
-        super(new Item.Properties()
-                .stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override
@@ -42,8 +57,7 @@ public class CardHolder extends Item {
         ItemStack cardHolder = player.getItemInHand(hand);
         if (level.isClientSide()) {
             if (player.isShiftKeyDown()) {
-                String translationKey = "message.laserio.card_holder_pulling_" + (CardHolder.getActive(cardHolder) ? "disabled" : "enabled");
-                player.displayClientMessage(Component.translatable(translationKey), true);
+                player.displayClientMessage(PULLING_MESSAGES[getActive(cardHolder) ? 0 : 1], true);
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
             }
             return InteractionResultHolder.pass(cardHolder);
@@ -59,6 +73,29 @@ public class CardHolder extends Item {
             }));
         });
         return InteractionResultHolder.pass(cardHolder);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
+        Minecraft mc = Minecraft.getInstance();
+        if (world == null || mc.player == null) {
+            return;
+        }
+
+        boolean sneakPressed = Screen.hasShiftDown();
+
+        if (!sneakPressed) {
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_details", ChatFormatting.GRAY));
+        } else {
+            MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.card_holder.open", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.keys.right_click", ChatFormatting.WHITE));
+            tooltip.add(toWrite);
+            toWrite = tooltipMaker("laserio.tooltip.item.card_holder.toggle_pulling", ChatFormatting.GRAY);
+            toWrite.append(tooltipMaker("laserio.tooltip.item.keys.shift_right_click", ChatFormatting.WHITE));
+            tooltip.add(toWrite);
+        }
     }
 
     @Override
@@ -94,13 +131,12 @@ public class CardHolder extends Item {
             ItemStack stackInSlot = handler.getStackInSlot(i);
             if (stackInSlot.isEmpty()) {
                 emptySlots.add(i);
-            }
-            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(stackInSlot, card)) {
-                int j = stackInSlot.getCount() + card.getCount();
+            } else if (ItemStack.isSameItemSameTags(stackInSlot, card)) {
+                int newStackCount = stackInSlot.getCount() + card.getCount();
                 int maxSize = 64;
-                if (j <= maxSize) {
+                if (newStackCount <= maxSize) {
                     card.setCount(0);
-                    stackInSlot.setCount(j);
+                    stackInSlot.setCount(newStackCount);
                 } else if (stackInSlot.getCount() < maxSize) {
                     card.shrink(maxSize - stackInSlot.getCount());
                     stackInSlot.setCount(maxSize);
@@ -113,6 +149,22 @@ public class CardHolder extends Item {
         if (emptySlots.isEmpty()) return card;
         handler.insertItem(emptySlots.get(0), card.split(card.getCount()), false);
         return card;
+    }
+
+    public static ItemStack getCardFromInventory(ItemStack cardHolder, ItemStack card) {
+        IItemHandler handler = cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
+        for (int i = handler.getSlots() - 1; i >= 0; i--) {
+            ItemStack stackInSlot = handler.getStackInSlot(i);
+            if (ItemStack.isSameItem(stackInSlot, card)) {
+                return stackInSlot.split(card.getCount());
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static InventoryCardCounts getContents(ItemStack stack) {
+        IItemHandler handler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(CardHolderContainer.SLOTS));
+        return new InventoryCardCounts(handler, false);
     }
 
     public static UUID getUUID(ItemStack stack) {
