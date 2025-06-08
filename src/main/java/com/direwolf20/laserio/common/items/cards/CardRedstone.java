@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -25,16 +24,16 @@ public class CardRedstone extends BaseCard {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-
+        ItemStack card = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            return InteractionResultHolder.pass(card);
+        }
         NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                (windowId, playerInventory, playerEntity) -> new CardRedstoneContainer(windowId, playerInventory, player, itemstack), Component.translatable("")), (buf -> {
-            buf.writeItem(itemstack);
+                (windowId, playerInventory, playerEntity) -> new CardRedstoneContainer(windowId, playerInventory, player, card), Component.translatable("")), (buf -> {
+            buf.writeItem(card);
             buf.writeByte(-1);
         }));
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResultHolder.pass(card);
     }
 
     public static byte nextTransferMode(ItemStack card) {
