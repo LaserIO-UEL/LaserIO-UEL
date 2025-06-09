@@ -34,8 +34,8 @@ public class PacketToggleParticles {
                 if (container == null) {
                     return;
                 }
-                if (container instanceof LaserNodeContainer laserNodeContainer) {
-                    laserNodeContainer.tile.setShowParticles(msg.renderParticles);
+                if (container instanceof LaserNodeContainer nodeContainer) {
+                    nodeContainer.tile.setShowParticles(msg.renderParticles);
                 }
             });
 

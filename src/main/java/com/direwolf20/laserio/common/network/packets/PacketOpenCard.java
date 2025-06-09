@@ -62,7 +62,7 @@ public class PacketOpenCard {
                 Slot slot = container.slots.get(msg.slotNumber);
                 ItemStack itemStack = slot.getItem();
                 CardItemHandler handler = BaseCard.getInventory(itemStack);
-                byte side = (container instanceof LaserNodeContainer laserNodeContainer ? laserNodeContainer.side : -1);
+                byte side = (container instanceof LaserNodeContainer nodeContainer ? nodeContainer.side : -1);
                 if (itemStack.getItem() instanceof CardItem) {
                     if (!msg.hasShiftDown) {
                         NetworkHooks.openScreen(sender, new SimpleMenuProvider(

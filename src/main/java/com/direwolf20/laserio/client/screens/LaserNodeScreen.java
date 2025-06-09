@@ -210,7 +210,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         if (hoveredSlot != null && container.getCarried().getItem() instanceof CardCloner) {
-            if (hoveredSlot instanceof LaserNodeSlot && !hoveredSlot.getItem().isEmpty()) {
+            if (hoveredSlot instanceof LaserNodeSlot) {
                 if (btn == 0) //Left click
                     PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), true));
                 else if (btn == 1) //Right click

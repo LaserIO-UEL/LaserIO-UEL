@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -87,13 +88,20 @@ public class PacketCopyPasteCard {
         if (container.cardHolder.isEmpty()) {
             return false;
         }
+        Item neededItem = neededStack.getItem();
         Map<Integer, Integer> foundStackMap = new HashMap<>();
-        for (int getSlot = LaserNodeContainer.SLOTS; getSlot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); getSlot++) {
-            ItemStack possibleStack = container.getSlot(getSlot).getItem();
-            if (possibleStack.is(neededStack.getItem())) {
+        for (int slot = LaserNodeContainer.SLOTS; slot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); slot++) {
+            ItemStack possibleStack = container.getSlot(slot).getItem();
+            boolean possibleStackMatches;
+            if (neededItem instanceof BaseCard) {
+                possibleStackMatches = ItemStack.isSameItemSameTags(possibleStack, neededStack);
+            } else {
+                possibleStackMatches = possibleStack.is(neededItem);
+            }
+            if (possibleStackMatches) {
                 int stackAvailable = possibleStack.getCount();
                 int amtFound = Math.min(neededCount, stackAvailable);
-                foundStackMap.put(getSlot, amtFound);
+                foundStackMap.put(slot, amtFound);
                 neededCount -= amtFound;
                 if (neededCount == 0) {
                     if (simulate) {
@@ -113,6 +121,19 @@ public class PacketCopyPasteCard {
         return true; //Since we got here we can assume we updated everything
     }
 
+    public static ItemStack searchCardInHolder(LaserNodeContainer container, String neededCardType) {
+        if (container.cardHolder.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        for (int slot = LaserNodeContainer.SLOTS; slot < (LaserNodeContainer.SLOTS + CardHolderContainer.SLOTS); slot++) {
+            ItemStack possibleCard = container.getSlot(slot).getItem();
+            if (possibleCard.getItem().toString().equals(neededCardType)) {
+                return possibleCard.copyWithCount(1);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static class Handler {
         public static void handle(PacketCopyPasteCard msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
@@ -124,93 +145,109 @@ public class PacketCopyPasteCard {
                 if (!(container instanceof LaserNodeContainer)) {
                     return;
                 }
-                LaserNodeContainer laserNodeContainer = (LaserNodeContainer) container;
-                ItemStack clonerStack = container.getCarried();
+                LaserNodeContainer nodeContainer = (LaserNodeContainer) container;
+                ItemStack clonerStack = nodeContainer.getCarried();
                 if (!(clonerStack.getItem() instanceof CardCloner)) {
                     return;
                 }
-                ItemStack slotStack = container.getSlot(msg.slot).getItem();
-                if (!(slotStack.getItem() instanceof BaseCard)) {
-                    return;
-                }
+                Slot nodeSlot = nodeContainer.getSlot(msg.slot);
+                ItemStack slotStack = nodeSlot.getItem();
                 if (msg.copy) { //Copy mode
-                    CardCloner.setItemType(clonerStack, slotStack.getItem().toString());
-                    CompoundTag compoundTag = slotStack.getTag() == null ? new CompoundTag() : slotStack.getTag();
-                    CardCloner.setSettings(clonerStack, compoundTag);
-                    SoundUtil.playSound(sender, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
-                } else { //Paste mode
                     Item slotItem = slotStack.getItem();
-                    if (slotItem.toString().equals(CardCloner.getItemType(clonerStack))) {
-                        ItemStack neededFilter = CardCloner.getCopiedCardFilter(clonerStack);
-                        ItemStack neededOverclockers = CardCloner.getCopiedCardOverclocker(clonerStack);
-                        ItemStack existingFilter = ItemStack.EMPTY;
-                        ItemStack existingOverclockers = ItemStack.EMPTY;
-                        if (slotItem instanceof CardEnergy && CardEnergyContainer.SLOTS == 1) {
-                            CardItemHandler cardItemHandler = CardEnergy.getInventory(slotStack);
-                            existingOverclockers = cardItemHandler.getStackInSlot(0);
-                        } else if (!(slotItem instanceof CardRedstone)) {
-                            CardItemHandler cardItemHandler = BaseCard.getInventory(slotStack);
-                            existingFilter = cardItemHandler.getStackInSlot(0);
-                            existingOverclockers = cardItemHandler.getStackInSlot(1);
+                    if (slotItem instanceof BaseCard) {
+                        CardCloner.setItemType(clonerStack, slotItem.toString());
+                        CompoundTag settingsTag = slotStack.getTag() == null ? new CompoundTag() : slotStack.getTag();
+                        CardCloner.setSettings(clonerStack, settingsTag);
+                        SoundUtil.playSound(sender, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT);
+                    } else {
+                        SoundUtil.playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
+                    }
+                } else { //Paste mode
+                    boolean successfullyPasted = false;
+                    String copiedCardType = CardCloner.getItemType(clonerStack);
+                    if (!copiedCardType.isBlank()) {
+                        boolean cardFromHolder = false;
+                        if (slotStack.isEmpty()) {
+                            slotStack = searchCardInHolder(nodeContainer, copiedCardType);
+                            cardFromHolder = true;
                         }
-                        boolean filterSatisfied = true;
-                        if (!existingFilter.is(neededFilter.getItem())) {
-                            filterSatisfied = getItemFromHolder(laserNodeContainer, neededFilter, true);
-                        }
-                        int returnAmt = 0;
-                        int neededAmt = 0;
-                        if (!existingOverclockers.is(neededOverclockers.getItem())) {
-                            returnAmt = existingOverclockers.getCount();
-                            neededAmt = neededOverclockers.getCount();
-                        } else {
-                            int amt = existingOverclockers.getCount() - neededOverclockers.getCount();
-                            if (amt > 0) {
-                                returnAmt = amt;
-                            } else {
-                                neededAmt = -amt;
+                        if (slotStack.getItem().toString().equals(copiedCardType)) {
+                            Item slotItem = slotStack.getItem();
+                            ItemStack neededFilter = CardCloner.getCopiedCardFilter(clonerStack);
+                            ItemStack neededOverclockers = CardCloner.getCopiedCardOverclocker(clonerStack);
+                            ItemStack existingFilter = ItemStack.EMPTY;
+                            ItemStack existingOverclockers = ItemStack.EMPTY;
+                            if (slotItem instanceof CardEnergy && CardEnergyContainer.SLOTS == 1) {
+                                CardItemHandler cardItemHandler = CardEnergy.getInventory(slotStack);
+                                existingOverclockers = cardItemHandler.getStackInSlot(0);
+                            } else if (!(slotItem instanceof CardRedstone)) {
+                                CardItemHandler cardItemHandler = BaseCard.getInventory(slotStack);
+                                existingFilter = cardItemHandler.getStackInSlot(0);
+                                existingOverclockers = cardItemHandler.getStackInSlot(1);
                             }
-                        }
-                        boolean overclockSatisfied = true;
-                        if (neededAmt > 0) {
-                            ItemStack neededStack = new ItemStack(neededOverclockers.getItem(), neededAmt);
-                            overclockSatisfied = getItemFromHolder(laserNodeContainer, neededStack, true);
-                        }
-                        if (filterSatisfied && overclockSatisfied) {
+                            boolean filterSatisfied = true;
                             if (!existingFilter.is(neededFilter.getItem())) {
-                                if (returnItemToHolder(laserNodeContainer, existingFilter, false) != 0) {
-                                    //Drop item in world
-                                    ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), existingFilter);
-                                    sender.level().addFreshEntity(itemEntity);
-                                }
-                                getItemFromHolder(laserNodeContainer, neededFilter, false);
+                                filterSatisfied = getItemFromHolder(nodeContainer, neededFilter, true);
                             }
-                            if (returnAmt > 0) {
-                                ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), returnAmt);
-                                int remaining = returnItemToHolder(laserNodeContainer, returnStack, false);
-                                if (remaining > 0) {
-                                    //Drop item in world
-                                    returnStack.setCount(remaining);
-                                    ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), returnStack);
-                                    sender.level().addFreshEntity(itemEntity);
+                            int returnAmt = 0;
+                            int neededAmt = 0;
+                            if (!existingOverclockers.is(neededOverclockers.getItem())) {
+                                returnAmt = existingOverclockers.getCount();
+                                neededAmt = neededOverclockers.getCount();
+                            } else {
+                                int amt = existingOverclockers.getCount() - neededOverclockers.getCount();
+                                if (amt > 0) {
+                                    returnAmt = amt;
+                                } else {
+                                    neededAmt = -amt;
                                 }
                             }
+                            boolean overclockSatisfied = true;
                             if (neededAmt > 0) {
                                 ItemStack neededStack = new ItemStack(neededOverclockers.getItem(), neededAmt);
-                                getItemFromHolder(laserNodeContainer, neededStack, false);
+                                overclockSatisfied = getItemFromHolder(nodeContainer, neededStack, true);
                             }
-                            ItemStack tempStack = slotStack.copy();
-                            CompoundTag compoundTag = CardCloner.getSettings(clonerStack);
-                            if (compoundTag.isEmpty()) {
-                                tempStack.setTag(null);
-                            } else {
-                                tempStack.setTag(compoundTag.copy());
+                            if (filterSatisfied && overclockSatisfied) {
+                                if (cardFromHolder) {
+                                    getItemFromHolder(nodeContainer, slotStack, false);
+                                }
+                                if (!existingFilter.is(neededFilter.getItem())) {
+                                    if (returnItemToHolder(nodeContainer, existingFilter, false) != 0) {
+                                        //Drop item in world
+                                        ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), existingFilter);
+                                        sender.level().addFreshEntity(itemEntity);
+                                    }
+                                    getItemFromHolder(nodeContainer, neededFilter, false);
+                                }
+                                if (returnAmt > 0) {
+                                    ItemStack returnStack = new ItemStack(existingOverclockers.getItem(), returnAmt);
+                                    int remaining = returnItemToHolder(nodeContainer, returnStack, false);
+                                    if (remaining > 0) {
+                                        //Drop item in world
+                                        returnStack.setCount(remaining);
+                                        ItemEntity itemEntity = new ItemEntity(sender.level(), sender.getX(), sender.getY(), sender.getZ(), returnStack);
+                                        sender.level().addFreshEntity(itemEntity);
+                                    }
+                                }
+                                if (neededAmt > 0) {
+                                    ItemStack neededStack = new ItemStack(neededOverclockers.getItem(), neededAmt);
+                                    getItemFromHolder(nodeContainer, neededStack, false);
+                                }
+                                ItemStack tempStack = slotStack.copy();
+                                CompoundTag settingsTag = CardCloner.getSettings(clonerStack);
+                                if (settingsTag.isEmpty()) {
+                                    tempStack.setTag(null);
+                                } else {
+                                    tempStack.setTag(settingsTag.copy());
+                                }
+                                nodeSlot.set(tempStack);
+                                nodeContainer.tile.updateThisNode();
+                                successfullyPasted = true;
                             }
-                            container.getSlot(msg.slot).set(tempStack);
-                            SoundUtil.playSound(sender, SoundEvents.ENCHANTMENT_TABLE_USE);
-                            ((LaserNodeContainer)container).tile.updateThisNode();
-                        } else {
-                            SoundUtil.playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                         }
+                    }
+                    if (successfullyPasted) {
+                        SoundUtil.playSound(sender, SoundEvents.ENCHANTMENT_TABLE_USE);
                     } else {
                         SoundUtil.playSound(sender, SoundEvents.WAXED_SIGN_INTERACT_FAIL);
                     }

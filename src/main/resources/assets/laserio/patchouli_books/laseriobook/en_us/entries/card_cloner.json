@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "If any of the necessary items are missing, the paste will fail. It will NOT partially paste the settings.$(br2)$(bold)Card cloning$()$(br)From within a Node screen, pickup the Card Cloner (on your cursor) and left-click on a Card to copy its settings.$(br2)Right-click on a Card to paste the stored settings."
+      "text": "If any of the necessary items are missing, the paste will fail. It will NOT partially paste the settings.$(br2)$(bold)Card cloning$()$(br)From within a Node screen, pickup the Card Cloner (on your cursor) and left-click on a Card to copy its settings.$(br2)Right-click on a Card or an empty Node slot to paste the stored settings."
     },
     {
       "type": "patchouli:text",
