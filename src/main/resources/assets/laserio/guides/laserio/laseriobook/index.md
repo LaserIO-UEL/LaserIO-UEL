@@ -6,14 +6,14 @@ navigation:
 
 # LaserIO UEL
 
-An encyclopedia on the items, blocks, and mechanics in LaserIO. 
+Transport items, fluids, energy, and gasses around your world - with Lasers!
 
 If you are new to LaserIO, the fundamentals are:
 - The [Laser Node](./blocks/laser_node.md)
 - The [Laser Wrench](tools/laser_wrench.md)
-- And the many [Cards](./cards/cards.md)
+- The [Basics](mechanics/basics.md) of the many [Cards](./cards/cards.md)
 
-Can't Have DireWire without Wires! 
+This is an encyclopedia on the items, blocks, and mechanics in LaserIO.
 
 - [Blocks](./blocks/blocks.md)
 - [Tools](./tools/tools.md)
@@ -22,3 +22,5 @@ Can't Have DireWire without Wires!
 - [Upgrades](./upgrades/upgrades.md)
 - [Filters](./filters/filters.md)
 - [Advanced Tips and Concepts](./advanced/advanced.md)
+
+As Direwolf20, the creator of LaserIO, said: "Can't have DireWire without Wires!"... we think?

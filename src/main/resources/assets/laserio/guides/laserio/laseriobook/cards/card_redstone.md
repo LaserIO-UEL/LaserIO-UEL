@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Redstone Cards"
+  title: "Redstone Card"
   icon: "laserio:card_redstone"
   position: 4
   parent: laserio:cards/cards.md
@@ -8,11 +8,11 @@ item_ids:
   - laserio:card_redstone
 ---
 
-# Redstone Cards
+# Redstone Card
 
-Redstone cards are used to transmit redstone signals across the entire LaserIO network. 
+Redstone Cards are used to transmit redstone signals across the entire LaserIO network. 
 
-Redstone cards have a dedicated [redstone channel](../mechanics/redstonechannel.md), separate from the channels that other cards use. 
+Redstone Cards have a dedicated [redstone channel](../mechanics/redstonechannel.md), separate from the channels that other cards use. 
 
 All cards have a [redstone mode](../mechanics/redstonemode.md) toggle, which defaults to ignored, meaning the cards will always operate.
 

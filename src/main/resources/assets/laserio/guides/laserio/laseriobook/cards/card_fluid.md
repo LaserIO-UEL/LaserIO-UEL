@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Fluid Cards"
+  title: "Fluid Card"
   icon: "laserio:card_fluid"
   position: 2
   parent: laserio:cards/cards.md
@@ -8,7 +8,7 @@ item_ids:
   - laserio:card_fluid
 ---
 
-# Fluid Cards
+# Fluid Card
 
 Fluid Cards are used to send Fluids between inventories, such as tanks.
 

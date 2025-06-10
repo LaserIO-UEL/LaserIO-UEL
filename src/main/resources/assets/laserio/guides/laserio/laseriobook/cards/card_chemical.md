@@ -1,12 +1,12 @@
 ---
 navigation:
-  title: "Chemical Cards"
+  title: "Chemical Card [REQUIRES MEKANISM]"
   icon: "laserio:card_chemical"
   position: 5
   parent: laserio:cards/cards.md
 ---
 
-# Chemical Cards
+# Chemical Card **[REQUIRES MEKANISM]**
 
 Chemical Cards are used to send Chemicals between inventories, such as Mekanism Tanks. These cards are only available if Mekanism is installed.
 

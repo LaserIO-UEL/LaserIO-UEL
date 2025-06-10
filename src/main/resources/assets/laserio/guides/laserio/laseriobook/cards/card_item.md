@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Item Cards"
+  title: "Item Card"
   icon: "laserio:card_item"
   position: 1
   parent: laserio:cards/cards.md
@@ -8,7 +8,7 @@ item_ids:
   - laserio:card_item
 ---
 
-# Item Cards
+# Item Card
 
 Item Cards are used to send items between inventories, such as chests and furnaces.
 

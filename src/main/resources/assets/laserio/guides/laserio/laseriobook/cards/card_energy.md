@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Energy Cards"
+  title: "Energy Card"
   icon: "laserio:card_energy"
   position: 3
   parent: laserio:cards/cards.md
@@ -8,7 +8,7 @@ item_ids:
   - laserio:card_energy
 ---
 
-# Energy Cards
+# Energy Card
 
 Energy Cards are used to send Energy between inventories, such as machines and batteries.
 
