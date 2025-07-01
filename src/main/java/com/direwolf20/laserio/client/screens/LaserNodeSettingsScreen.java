@@ -32,11 +32,11 @@ import java.util.Map;
 
 public class LaserNodeSettingsScreen extends Screen {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node_settings.png");
-    protected final LaserNodeContainer container;
-    protected int imageWidth = 176;
-    protected int imageHeight = 166;
-    protected int leftPos;
-    protected int topPos;
+    private final LaserNodeContainer container;
+    private int imageWidth = 176;
+    private int imageHeight = 166;
+    private int leftPos;
+    private int topPos;
     private int laserRed;
     private int laserGreen;
     private int laserBlue;
@@ -162,23 +162,19 @@ public class LaserNodeSettingsScreen extends Screen {
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(getGuiLeft(), getGuiTop(), 0);
-        Vec2i tab = LaserNodeScreen.TABS[container.side];
-        guiGraphics.fill(tab.x + 2, tab.y + 2, tab.x + 22, tab.y + 14, 0xFFC6C6C6);
-        guiGraphics.fill(tab.x, tab.y + 11, tab.x + 2, tab.y + 12, 0xFFFFFFFF);
-        guiGraphics.fill(tab.x + 22, tab.y + 11, tab.x + 24, tab.y + 12, 0xFFFFFFFF);
-        String settings = Component.translatable("screen.laserio.settings").getString();
+        String settings = Component.translatable("screen.laserio.network_settings").getString();
         int color = Color.DARK_GRAY.getRGB();
         guiGraphics.drawString(font, settings, imageWidth / 2 - font.width(settings) / 2, 20, color, false);
         guiGraphics.drawString(font, "U", 15, 7, color, false);
         guiGraphics.drawString(font, "D", 43, 7, color, false);
         guiGraphics.drawString(font, "N", 71, 7, color, false);
         guiGraphics.drawString(font, "S", 99, 7, color, false);
-        guiGraphics.drawString(font, "W", 128, 7, color, false);
+        guiGraphics.drawString(font, "W", 127, 7, color, false);
         guiGraphics.drawString(font, "E", 155, 7, color, false);
         for (Direction direction : Direction.values()) {
             ItemStack itemStack = getAdjacentBlock(direction);
             if (!itemStack.isEmpty()) {
-                tab = LaserNodeScreen.TABS[direction.ordinal()];
+                Vec2i tab = LaserNodeScreen.TABS[direction.ordinal()];
                 guiGraphics.renderItem(itemStack, tab.x + 4, tab.y - 14, 0);
                 if (MiscTools.inBounds(getGuiLeft() + tab.x + 4, getGuiTop() + tab.y - 14, 16, 16, mouseX, mouseY)) {
                     guiGraphics.renderTooltip(font, itemStack, mouseX - getGuiLeft(), mouseY - getGuiTop());
@@ -203,6 +199,8 @@ public class LaserNodeSettingsScreen extends Screen {
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
         guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        int tabOffset = LaserNodeScreen.TABS[container.side].x - 2;
+        guiGraphics.blit(LaserNodeScreen.SELECTED_TABS_OVERLAY, relX + tabOffset, relY, tabOffset, 0, 28, 24);
     }
 
     private void openTab(byte tabIndex) {

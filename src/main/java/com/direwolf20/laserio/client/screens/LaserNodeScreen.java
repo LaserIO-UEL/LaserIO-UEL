@@ -39,6 +39,7 @@ import java.util.List;
 
 public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node.png");
+    protected static final ResourceLocation SELECTED_TABS_OVERLAY = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node_selected_tabs.png");
     private static final MutableComponent[] SIDES = {
             Component.translatable("screen.laserio.down"),
             Component.translatable("screen.laserio.up"),
@@ -52,7 +53,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     //array because like that we follow the Direction enum order.
     //Thanks to that, we can use Direction's ordinal values to get
     //the corresponding tab
-    public static final Vec2i[] TABS = {
+    protected static final Vec2i[] TABS = {
             new Vec2i(34, 4), //Down
             new Vec2i(6, 4), //Up
             new Vec2i(62, 4), //North
@@ -60,7 +61,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
             new Vec2i(118, 4), //West
             new Vec2i(146, 4) //East
     };
-    protected final LaserNodeContainer container;
+    private final LaserNodeContainer container;
     private boolean showCardHolderUI;
     private boolean currentParticles;
     private Button settingsButton;
@@ -80,7 +81,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         List<AbstractWidget> leftWidgets = new ArrayList<>();
         ResourceLocation settings = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/settings.png");
         settingsButton = new IconButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, settings, (button) -> {
-            Minecraft.getInstance().setScreen(new LaserNodeSettingsScreen(container, Component.translatable("screen.laserio.settings")));
+            Minecraft.getInstance().setScreen(new LaserNodeSettingsScreen(container, Component.translatable("screen.laserio.network_settings")));
         });
         leftWidgets.add(settingsButton);
 
@@ -113,6 +114,9 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         toggleHolderSlots();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+        if (MiscTools.inBounds(settingsButton.getX(), settingsButton.getY(), settingsButton.getWidth(), settingsButton.getHeight(), mouseX, mouseY)) {
+            guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.network_settings"), mouseX, mouseY);
+        }
         if (MiscTools.inBounds(particlesButton.getX(), particlesButton.getY(), particlesButton.getWidth(), particlesButton.getHeight(), mouseX, mouseY)) {
             MutableComponent[] translatableComponents = {
                     Component.translatable("screen.laserio.showparticles"),
@@ -124,10 +128,6 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        Vec2i tab = TABS[container.side];
-        guiGraphics.fill(tab.x + 2, tab.y + 2, tab.x + 22, tab.y + 14, 0xFFC6C6C6);
-        guiGraphics.fill(tab.x, tab.y + 11, tab.x + 2, tab.y + 12, 0xFFFFFFFF);
-        guiGraphics.fill(tab.x + 22, tab.y + 11, tab.x + 24, tab.y + 12, 0xFFFFFFFF);
         String side = SIDES[container.side].getString();
         int color = Color.DARK_GRAY.getRGB();
         guiGraphics.drawString(font, side, imageWidth / 2 - font.width(side) / 2, 20, color, false);
@@ -135,12 +135,12 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         guiGraphics.drawString(font, "D", 43, 7, color, false);
         guiGraphics.drawString(font, "N", 71, 7, color, false);
         guiGraphics.drawString(font, "S", 99, 7, color, false);
-        guiGraphics.drawString(font, "W", 128, 7, color, false);
+        guiGraphics.drawString(font, "W", 127, 7, color, false);
         guiGraphics.drawString(font, "E", 155, 7, color, false);
         for (Direction direction : Direction.values()) {
             ItemStack itemStack = getAdjacentBlock(direction);
             if (!itemStack.isEmpty()) {
-                tab = TABS[direction.ordinal()];
+                Vec2i tab = TABS[direction.ordinal()];
                 guiGraphics.renderItem(itemStack, tab.x + 4, tab.y - 14, 0);
                 if (MiscTools.inBounds(getGuiLeft() + tab.x + 4, getGuiTop() + tab.y - 14, 16, 16, mouseX, mouseY)) {
                     guiGraphics.renderTooltip(font, itemStack, mouseX - getGuiLeft(), mouseY - getGuiTop());
@@ -161,6 +161,8 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
         guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        int tabOffset = TABS[container.side].x - 2;
+        guiGraphics.blit(SELECTED_TABS_OVERLAY, relX + tabOffset, relY, tabOffset, 0, 28, 24);
         if (showCardHolderUI) {
             ResourceLocation CardHolderGUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
             RenderSystem.setShaderTexture(0, CardHolderGUI);
