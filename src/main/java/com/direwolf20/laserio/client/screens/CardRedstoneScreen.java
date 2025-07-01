@@ -129,7 +129,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneinput.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneoutput.png")
         };
-        buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
+        buttons.put("mode", new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = CardRedstone.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
             modeChange();
@@ -137,7 +137,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addChannelButton() {
-        buttons.put("channel", new ChannelButton(getGuiLeft() + 5, getGuiTop() + 65, 16, 16, currentRedstoneChannel, (button) -> {
+        buttons.put("channel", new ChannelButton(this.leftPos + 5, this.topPos + 65, 16, 16, currentRedstoneChannel, (button) -> {
             currentRedstoneChannel = CardRedstone.nextRedstoneChannel(card);
             ((ChannelButton) button).setChannel(currentRedstoneChannel);
         }));
@@ -148,7 +148,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneintervalfalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneintervaltrue.png")
         };
-        buttons.put("intervalToggle", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, intervalTextures, currentInterval ? 1 : 0, (button) -> {
+        buttons.put("intervalToggle", new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, intervalTextures, currentInterval ? 1 : 0, (button) -> {
             currentInterval = !currentInterval;
             ((ToggleButton) button).setTexturePosition(currentInterval ? 1 : 0);
             intervalChange();
@@ -156,19 +156,19 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addIntervalLowerBoundButton() {
-        buttons.put("intervalLowerBound", new NumberButton(getGuiLeft() + 25, getGuiTop() + 25, 16, 16, currentIntervalLowerBound, (button) -> {
+        buttons.put("intervalLowerBound", new NumberButton(this.leftPos + 25, this.topPos + 25, 16, 16, currentIntervalLowerBound, (button) -> {
             changeIntervalLowerBound(-1);
         }));
     }
 
     public void addIntervalUpperBoundButton() {
-        buttons.put("intervalUpperBound", new NumberButton(getGuiLeft() + 45, getGuiTop() + 25, 16, 16, currentIntervalUpperBound, (button) -> {
+        buttons.put("intervalUpperBound", new NumberButton(this.leftPos + 45, this.topPos + 25, 16, 16, currentIntervalUpperBound, (button) -> {
             changeIntervalUpperBound(-1);
         }));
     }
 
     public void addIntervalOutputButton() {
-        buttons.put("intervalOutput", new NumberButton(getGuiLeft() + 65, getGuiTop() + 25, 16, 16, currentIntervalOutput, (button) -> {
+        buttons.put("intervalOutput", new NumberButton(this.leftPos + 65, this.topPos + 25, 16, 16, currentIntervalOutput, (button) -> {
             changeIntervalOutput(-1);
         }));
     }
@@ -178,7 +178,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png")
         };
-        buttons.put("strong", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, strongTextures, currentStrong ? 1 : 0, (button) -> {
+        buttons.put("strong", new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, strongTextures, currentStrong ? 1 : 0, (button) -> {
             currentStrong = !currentStrong;
             ((ToggleButton) button).setTexturePosition(currentStrong ? 1 : 0);
         }));
@@ -190,7 +190,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonecomplementary.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonenot.png")
         };
-        buttons.put("outputMode", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, outputModeTextures, currentOutputMode, (button) -> {
+        buttons.put("outputMode", new ToggleButton(this.leftPos + 155, this.topPos + 5, 16, 16, outputModeTextures, currentOutputMode, (button) -> {
             currentOutputMode = (byte) (currentOutputMode == 2 ? 0 : currentOutputMode + 1);
             ((ToggleButton) button).setTexturePosition(currentOutputMode);
         }));
@@ -203,7 +203,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstoneand.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonexor.png")
         };
-        buttons.put("logicOperation", new ToggleButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, logicOperationTextures, currentLogicOperation, (button) -> {
+        buttons.put("logicOperation", new ToggleButton(this.leftPos + 155, this.topPos + 25, 16, 16, logicOperationTextures, currentLogicOperation, (button) -> {
             currentLogicOperation = (byte) (currentLogicOperation == 3 ? 0 : currentLogicOperation + 1);
             ((ToggleButton) button).setTexturePosition(currentLogicOperation);
             logicOperationChange();
@@ -211,7 +211,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     }
 
     public void addLogicOperationChannelButton() {
-        buttons.put("logicOperationChannel", new ChannelButton(getGuiLeft() + 135, getGuiTop() + 25, 16, 16, currentLogicOperationChannel, (button) -> {
+        buttons.put("logicOperationChannel", new ChannelButton(this.leftPos + 135, this.topPos + 25, 16, 16, currentLogicOperationChannel, (button) -> {
             currentLogicOperationChannel = CardRedstone.nextRedstoneChannelOperation(card);
             ((ChannelButton) button).setChannel(currentLogicOperationChannel);
         }));
@@ -243,7 +243,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
         addLogicOperationChannelButton();
 
         if (container.direction != -1) {
-            buttons.put("return", new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
+            buttons.put("return", new ExtendedButton(this.leftPos - 25, this.topPos + 1, 25, 20, Component.literal("<--"), (button) -> {
                 openNode();
             }));
         }
@@ -361,9 +361,7 @@ public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneCont
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override

@@ -26,7 +26,6 @@ import net.minecraftforge.client.gui.widget.ForgeSlider;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class LaserNodeSettingsScreen extends Screen {
     private ForgeSlider sliderBlue;
     private ForgeSlider sliderAlpha;
     private ForgeSlider sliderWrenchAlpha;
-    private Map<ForgeSlider, IntConsumer> sliderMap = new HashMap<>();
+    private Map<ForgeSlider, IntConsumer> sliderMap;
 
     public LaserNodeSettingsScreen(LaserNodeContainer container, Component name) {
         super(name);
@@ -70,18 +69,18 @@ public class LaserNodeSettingsScreen extends Screen {
         List<AbstractWidget> leftWidgets = new ArrayList<>();
 
         if (container.side != -1) {
-            Button returnButton = new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
+            Button returnButton = new ExtendedButton(this.leftPos - 25, this.topPos + 1, 25, 20, Component.literal("<--"), (button) -> {
                 openTab(container.side);
             });
             leftWidgets.add(returnButton);
         }
 
-        Button applyButton = new ExtendedButton(getGuiLeft() + 25, getGuiTop() + 150, 50, 20, Component.translatable("screen.laserio.apply"), (button) -> {
+        Button applyButton = new ExtendedButton(this.leftPos + 25, this.topPos + 150, 50, 20, Component.translatable("screen.laserio.apply"), (button) -> {
             syncColors();
         });
         leftWidgets.add(applyButton);
 
-        Button defaultButton = new ExtendedButton(getGuiLeft() + 100, getGuiTop() + 150, 50, 20, Component.translatable("screen.laserio.default"), (button) -> {
+        Button defaultButton = new ExtendedButton(this.leftPos + 100, this.topPos + 150, 50, 20, Component.translatable("screen.laserio.default"), (button) -> {
             Color defaultColor = container.tile.getDefaultColor();
             laserRed = defaultColor.getRed();
             sliderRed.setValue(laserRed);
@@ -97,35 +96,35 @@ public class LaserNodeSettingsScreen extends Screen {
         });
         leftWidgets.add(defaultButton);
 
-        sliderRed = new ForgeSlider(getGuiLeft() + 15, getGuiTop() + 45, 150, 15, Component.translatable("screen.laserio.red").append(": "), Component.empty(), 0, 255, this.laserRed, true) {
+        sliderRed = new ForgeSlider(this.leftPos + 15, this.topPos + 45, 150, 15, Component.translatable("screen.laserio.red").append(": "), Component.empty(), 0, 255, this.laserRed, true) {
             @Override
             protected void applyValue() {
                 laserRed = this.getValueInt();
             }
         };
         leftWidgets.add(sliderRed);
-        sliderGreen = new ForgeSlider(getGuiLeft() + 15, getGuiTop() + 65, 150, 15, Component.translatable("screen.laserio.green").append(": "), Component.empty(), 0, 255, this.laserGreen, true) {
+        sliderGreen = new ForgeSlider(this.leftPos + 15, this.topPos + 65, 150, 15, Component.translatable("screen.laserio.green").append(": "), Component.empty(), 0, 255, this.laserGreen, true) {
             @Override
             protected void applyValue() {
                 laserGreen = this.getValueInt();
             }
         };
         leftWidgets.add(sliderGreen);
-        sliderBlue = new ForgeSlider(getGuiLeft() + 15, getGuiTop() + 85, 150, 15, Component.translatable("screen.laserio.blue").append(": "), Component.empty(), 0, 255, this.laserBlue, true) {
+        sliderBlue = new ForgeSlider(this.leftPos + 15, this.topPos + 85, 150, 15, Component.translatable("screen.laserio.blue").append(": "), Component.empty(), 0, 255, this.laserBlue, true) {
             @Override
             protected void applyValue() {
                 laserBlue = this.getValueInt();
             }
         };
         leftWidgets.add(sliderBlue);
-        sliderAlpha = new ForgeSlider(getGuiLeft() + 15, getGuiTop() + 105, 150, 15, Component.translatable("screen.laserio.alpha").append(": "), Component.empty(), 0, 255, this.laserAlpha, true) {
+        sliderAlpha = new ForgeSlider(this.leftPos + 15, this.topPos + 105, 150, 15, Component.translatable("screen.laserio.alpha").append(": "), Component.empty(), 0, 255, this.laserAlpha, true) {
             @Override
             protected void applyValue() {
                 laserAlpha = this.getValueInt();
             }
         };
         leftWidgets.add(sliderAlpha);
-        sliderWrenchAlpha = new ForgeSlider(getGuiLeft() + 15, getGuiTop() + 125, 150, 15, Component.translatable("screen.laserio.wrench").append(": "), Component.empty(), 0, 255, this.wrenchAlpha, true) {
+        sliderWrenchAlpha = new ForgeSlider(this.leftPos + 15, this.topPos + 125, 150, 15, Component.translatable("screen.laserio.wrench").append(": "), Component.empty(), 0, 255, this.wrenchAlpha, true) {
             @Override
             protected void applyValue() {
                 wrenchAlpha = this.getValueInt();
@@ -161,7 +160,7 @@ public class LaserNodeSettingsScreen extends Screen {
 
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(getGuiLeft(), getGuiTop(), 0);
+        guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
         String settings = Component.translatable("screen.laserio.network_settings").getString();
         int color = Color.DARK_GRAY.getRGB();
         guiGraphics.drawString(font, settings, imageWidth / 2 - font.width(settings) / 2, 20, color, false);
@@ -176,8 +175,8 @@ public class LaserNodeSettingsScreen extends Screen {
             if (!itemStack.isEmpty()) {
                 Vec2i tab = LaserNodeScreen.TABS[direction.ordinal()];
                 guiGraphics.renderItem(itemStack, tab.x + 4, tab.y - 14, 0);
-                if (MiscTools.inBounds(getGuiLeft() + tab.x + 4, getGuiTop() + tab.y - 14, 16, 16, mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(font, itemStack, mouseX - getGuiLeft(), mouseY - getGuiTop());
+                if (MiscTools.inBounds(this.leftPos + tab.x + 4, this.topPos + tab.y - 14, 16, 16, mouseX, mouseY)) {
+                    guiGraphics.renderTooltip(font, itemStack, mouseX - this.leftPos, mouseY - this.topPos);
                 }
             }
         }
@@ -196,11 +195,9 @@ public class LaserNodeSettingsScreen extends Screen {
 
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         int tabOffset = LaserNodeScreen.TABS[container.side].x - 2;
-        guiGraphics.blit(LaserNodeScreen.SELECTED_TABS_OVERLAY, relX + tabOffset, relY, tabOffset, 0, 28, 24);
+        guiGraphics.blit(LaserNodeScreen.SELECTED_TABS_OVERLAY, this.leftPos + tabOffset, this.topPos, tabOffset, 0, 28, 24);
     }
 
     private void openTab(byte tabIndex) {
@@ -223,7 +220,7 @@ public class LaserNodeSettingsScreen extends Screen {
     public boolean mouseClicked(double x, double y, int btn) {
         for (byte i = 0; i < LaserNodeScreen.TABS.length; i++) {
             Vec2i tab = LaserNodeScreen.TABS[i];
-            if (MiscTools.inBounds(getGuiLeft() + tab.x, getGuiTop() + tab.y, 24, 12, x, y)) {
+            if (MiscTools.inBounds(this.leftPos + tab.x, this.topPos + tab.y, 24, 12, x, y)) {
                 openTab(i);
                 return true;
             }

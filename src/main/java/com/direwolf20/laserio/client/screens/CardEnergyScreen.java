@@ -41,6 +41,7 @@ import java.util.Map;
 
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/" + ((CardEnergyContainer.SLOTS == 0) ? "redstone" : "energy") + "card.png");
+    private static final ResourceLocation CARD_HOLDER_GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
     private final CardEnergyContainer container;
     private byte currentMode;
     private byte currentChannel;
@@ -168,13 +169,13 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     public void addAmtButton() {
-        buttons.put("amount", new NumberButton(getGuiLeft() + 125, getGuiTop() + 25, 46, 12, currentMode == 0 ? currentPriority : currentEnergyExtractAmt, (button) -> {
+        buttons.put("amount", new NumberButton(this.leftPos + 125, this.topPos + 25, 46, 12, currentMode == 0 ? currentPriority : currentEnergyExtractAmt, (button) -> {
             changeAmount(-1);
         }));
     }
 
     public void addLimitButton() {
-        buttons.put("limit", new NumberButton(getGuiLeft() + 147, getGuiTop() + 53, 24, 12, showExtractLimit() ? currentExtractLimitPercent : currentInsertLimitPercent, (button) -> {
+        buttons.put("limit", new NumberButton(this.leftPos + 147, this.topPos + 53, 24, 12, showExtractLimit() ? currentExtractLimitPercent : currentInsertLimitPercent, (button) -> {
             changeLimitAmount(-1);
         }));
     }
@@ -186,7 +187,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modestocker.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modesensor.png")
         };
-        buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
+        buttons.put("mode", new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = BaseCard.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
             ((NumberButton) buttons.get("amount")).setValue(currentMode == 0 ? currentPriority : currentEnergyExtractAmt);
@@ -201,14 +202,14 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonelow.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/redstonehigh.png")
         };
-        buttons.put("redstoneMode", new ToggleButton(getGuiLeft() + 105, getGuiTop() + 5, 16, 16, redstoneTextures, currentRedstoneMode, (button) -> {
+        buttons.put("redstoneMode", new ToggleButton(this.leftPos + 105, this.topPos + 5, 16, 16, redstoneTextures, currentRedstoneMode, (button) -> {
             currentRedstoneMode = (byte) (currentRedstoneMode == 2 ? 0 : currentRedstoneMode + 1);
             ((ToggleButton) button).setTexturePosition(currentRedstoneMode);
         }));
     }
 
     public void addRedstoneChannelButton() {
-        buttons.put("redstoneChannel", new ChannelButton(getGuiLeft() + 125, getGuiTop() + 5, 16, 16, currentRedstoneChannel, (button) -> {
+        buttons.put("redstoneChannel", new ChannelButton(this.leftPos + 125, this.topPos + 5, 16, 16, currentRedstoneChannel, (button) -> {
             currentRedstoneChannel = CardRedstone.nextRedstoneChannel(card);
             ((ChannelButton) button).setChannel(currentRedstoneChannel);
         }));
@@ -239,7 +240,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         addAmtButton();
         addLimitButton();
 
-        buttons.put("speed", new NumberButton(getGuiLeft() + 147, getGuiTop() + 39, 24, 12, currentTicks, (button) -> {
+        buttons.put("speed", new NumberButton(this.leftPos + 147, this.topPos + 39, 24, 12, currentTicks, (button) -> {
             changeTick(-1);
         }));
 
@@ -247,7 +248,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exactfalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/exacttrue.png")
         };
-        buttons.put("exact", new ToggleButton(getGuiLeft() + 25, getGuiTop() + 25, 16, 16, exactTextures, currentExact ? 1 : 0, (button) -> {
+        buttons.put("exact", new ToggleButton(this.leftPos + 25, this.topPos + 25, 16, 16, exactTextures, currentExact ? 1 : 0, (button) -> {
             currentExact = !currentExact;
             ((ToggleButton) button).setTexturePosition(currentExact ? 1 : 0);
         }));
@@ -257,7 +258,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobintrue.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/roundrobinenforced.png")
         };
-        buttons.put("roundrobin", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, roundRobinTextures, currentRoundRobin, (button) -> {
+        buttons.put("roundrobin", new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, roundRobinTextures, currentRoundRobin, (button) -> {
             currentRoundRobin = currentRoundRobin == 2 ? 0 : currentRoundRobin + 1;
             ((ToggleButton) button).setTexturePosition(currentRoundRobin);
         }));
@@ -266,7 +267,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png")
         };
-        buttons.put("regulate", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, regulateTextures, currentRegulate ? 1 : 0, (button) -> {
+        buttons.put("regulate", new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, regulateTextures, currentRegulate ? 1 : 0, (button) -> {
             currentRegulate = !currentRegulate;
             ((ToggleButton) button).setTexturePosition(currentRegulate ? 1 : 0);
         }));
@@ -275,7 +276,7 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
         addRedstoneButton();
         addRedstoneChannelButton();
 
-        buttons.put("channel", new ChannelButton(getGuiLeft() + 5, getGuiTop() + 65, 16, 16, currentChannel, (button) -> {
+        buttons.put("channel", new ChannelButton(this.leftPos + 5, this.topPos + 65, 16, 16, currentChannel, (button) -> {
             currentChannel = BaseCard.nextChannel(card);
             ((ChannelButton) button).setChannel(currentChannel);
         }));
@@ -289,13 +290,13 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-west.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/sneaky-east.png")
         };
-        buttons.put("sneaky", new ToggleButton(getGuiLeft() + 25, getGuiTop() + 5, 16, 16, sneakyTextures, currentSneaky + 1, (button) -> {
+        buttons.put("sneaky", new ToggleButton(this.leftPos + 25, this.topPos + 5, 16, 16, sneakyTextures, currentSneaky + 1, (button) -> {
             currentSneaky = BaseCard.nextSneaky(card);
             ((ToggleButton) button).setTexturePosition(currentSneaky + 1);
         }));
 
         if (container.direction != -1) {
-            buttons.put("return", new ExtendedButton(getGuiLeft() - 25, getGuiTop() + 1, 25, 20, Component.literal("<--"), (button) -> {
+            buttons.put("return", new ExtendedButton(this.leftPos - 25, this.topPos + 1, 25, 20, Component.literal("<--"), (button) -> {
                 openNode();
             }));
         }
@@ -451,13 +452,10 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if (showCardHolderUI) {
-            ResourceLocation CardHolderGUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
-            RenderSystem.setShaderTexture(0, CardHolderGUI);
-            guiGraphics.blit(CardHolderGUI, getGuiLeft() - 100, getGuiTop() + 24, 0, 0, this.imageWidth, this.imageHeight);
+            RenderSystem.setShaderTexture(0, CARD_HOLDER_GUI);
+            guiGraphics.blit(CARD_HOLDER_GUI, this.leftPos - 100, this.topPos + 24, 0, 0, this.imageWidth, this.imageHeight);
         }
     }
 

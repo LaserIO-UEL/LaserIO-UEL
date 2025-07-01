@@ -40,6 +40,7 @@ import java.util.List;
 public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node.png");
     protected static final ResourceLocation SELECTED_TABS_OVERLAY = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node_selected_tabs.png");
+    private static final ResourceLocation CARD_HOLDER_GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
     private static final MutableComponent[] SIDES = {
             Component.translatable("screen.laserio.down"),
             Component.translatable("screen.laserio.up"),
@@ -80,7 +81,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         super.init();
         List<AbstractWidget> leftWidgets = new ArrayList<>();
         ResourceLocation settings = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/settings.png");
-        settingsButton = new IconButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, settings, (button) -> {
+        settingsButton = new IconButton(this.leftPos + 155, this.topPos + 25, 16, 16, settings, (button) -> {
             Minecraft.getInstance().setScreen(new LaserNodeSettingsScreen(container, Component.translatable("screen.laserio.network_settings")));
         });
         leftWidgets.add(settingsButton);
@@ -89,7 +90,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png")
         };
-        particlesButton = new ToggleButton(getGuiLeft() + 155, getGuiTop() + 45, 16, 16, regulateTextures, currentParticles ? 1 : 0, (button) -> {
+        particlesButton = new ToggleButton(this.leftPos + 155, this.topPos + 45, 16, 16, regulateTextures, currentParticles ? 1 : 0, (button) -> {
             currentParticles = !currentParticles;
             ((ToggleButton) button).setTexturePosition(currentParticles ? 1 : 0);
             PacketHandler.sendToServer(new PacketToggleParticles(currentParticles));
@@ -142,8 +143,8 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
             if (!itemStack.isEmpty()) {
                 Vec2i tab = TABS[direction.ordinal()];
                 guiGraphics.renderItem(itemStack, tab.x + 4, tab.y - 14, 0);
-                if (MiscTools.inBounds(getGuiLeft() + tab.x + 4, getGuiTop() + tab.y - 14, 16, 16, mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(font, itemStack, mouseX - getGuiLeft(), mouseY - getGuiTop());
+                if (MiscTools.inBounds(this.leftPos + tab.x + 4, this.topPos + tab.y - 14, 16, 16, mouseX, mouseY)) {
+                    guiGraphics.renderTooltip(font, itemStack, mouseX - this.leftPos, mouseY - this.topPos);
                 }
             }
         }
@@ -158,15 +159,12 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         int tabOffset = TABS[container.side].x - 2;
-        guiGraphics.blit(SELECTED_TABS_OVERLAY, relX + tabOffset, relY, tabOffset, 0, 28, 24);
+        guiGraphics.blit(SELECTED_TABS_OVERLAY, this.leftPos + tabOffset, this.topPos, tabOffset, 0, 28, 24);
         if (showCardHolderUI) {
-            ResourceLocation CardHolderGUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
-            RenderSystem.setShaderTexture(0, CardHolderGUI);
-            guiGraphics.blit(CardHolderGUI, getGuiLeft() - 100, getGuiTop() + 24, 0, 0, this.imageWidth, this.imageHeight);
+            RenderSystem.setShaderTexture(0, CARD_HOLDER_GUI);
+            guiGraphics.blit(CARD_HOLDER_GUI, this.leftPos - 100, this.topPos + 24, 0, 0, this.imageWidth, this.imageHeight);
         }
     }
 
@@ -222,7 +220,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         }
         for (byte i = 0; i < TABS.length; i++) {
             Vec2i tab = TABS[i];
-            if (MiscTools.inBounds(getGuiLeft() + tab.x, getGuiTop() + tab.y, 24, 12, x, y) && container.side != i) {
+            if (MiscTools.inBounds(this.leftPos + tab.x, this.topPos + tab.y, 24, 12, x, y) && container.side != i) {
                 openTab(i);
                 return true;
             }
