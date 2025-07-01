@@ -28,7 +28,7 @@ import java.util.List;
 
 public class FilterCountScreen extends AbstractContainerScreen<FilterCountContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtercount.png");
-    protected final FilterCountContainer container;
+    private final FilterCountContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private boolean isCompareNBT;

@@ -34,7 +34,7 @@ import java.util.Objects;
 
 public class FilterNBTScreen extends AbstractContainerScreen<FilterNBTContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
-    protected final FilterNBTContainer container;
+    private final FilterNBTContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private EditBox tagField;

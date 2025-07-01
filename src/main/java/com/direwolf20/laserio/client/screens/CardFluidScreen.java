@@ -32,11 +32,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class CardFluidScreen extends CardItemScreen {
-    public int currentFluidExtractAmt;
-    public final int filterStartX;
-    public final int filterStartY;
-    public final int filterEndX;
-    public final int filterEndY;
+    private int currentFluidExtractAmt;
+    protected final int filterStartX;
+    protected final int filterStartY;
+    protected final int filterEndX;
+    protected final int filterEndY;
 
     public CardFluidScreen(CardItemContainer container, Inventory inv, Component name) {
         super(container, inv, name);

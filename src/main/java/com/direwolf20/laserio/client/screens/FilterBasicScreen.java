@@ -26,7 +26,7 @@ import java.util.List;
 
 public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/basicfilter.png");
-    protected final FilterBasicContainer container;
+    private final FilterBasicContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private boolean isCompareNBT;

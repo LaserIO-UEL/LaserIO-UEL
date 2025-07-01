@@ -31,11 +31,11 @@ import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.doesIt
 import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.getFirstChemicalOnItemStack;
 
 public class CardChemicalScreen extends CardItemScreen {
-    public int currentChemicalExtractAmt;
-    public final int filterStartX;
-    public final int filterStartY;
-    public final int filterEndX;
-    public final int filterEndY;
+    private int currentChemicalExtractAmt;
+    protected final int filterStartX;
+    protected final int filterStartY;
+    protected final int filterEndX;
+    protected final int filterEndY;
 
     public CardChemicalScreen(CardItemContainer container, Inventory inv, Component name) {
         super(container, inv, name);

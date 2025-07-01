@@ -41,24 +41,24 @@ import java.util.Map;
 
 public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/" + ((CardEnergyContainer.SLOTS == 0) ? "redstone" : "energy") + "card.png");
-    protected final CardEnergyContainer container;
-    protected byte currentMode;
-    protected byte currentChannel;
-    protected byte currentRedstoneChannel;
-    protected int currentEnergyExtractAmt;
-    protected short currentPriority;
-    protected byte currentSneaky;
-    protected int currentTicks;
-    protected boolean currentExact;
-    protected int currentRoundRobin;
-    protected boolean currentRegulate;
-    protected int currentExtractLimitPercent;
-    protected int currentInsertLimitPercent;
-    protected final ItemStack card;
-    protected Map<String, Button> buttons = new HashMap<>();
-    protected byte currentRedstoneMode;
+    private final CardEnergyContainer container;
+    private byte currentMode;
+    private byte currentChannel;
+    private byte currentRedstoneChannel;
+    private int currentEnergyExtractAmt;
+    private short currentPriority;
+    private byte currentSneaky;
+    private int currentTicks;
+    private boolean currentExact;
+    private int currentRoundRobin;
+    private boolean currentRegulate;
+    private int currentExtractLimitPercent;
+    private int currentInsertLimitPercent;
+    private final ItemStack card;
+    private final Map<String, Button> buttons = new HashMap<>();
+    private byte currentRedstoneMode;
     private boolean showCardHolderUI;
-    protected ItemStack lastOverclocker;
+    private ItemStack lastOverclocker;
 
     public CardEnergyScreen(CardEnergyContainer container, Inventory inv, Component name) {
         super(container, inv, name);

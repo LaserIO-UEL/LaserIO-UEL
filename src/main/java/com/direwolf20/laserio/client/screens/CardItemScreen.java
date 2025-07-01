@@ -52,7 +52,7 @@ import java.util.Map;
 
 public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/itemcard.png");
-    public static final MutableComponent[] SNEAKY_NAMES = {
+    protected static final MutableComponent[] SNEAKY_NAMES = {
             Component.translatable("screen.laserio.default"),
             Component.translatable("screen.laserio.down"),
             Component.translatable("screen.laserio.up"),
@@ -79,12 +79,12 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     protected boolean showAllow;
     protected boolean showNBT;
     protected final ItemStack card;
-    public ItemStack filter;
-    protected Map<String, Button> buttons = new HashMap<>();
+    protected ItemStack filter;
+    protected final Map<String, Button> buttons = new HashMap<>();
     protected byte currentRedstoneMode;
     protected boolean renderFluids = false;
     protected boolean renderChemicals = false;
-    private boolean showCardHolderUI;
+    protected boolean showCardHolderUI;
     protected int lastOverclockerCount;
 
     public CardItemScreen(CardItemContainer container, Inventory inv, Component name) {

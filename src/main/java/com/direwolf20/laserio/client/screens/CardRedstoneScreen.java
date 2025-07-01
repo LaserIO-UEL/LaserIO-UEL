@@ -31,19 +31,19 @@ import java.util.Map;
 
 public class CardRedstoneScreen extends AbstractContainerScreen<CardRedstoneContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/redstonecard.png");
-    protected final CardRedstoneContainer container;
-    protected byte currentMode;
-    protected byte currentRedstoneChannel;
-    protected boolean currentInterval;
-    protected byte currentIntervalLowerBound;
-    protected byte currentIntervalUpperBound;
-    protected byte currentIntervalOutput;
-    protected boolean currentStrong;
-    protected byte currentOutputMode;
-    protected byte currentLogicOperation;
-    protected byte currentLogicOperationChannel;
-    protected final ItemStack card;
-    protected Map<String, Button> buttons = new HashMap<>();
+    private final CardRedstoneContainer container;
+    private byte currentMode;
+    private byte currentRedstoneChannel;
+    private boolean currentInterval;
+    private byte currentIntervalLowerBound;
+    private byte currentIntervalUpperBound;
+    private byte currentIntervalOutput;
+    private boolean currentStrong;
+    private byte currentOutputMode;
+    private byte currentLogicOperation;
+    private byte currentLogicOperationChannel;
+    private final ItemStack card;
+    private final Map<String, Button> buttons = new HashMap<>();
 
     public CardRedstoneScreen(CardRedstoneContainer container, Inventory inv, Component name) {
         super(container, inv, name);
