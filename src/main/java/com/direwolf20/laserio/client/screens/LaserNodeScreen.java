@@ -76,6 +76,10 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         this.currentParticles = container.tile.getShowParticles();
     }
 
+    public boolean isCardHolderUIShown() {
+        return showCardHolderUI;
+    }
+
     @Override
     public void init() {
         super.init();

@@ -1,15 +1,12 @@
 package com.direwolf20.laserio.client.jei;
 
-import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterBasic;
-import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterCard;
-import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterCount;
-import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterNBT;
-import com.direwolf20.laserio.client.jei.ghostfilterhandlers.GhostFilterTag;
+import com.direwolf20.laserio.client.screens.CardEnergyScreen;
 import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.client.screens.FilterBasicScreen;
 import com.direwolf20.laserio.client.screens.FilterCountScreen;
 import com.direwolf20.laserio.client.screens.FilterNBTScreen;
 import com.direwolf20.laserio.client.screens.FilterTagScreen;
+import com.direwolf20.laserio.client.screens.LaserNodeScreen;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
 import com.direwolf20.laserio.setup.Registration;
@@ -61,10 +58,16 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGhostIngredientHandler(CardItemScreen.class, new GhostFilterCard());
-        registration.addGhostIngredientHandler(FilterBasicScreen.class, new GhostFilterBasic());
-        registration.addGhostIngredientHandler(FilterCountScreen.class, new GhostFilterCount());
-        registration.addGhostIngredientHandler(FilterNBTScreen.class, new GhostFilterNBT());
-        registration.addGhostIngredientHandler(FilterTagScreen.class, new GhostFilterTag());
+        //Prevent bookmarked items from overlapping with the Card Holder's GUI
+        registration.addGuiContainerHandler(LaserNodeScreen.class, new GuiContainerHandler<>());
+        registration.addGuiContainerHandler(CardItemScreen.class, new GuiContainerHandler<>());
+        registration.addGuiContainerHandler(CardEnergyScreen.class, new GuiContainerHandler<>());
+
+        //Add ghost ingredients dragging support for Filters
+        registration.addGhostIngredientHandler(CardItemScreen.class, new GhostIngredientHandler<>());
+        registration.addGhostIngredientHandler(FilterBasicScreen.class, new GhostIngredientHandler<>());
+        registration.addGhostIngredientHandler(FilterCountScreen.class, new GhostIngredientHandler<>());
+        registration.addGhostIngredientHandler(FilterNBTScreen.class, new GhostIngredientHandler<>());
+        registration.addGhostIngredientHandler(FilterTagScreen.class, new GhostIngredientHandler<>());
     }
 }

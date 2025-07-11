@@ -96,6 +96,10 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         this.showCardHolderUI = !container.cardHolder.isEmpty();
     }
 
+    public boolean isCardHolderUIShown() {
+        return showCardHolderUI;
+    }
+
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(guiGraphics);
