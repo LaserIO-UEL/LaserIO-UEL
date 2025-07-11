@@ -58,7 +58,7 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        //Prevent bookmarked items from overlapping with the Card Holder's GUI
+        //Prevent bookmarked items from overlapping with the Card Holder GUI
         registration.addGuiContainerHandler(LaserNodeScreen.class, new GuiContainerHandler<>());
         registration.addGuiContainerHandler(CardItemScreen.class, new GuiContainerHandler<>());
         registration.addGuiContainerHandler(CardEnergyScreen.class, new GuiContainerHandler<>());
