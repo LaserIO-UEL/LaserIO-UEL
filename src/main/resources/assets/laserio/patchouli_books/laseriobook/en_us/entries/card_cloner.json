@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "When the paste mode is set to $(bold)Node contents$(), the Card Cloner will paste only the copied Node's Cards with all their settings (included Overclockers and Filters), $(l:laserio:overclocker_node)Node Overclockers$(/l) and particles setting.$(br2)When the paste mode is set to $(bold)Network settings$(), the Card Cloner will paste only the copied Node network's color, alpha, and wrench alpha values."
+      "text": "When the paste mode is set to $(bold)Node contents$(), the Card Cloner will paste only the copied Node's Cards with all their settings (included Overclockers and Filters) and placement, $(l:laserio:overclocker_node)Node Overclockers$(/l), and particles setting.$(br2)When the paste mode is set to $(bold)Network settings$(), the Card Cloner will paste only the copied Node network's color, alpha, and wrench alpha values."
     },
     {
       "type": "patchouli:text",
