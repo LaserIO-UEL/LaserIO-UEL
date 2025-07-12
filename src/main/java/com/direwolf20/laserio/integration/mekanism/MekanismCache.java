@@ -49,7 +49,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MekanismCache {
     private record LaserNodeChemicalHandler(LaserNodeBE be, IChemicalHandler<?, ?> handler) {
-
     }
 
     public final Map<SideConnection, Map<ChemicalType, LazyOptional<IChemicalHandler<?, ?>>>> facingHandlerChemical = new HashMap<>();
@@ -541,18 +540,20 @@ public class MekanismCache {
         if (!inserterCardCache.cardType.equals(BaseCard.CardType.CHEMICAL)) return null;
         Level level = laserNodeBE.getLevel();
         if (level == null) return null;
-        DimBlockPos nodeWorldPos = new DimBlockPos(inserterCardCache.relativePos.getLevel(level.getServer()), laserNodeBE.getWorldPos(inserterCardCache.relativePos.blockPos));
-        if (!laserNodeBE.chunksLoaded(nodeWorldPos, nodeWorldPos.blockPos.relative(inserterCardCache.direction))) return null;
-        LaserNodeBE be = laserNodeBE.getNodeAt(new DimBlockPos(inserterCardCache.relativePos.getLevel(level.getServer()), laserNodeBE.getWorldPos(inserterCardCache.relativePos.blockPos)));
+        Level targetLevel = inserterCardCache.relativePos.getLevel(level.getServer());
+        if (targetLevel == null) return null;
+        BlockPos nodeWorldPos = laserNodeBE.getWorldPos(inserterCardCache.relativePos.blockPos);
+        DimBlockPos nodeDimWorldPos = new DimBlockPos(targetLevel, nodeWorldPos);
+        if (!laserNodeBE.chunksLoaded(nodeDimWorldPos, nodeWorldPos.relative(inserterCardCache.direction))) return null;
+        LaserNodeBE be = laserNodeBE.getNodeAt(nodeDimWorldPos);
         if (be == null) return null;
         Map<ChemicalType, LazyOptional<IChemicalHandler<?, ?>>> chemicalHandlerMap = be.mekanismCache.getAttachedChemicalTanks(inserterCardCache.direction, inserterCardCache.sneaky);
-        if (chemicalHandlerMap == null || chemicalHandlerMap.isEmpty()) return null;
-        if (!chemicalHandlerMap.containsKey(chemicalType)) return null;
-
-        if (!chemicalHandlerMap.get(chemicalType).isPresent()) return null;
-        IChemicalHandler<?, ?> chemicalHandler = chemicalHandlerMap.get(chemicalType).resolve().get();
-        if (chemicalHandler.getTanks() == 0) return null;
-        return new LaserNodeChemicalHandler(be, chemicalHandler);
+        if (chemicalHandlerMap == null || !chemicalHandlerMap.containsKey(chemicalType)) return null;
+        LazyOptional<IChemicalHandler<?, ?>> chemicalHandler = chemicalHandlerMap.get(chemicalType);
+        if (!chemicalHandler.isPresent()) return null;
+        IChemicalHandler<?, ?> handler = chemicalHandler.resolve().get();
+        if (handler.getTanks() == 0) return null;
+        return new LaserNodeChemicalHandler(be, handler);
     }
 
     private void addChemicalHandlerToMapGeneric(Map<ChemicalType, LazyOptional<IChemicalHandler<?, ?>>> map, SideConnection sideConnection, BlockEntity be, Direction inventorySide, ChemicalType chemicalType) {

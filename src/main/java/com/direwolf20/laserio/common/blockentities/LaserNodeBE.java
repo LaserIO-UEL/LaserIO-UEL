@@ -2132,9 +2132,10 @@ public class LaserNodeBE extends BaseLaserBE {
         if (level == null) return null;
         Level targetLevel = inserterCardCache.relativePos.getLevel(level.getServer());
         if (targetLevel == null) return null;
-        DimBlockPos nodeWorldPos = new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos));
-        if (!chunksLoaded(nodeWorldPos, nodeWorldPos.blockPos.relative(inserterCardCache.direction))) return null;
-        LaserNodeBE be = getNodeAt(new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos)));
+        BlockPos nodeWorldPos = getWorldPos(inserterCardCache.relativePos.blockPos);
+        DimBlockPos nodeDimWorldPos = new DimBlockPos(targetLevel, nodeWorldPos);
+        if (!chunksLoaded(nodeDimWorldPos, nodeWorldPos.relative(inserterCardCache.direction))) return null;
+        LaserNodeBE be = getNodeAt(nodeDimWorldPos);
         if (be == null) return null;
         IItemHandler handler = be.getAttachedInventory(inserterCardCache.direction, inserterCardCache.sneaky).orElse(EMPTY);
         if (handler.getSlots() == 0) return null;
@@ -2147,7 +2148,7 @@ public class LaserNodeBE extends BaseLaserBE {
         if (sneakySide != -1)
             inventorySide = Direction.values()[sneakySide];
         SideConnection sideConnection = new SideConnection(direction, inventorySide);
-        LazyOptional<IItemHandler> testHandler = (facingHandlerItem.get(sideConnection));
+        LazyOptional<IItemHandler> testHandler = facingHandlerItem.get(sideConnection);
         if (testHandler != null && testHandler.isPresent()) {
             return testHandler;
         }
@@ -2202,13 +2203,14 @@ public class LaserNodeBE extends BaseLaserBE {
         if (level == null) return null;
         Level targetLevel = inserterCardCache.relativePos.getLevel(level.getServer());
         if (targetLevel == null) return null;
-        DimBlockPos nodeWorldPos = new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos));
-        if (!chunksLoaded(nodeWorldPos, nodeWorldPos.blockPos.relative(inserterCardCache.direction))) return null;
-        LaserNodeBE be = getNodeAt(new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos)));
+        BlockPos nodeWorldPos = getWorldPos(inserterCardCache.relativePos.blockPos);
+        DimBlockPos nodeDimWorldPos = new DimBlockPos(targetLevel, nodeWorldPos);
+        if (!chunksLoaded(nodeDimWorldPos, nodeWorldPos.relative(inserterCardCache.direction))) return null;
+        LaserNodeBE be = getNodeAt(nodeDimWorldPos);
         if (be == null) return null;
-        LazyOptional<IFluidHandler> fluidhandler = be.getAttachedFluidTank(inserterCardCache.direction, inserterCardCache.sneaky);
-        if (!fluidhandler.isPresent()) return null;
-        IFluidHandler handler = fluidhandler.resolve().get();
+        LazyOptional<IFluidHandler> fluidHandler = be.getAttachedFluidTank(inserterCardCache.direction, inserterCardCache.sneaky);
+        if (!fluidHandler.isPresent()) return null;
+        IFluidHandler handler = fluidHandler.resolve().get();
         if (handler.getTanks() == 0) return null;
         return new LaserNodeFluidHandler(be, handler);
     }
@@ -2219,7 +2221,7 @@ public class LaserNodeBE extends BaseLaserBE {
         if (sneakySide != -1)
             inventorySide = Direction.values()[sneakySide];
         SideConnection sideConnection = new SideConnection(direction, inventorySide);
-        LazyOptional<IFluidHandler> testHandler = (facingHandlerFluid.get(sideConnection));
+        LazyOptional<IFluidHandler> testHandler = facingHandlerFluid.get(sideConnection);
         if (testHandler != null && testHandler.isPresent()) {
             return testHandler;
         }
@@ -2266,13 +2268,21 @@ public class LaserNodeBE extends BaseLaserBE {
         if (level == null) return null;
         Level targetLevel = inserterCardCache.relativePos.getLevel(level.getServer());
         if (targetLevel == null) return null;
-        DimBlockPos nodeWorldPos = new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos));
-        if (!chunksLoaded(nodeWorldPos, nodeWorldPos.blockPos.relative(inserterCardCache.direction))) return null;
-        LaserNodeBE be = getNodeAt(new DimBlockPos(targetLevel, getWorldPos(inserterCardCache.relativePos.blockPos)));
+        BlockPos nodeWorldPos = getWorldPos(inserterCardCache.relativePos.blockPos);
+        DimBlockPos nodeDimWorldPos = new DimBlockPos(targetLevel, nodeWorldPos);
+        BlockPos targetWorldPos = nodeWorldPos.relative(inserterCardCache.direction);
+        if (!chunksLoaded(nodeDimWorldPos, targetWorldPos)) return null;
+        LaserNodeBE be = getNodeAt(nodeDimWorldPos);
         if (be == null) return null;
-        LazyOptional<IEnergyStorage> energyhandler = be.getAttachedEnergyTank(inserterCardCache.direction, inserterCardCache.sneaky);
-        if (!energyhandler.isPresent()) return null;
-        IEnergyStorage energyTank = energyhandler.resolve().get();
+        LazyOptional<IEnergyStorage> energyHandler = be.getAttachedEnergyTank(inserterCardCache.direction, inserterCardCache.sneaky);
+        if (!energyHandler.isPresent()) return null;
+        IEnergyStorage energyTank = energyHandler.resolve().get();
+        //Prevent Energy Cards from exporting energy to other Nodes connected to the same network
+        if (energyTank instanceof LaserEnergyStorage) {
+            BlockPos targetPos = getRelativePos(targetWorldPos);
+            DimBlockPos targetDimPos = new DimBlockPos(targetLevel, targetPos);
+            if (otherNodesInNetwork.contains(targetDimPos)) return null;
+        }
         return new LaserNodeEnergyHandler(be, energyTank);
     }
 
@@ -2282,7 +2292,7 @@ public class LaserNodeBE extends BaseLaserBE {
         if (sneakySide != -1)
             inventorySide = Direction.values()[sneakySide];
         SideConnection sideConnection = new SideConnection(direction, inventorySide);
-        LazyOptional<IEnergyStorage> testHandler = (facingHandlerEnergy.get(sideConnection));
+        LazyOptional<IEnergyStorage> testHandler = facingHandlerEnergy.get(sideConnection);
         if (testHandler != null && testHandler.isPresent()) {
             return testHandler;
         }
@@ -2339,7 +2349,6 @@ public class LaserNodeBE extends BaseLaserBE {
             }
         }));
     }
-
 
     /** Called when a neighbor updates to invalidate the inventory cache */
     public void clearCachedInventories(SideConnection sideConnection, ChemicalType chemicalType) {

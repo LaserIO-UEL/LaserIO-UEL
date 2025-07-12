@@ -46,8 +46,8 @@ public class DimBlockPos {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof DimBlockPos) {
-            return (((DimBlockPos) obj).levelKey == this.levelKey) && Objects.equals(((DimBlockPos) obj).blockPos, this.blockPos);
+        if (obj instanceof DimBlockPos other) {
+            return (other.levelKey == this.levelKey) && Objects.equals(other.blockPos, this.blockPos);
         }
         return false;
     }
