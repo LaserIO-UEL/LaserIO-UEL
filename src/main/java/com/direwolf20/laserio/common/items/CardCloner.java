@@ -191,6 +191,7 @@ public class CardCloner extends Item {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void transferItems(Object2IntOpenHashMap<Item> itemCounts, InventoryCardCounts inventoryCardCounts, ItemStack cardHolder, Player player) {
         itemCounts.object2IntEntrySet().fastForEach(entry -> {
             Item item = entry.getKey();
@@ -220,8 +221,9 @@ public class CardCloner extends Item {
                             continue;
                         }
                     }
-                    int quantityToDrop = (item instanceof BaseCard ? 1 : quantity);
+                    int maxStackSize = item.getMaxStackSize();
                     while (quantity != 0) {
+                        int quantityToDrop = Math.min(quantity, maxStackSize);
                         ItemStack stackToDrop = new ItemStack(item, quantityToDrop);
                         ItemEntity entityToDrop = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stackToDrop);
                         player.level().addFreshEntity(entityToDrop);
