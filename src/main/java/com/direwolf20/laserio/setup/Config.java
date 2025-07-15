@@ -44,7 +44,7 @@ public class Config {
 
 
     private static boolean nameValidator(Object obj) {
-        return obj instanceof String name && name.isBlank();
+        return obj instanceof String name && !name.isBlank();
     }
 
 
