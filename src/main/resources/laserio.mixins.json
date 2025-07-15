@@ -1,12 +1,12 @@
 {
   "required": true,
-  "package": "com.direwolf20.laserio.mixins",
+  "package": "${mod_group_id}.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ClientLanguageMixin",
     "ModelBakeryMixin",
     "DirectorySpriteSourceMixin"
   ],
-  "minVersion": "0.8.5",
-  "refmap": "laserio.mixin-refmap.json"
+  "minVersion": "${mixin_minimum_version}",
+  "refmap": "${mod_id}.mixin-refmap.json"
 }

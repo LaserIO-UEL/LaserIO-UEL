@@ -7,6 +7,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class MekanismModParticles {
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES_MEKANISM = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, LaserIO.MODID);
-    public static final RegistryObject<ParticleType<ChemicalFlowParticleData>> CHEMICALFLOWPARTICLE = PARTICLE_TYPES_MEKANISM.register("chemicalflowparticle", ChemicalFlowParticleType::new);
+    public static final DeferredRegister<ParticleType<?>> MEKANISM_PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, LaserIO.MODID);
+    public static final RegistryObject<ParticleType<ChemicalFlowParticleData>> CHEMICAL_FLOW_PARTICLE = MEKANISM_PARTICLE_TYPES.register("chemicalflowparticle", ChemicalFlowParticleType::new);
 }

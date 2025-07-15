@@ -18,10 +18,10 @@ import java.util.Locale;
 
 public class ItemFlowParticleData implements ParticleOptions {
     private final ItemStack itemStack;
-    public final double targetX;
-    public final double targetY;
-    public final double targetZ;
-    public final int ticksPerBlock;
+    protected final double targetX;
+    protected final double targetY;
+    protected final double targetZ;
+    protected final int ticksPerBlock;
 
     public ItemFlowParticleData(ItemStack itemStack, double tx, double ty, double tz, int ticks) {
         this.itemStack = itemStack.copy(); //Forge: Fix stack updating after the fact causing particle changes
@@ -34,7 +34,7 @@ public class ItemFlowParticleData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<ItemFlowParticleData> getType() {
-        return com.direwolf20.laserio.client.particles.ModParticles.ITEMFLOWPARTICLE.get();
+        return com.direwolf20.laserio.client.particles.ModParticles.ITEM_FLOW_PARTICLE.get();
     }
 
     @Override

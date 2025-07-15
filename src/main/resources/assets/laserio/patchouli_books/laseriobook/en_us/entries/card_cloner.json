@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Card Cloner can be used to 'copy and paste' individual $(l:laserio:cards)Cards$(/l) or entire $(l:laserio:laser_node)Nodes$(/l)!$(br2)When pasting, Cards, $(l:laserio:overclocker_card)Overclockers$(/l) and $(l:laserio:filters)Filters$(/l) will be automatically taken from (or placed back inside) the currently available $(l:laserio:card_holder)Card Holder$(/l). These items will not be pulled out of the player's inventory."
+      "text": "The Card Cloner can be used to 'copy and paste' individual $(l:laserio:cards)Cards$(/l) or entire $(l:laserio:laser_node)Nodes$(/l)!$(br2)When pasting, Cards, $(l:laserio:overclocker_card)Overclockers$(/l), $(l:laserio:filters)Filters$(/l), and $(l:laserio:overclocker_node)Node Overclockers$(/l) will be automatically taken from (or placed back inside) the currently available $(l:laserio:card_holder)Card Holder$(/l). These items will not be pulled out of the player's inventory."
     },
     {
       "type": "patchouli:text",
@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "When the paste mode is set to $(bold)Node contents$(), the Card Cloner will paste only the copied Node's Cards with all their settings (included Overclockers and Filters) and placement, $(l:laserio:overclocker_node)Node Overclockers$(/l), and particles setting.$(br2)When the paste mode is set to $(bold)Network settings$(), the Card Cloner will paste only the copied Node network's color, alpha, and wrench alpha values."
+      "text": "When the paste mode is set to $(bold)Node contents$(), the Card Cloner will paste only the copied Node's Cards with all their settings (included Overclockers and Filters), Node Overclockers, and particles setting.$(br2)When the paste mode is set to $(bold)Network settings$(), the Card Cloner will paste only the copied Node network's color, alpha, and wrench alpha values."
     },
     {
       "type": "patchouli:text",

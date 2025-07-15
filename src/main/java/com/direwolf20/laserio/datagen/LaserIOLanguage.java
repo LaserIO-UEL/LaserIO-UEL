@@ -15,26 +15,26 @@ public class LaserIOLanguage extends LanguageProvider {
     protected void addTranslations() {
         //Items and blocks names
         add("itemGroup." + ModSetup.TAB_NAME, LaserIO.MODNAME);
-        add(Registration.LaserConnector.get(), "Laser Connector");
-        add(Registration.LaserConnectorAdv.get(), "Advanced Laser Connector");
-        add(Registration.LaserNode.get(), "Laser Node");
-        add(Registration.Laser_Wrench.get(), "Laser Wrench");
-        add(Registration.Card_Holder.get(), "Card Holder");
-        add(Registration.Card_Cloner.get(), "Card Cloner");
-        add(Registration.Card_Item.get(), "Item Card");
-        add(Registration.Card_Fluid.get(), "Fluid Card");
-        add(Registration.Card_Energy.get(), "Energy Card");
-        add(Registration.Card_Redstone.get(), "Redstone Card");
-        add(Registration.Card_Chemical.get(), "Chemical Card");
-        add(Registration.Filter_Basic.get(), "Basic Filter");
-        add(Registration.Filter_Count.get(), "Counting Filter");
-        add(Registration.Filter_Tag.get(), "Tag Filter");
-        add(Registration.Filter_Mod.get(), "Mod Filter");
-        add(Registration.Filter_NBT.get(), "NBT Filter");
-        add(Registration.Logic_Chip.get(), "Logic Chip");
-        add(Registration.Logic_Chip_Raw.get(), "Raw Logic Chip");
-        add(Registration.Overclocker_Node.get(), "Node Overclocker");
-        add(Registration.Logistic_Overclocker_Card.get(), "Logistic Overclocker");
+        add(Registration.LASER_CONNECTOR_BLOCK.get(), "Laser Connector");
+        add(Registration.LASER_CONNECTOR_ADV_BLOCK.get(), "Advanced Laser Connector");
+        add(Registration.LASER_NODE_BLOCK.get(), "Laser Node");
+        add(Registration.LASER_WRENCH.get(), "Laser Wrench");
+        add(Registration.CARD_HOLDER.get(), "Card Holder");
+        add(Registration.CARD_CLONER.get(), "Card Cloner");
+        add(Registration.CARD_ITEM.get(), "Item Card");
+        add(Registration.CARD_FLUID.get(), "Fluid Card");
+        add(Registration.CARD_ENERGY.get(), "Energy Card");
+        add(Registration.CARD_REDSTONE.get(), "Redstone Card");
+        add(Registration.CARD_CHEMICAL.get(), "Chemical Card");
+        add(Registration.FILTER_BASIC.get(), "Basic Filter");
+        add(Registration.FILTER_COUNT.get(), "Counting Filter");
+        add(Registration.FILTER_TAG.get(), "Tag Filter");
+        add(Registration.FILTER_MOD.get(), "Mod Filter");
+        add(Registration.FILTER_NBT.get(), "NBT Filter");
+        add(Registration.LOGIC_CHIP.get(), "Logic Chip");
+        add(Registration.LOGIC_CHIP_RAW.get(), "Raw Logic Chip");
+        add(Registration.OVERCLOCKER_NODE.get(), "Node Overclocker");
+        add(Registration.LOGISTIC_OVERCLOCKER_CARD.get(), "Logistic Overclocker");
 
         //Screens informations
         add("screen.laserio.extractamt", "Transfer Amount");

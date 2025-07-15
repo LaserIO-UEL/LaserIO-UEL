@@ -50,7 +50,7 @@ public class LaserConnectorAdvBERender extends BaseLaserBERender<LaserConnectorA
         }
         float diff = one - zero;
         float f;
-        switch (direction) {
+        switch(direction) {
             case UP -> {
                 f = 0.5f + 0.25f; //Center of cube up 1/4 block
                 this.renderFace(matrixStack, vertexConsumer, zero, one, f, f + diff, one, one, one, one); //South

@@ -18,8 +18,10 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 
@@ -34,25 +36,34 @@ public class JEIIntegration implements IModPlugin {
         return new ResourceLocation(LaserIO.MODID, "jei_plugin");
     }
 
+    private void addHiddenRecipe(List<CraftingRecipe> hiddenRecipes, RecipeManager recipeManager, RegistryObject<Item> itemRegistry) {
+        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(itemRegistry.getId().withSuffix("_nbtclear")).get());
+    }
+
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         IRecipeManager recipeRegistry = jeiRuntime.getRecipeManager();
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
         List<CraftingRecipe> hiddenRecipes = new ArrayList<>();
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Card_Item.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Card_Fluid.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Card_Energy.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Card_Redstone.getId() + "_nbtclear")).get());
 
+        //Card NBT clearing recipes
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_ITEM);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_FLUID);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_ENERGY);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_REDSTONE);
+
+        //Mekanism card NBT clearing recipe (registered only if Mekanism is loaded)
         if (MekanismIntegration.isLoaded()) {
-            hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Card_Chemical.getId() + "_nbtclear")).get());
+            addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_CHEMICAL);
         }
 
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Filter_Basic.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Filter_Count.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Filter_Tag.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Filter_NBT.getId() + "_nbtclear")).get());
-        hiddenRecipes.add((CraftingRecipe) recipeManager.byKey(new ResourceLocation(Registration.Filter_Mod.getId() + "_nbtclear")).get());
+        //Filter NBT clearing recipes
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.FILTER_BASIC);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.FILTER_COUNT);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.FILTER_TAG);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.FILTER_NBT);
+        addHiddenRecipe(hiddenRecipes, recipeManager, Registration.FILTER_MOD);
+
         recipeRegistry.hideRecipes(RecipeTypes.CRAFTING, hiddenRecipes);
     }
 

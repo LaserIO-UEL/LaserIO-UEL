@@ -48,7 +48,7 @@ public class LaserIOAdvancements implements DataProvider, IConditionBuilder {
         ConditionalAdvancementWrapper.builder()
                 .addCondition(modLoaded("patchouli"))
                 .addAdvancement(Advancement.Builder.advancement()
-                        .addCriterion("obtain_laser_node", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.LaserNode_ITEM.get()))
+                        .addCriterion("obtain_laser_node", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.LASER_NODE_ITEM.get()))
                         .rewards(AdvancementRewards.Builder.loot(new ResourceLocation(LaserIO.MODID, "advancement_rewards/grant_book"))))
                 .save(consumer, new ResourceLocation(LaserIO.MODID, "grant_book"));
     }

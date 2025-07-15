@@ -57,7 +57,7 @@ public class CardEnergyContainer extends AbstractContainerMenu {
     }
 
     public CardEnergyContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
-        super(Registration.CardEnergy_Container.get(), windowId);
+        super(Registration.CARD_ENERGY_CONTAINER.get(), windowId);
         playerEntity = player;
         if (SLOTS == 1) {
             this.handler = CardEnergy.getInventory(cardItem);
@@ -216,8 +216,9 @@ public class CardEnergyContainer extends AbstractContainerMenu {
     public void removed(Player playerIn) {
         Level world = playerIn.level();
         if (!world.isClientSide) {
-            if (SLOTS == 1)
+            if (SLOTS == 1) {
                 CardEnergy.setInventory(cardItem, handler);
+            }
             if (!sourceContainer.equals(BlockPos.ZERO)) {
                 BlockEntity blockEntity = world.getBlockEntity(sourceContainer);
                 if (blockEntity instanceof LaserNodeBE)

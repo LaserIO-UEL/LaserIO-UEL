@@ -12,6 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, LaserIO.MODID);
-    public static final RegistryObject<ParticleType<ItemFlowParticleData>> ITEMFLOWPARTICLE = PARTICLE_TYPES.register("itemflowparticle", ItemFlowParticleType::new);
-    public static final RegistryObject<ParticleType<FluidFlowParticleData>> FLUIDFLOWPARTICLE = PARTICLE_TYPES.register("fluidflowparticle", FluidFlowParticleType::new);
+    public static final RegistryObject<ParticleType<ItemFlowParticleData>> ITEM_FLOW_PARTICLE = PARTICLE_TYPES.register("itemflowparticle", ItemFlowParticleType::new);
+    public static final RegistryObject<ParticleType<FluidFlowParticleData>> FLUID_FLOW_PARTICLE = PARTICLE_TYPES.register("fluidflowparticle", FluidFlowParticleType::new);
 }

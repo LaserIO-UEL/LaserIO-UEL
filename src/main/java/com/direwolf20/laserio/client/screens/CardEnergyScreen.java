@@ -10,6 +10,7 @@ import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardItemSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
@@ -425,27 +426,27 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     private boolean showExtractAmt() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != TransferMode.INSERT;
     }
 
     private boolean showExactAmt() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != TransferMode.INSERT;
     }
 
     private boolean showPriority() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.INSERT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.INSERT;
     }
 
     private boolean showRegulate() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.STOCK;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.STOCK;
     }
 
     private boolean showRoundRobin() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.EXTRACT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.EXTRACT;
     }
 
     private boolean showExtractLimit() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.EXTRACT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.EXTRACT;
     }
 
     @Override

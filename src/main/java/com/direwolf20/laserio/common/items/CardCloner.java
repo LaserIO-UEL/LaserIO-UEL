@@ -6,7 +6,6 @@ import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.containers.LaserNodeContainer;
-import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.ItemHandlerUtil.InventoryCardCounts;
@@ -267,7 +266,7 @@ public class CardCloner extends Item {
 
         CompoundTag compoundTag = stack.getOrCreateTag().getCompound("settings");
         int mode = !compoundTag.contains("mode") ? 0 : compoundTag.getByte("mode");
-        TransferMode currentMode = BaseCard.TransferMode.values()[mode];
+        TransferMode currentMode = TransferMode.values()[mode];
         toWrite = tooltipMaker("laserio.tooltip.item.card.mode", " - ", ChatFormatting.GRAY);
         ChatFormatting modeColor = switch(currentMode) {
             case EXTRACT -> ChatFormatting.RED;

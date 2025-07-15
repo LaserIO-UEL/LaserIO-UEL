@@ -6,6 +6,7 @@ import com.direwolf20.laserio.common.blockentities.LaserNodeBE.SideConnection;
 import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.events.ServerTickHandler;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.CardType;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
 import com.direwolf20.laserio.common.items.filters.FilterTag;
@@ -537,7 +538,7 @@ public class MekanismCache {
     }
 
     public LaserNodeChemicalHandler getLaserNodeHandlerChemical(InserterCardCache inserterCardCache, ChemicalType chemicalType) {
-        if (!inserterCardCache.cardType.equals(BaseCard.CardType.CHEMICAL)) return null;
+        if (inserterCardCache.cardType != CardType.CHEMICAL) return null;
         Level level = laserNodeBE.getLevel();
         if (level == null) return null;
         Level targetLevel = inserterCardCache.relativePos.getLevel(level.getServer());

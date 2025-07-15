@@ -21,7 +21,7 @@ public class CardFluidContainer extends CardItemContainer {
     }
 
     public CardFluidContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
-        super(Registration.CardFluid_Container.get(), windowId);
+        super(Registration.CARD_FLUID_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = BaseCard.getInventory(cardItem);
         this.playerInventory = new InvWrapper(playerInventory);

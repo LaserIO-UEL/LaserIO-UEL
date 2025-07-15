@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//Partially based on code taken with permission from Create-Powerlines
+//Partially based on code taken with permission from 'Create: Powerlines'
 @Mixin(ModelBakery.class)
 public class ModelBakeryMixin {
     /**

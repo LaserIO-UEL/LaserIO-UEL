@@ -11,6 +11,7 @@ import com.direwolf20.laserio.common.containers.customslot.CardItemSlot;
 import com.direwolf20.laserio.common.containers.customslot.CardOverclockSlot;
 import com.direwolf20.laserio.common.containers.customslot.FilterBasicSlot;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardItem;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
@@ -204,7 +205,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
                     guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.nbtfalse"), mouseX, mouseY);
             }
         }
-        if (BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
+        if (BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR) {
             Button andButton = buttons.get("and");
             if (MiscTools.inBounds(andButton.getX(), andButton.getY(), andButton.getWidth(), andButton.getHeight(), mouseX, mouseY)) {
                 if (currentAndMode)
@@ -216,7 +217,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     }
 
     public void toggleHolderSlots() {
-        for (int i = (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS + CardHolderContainer.SLOTS); i++) {
+        for (int i = (CardItemContainer.SLOTS + CardItemContainer.FILTER_SLOTS); i < (CardItemContainer.SLOTS + CardItemContainer.FILTER_SLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (slot instanceof CardHolderSlot cardHolderSlot) {
@@ -317,7 +318,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
                 showAllow = true;
                 showNBT = false;
             }
-            if (BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR)
+            if (BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR)
                 showAllow = false;
         } else {
             isAllowList = -1;
@@ -565,7 +566,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
                 showNBT = true;
                 removeWidget(buttons.get("allowList"));
             }
-            if (BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
+            if (BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR) {
                 showAllow = false;
                 removeWidget(buttons.get("allowList"));
                 if (filter.getItem() instanceof FilterCount) {
@@ -590,11 +591,11 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             removeWidget(buttons.get("nbt"));
             showAllow = false;
             showNBT = false;
-            if (BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
+            if (BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR) {
                 removeWidget(exactButton);
             }
         }
-        for (int i = CardItemContainer.SLOTS; i < (CardItemContainer.SLOTS + CardItemContainer.FILTERSLOTS); i++) {
+        for (int i = CardItemContainer.SLOTS; i < (CardItemContainer.SLOTS + CardItemContainer.FILTER_SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (slot instanceof FilterBasicSlot filterBasicSlot) {
@@ -604,25 +605,25 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     }
 
     private boolean showExtractAmt() {
-        return card.getItem() instanceof BaseCard && ((BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT) && (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.SENSOR));
+        return card.getItem() instanceof BaseCard && (BaseCard.getNamedTransferMode(card) == TransferMode.EXTRACT || BaseCard.getNamedTransferMode(card) == TransferMode.STOCK);
     }
 
     private boolean showExactAmt() {
-        if (BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR)
+        if (BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR)
             return filter.getItem() instanceof FilterCount;
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) != TransferMode.INSERT;
     }
 
     private boolean showPriority() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.INSERT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.INSERT;
     }
 
     private boolean showRegulate() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.STOCK;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.STOCK;
     }
 
     private boolean showRoundRobin() {
-        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.EXTRACT;
+        return card.getItem() instanceof BaseCard && BaseCard.getNamedTransferMode(card) == TransferMode.EXTRACT;
     }
 
     @Override

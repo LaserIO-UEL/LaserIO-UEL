@@ -41,7 +41,7 @@ import java.util.UUID;
 
 public class CardItemContainer extends AbstractContainerMenu {
     public static final int SLOTS = 2;
-    public static final int FILTERSLOTS = 15;
+    public static final int FILTER_SLOTS = 15;
     public CardItemHandler handler;
     public FilterBasicHandler filterHandler;
     public ItemStack cardItem;
@@ -64,7 +64,7 @@ public class CardItemContainer extends AbstractContainerMenu {
     }
 
     public CardItemContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
-        super(Registration.CardItem_Container.get(), windowId);
+        super(Registration.CARD_ITEM_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = BaseCard.getInventory(cardItem);
         this.playerInventory = new InvWrapper(playerInventory);
@@ -92,7 +92,7 @@ public class CardItemContainer extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (clickTypeIn == ClickType.SWAP || (slotId >= SLOTS && slotId < SLOTS + FILTERSLOTS)) {
+        if (clickTypeIn == ClickType.SWAP || (slotId >= SLOTS && slotId < SLOTS + FILTER_SLOTS)) {
             return;
         }
         if (slotId >= 0) {
@@ -145,7 +145,7 @@ public class CardItemContainer extends AbstractContainerMenu {
 
     public int getStackSize(int slot) {
         ItemStack filterStack = filterHandler.stack;
-        if (slot >= SLOTS && slot < SLOTS + FILTERSLOTS && (slots.get(slot) instanceof FilterBasicSlot) && filterStack.getItem() instanceof FilterCount) {
+        if (slot >= SLOTS && slot < SLOTS + FILTER_SLOTS && (slots.get(slot) instanceof FilterBasicSlot) && filterStack.getItem() instanceof FilterCount) {
             return FilterCount.getSlotCount(filterStack, slot - SLOTS);
         }
         return filterHandler.getStackInSlot(slot - SLOTS).getCount();
@@ -171,19 +171,19 @@ public class CardItemContainer extends AbstractContainerMenu {
             //If its one of the 3 slots at the top try to move it into your inventory
             if (index < SLOTS) {
                 if (!cardHolder.isEmpty()) { //Do the below set of logic if we have a card holder, otherwise just try to move to inventory
-                    if (!this.moveItemStackTo(stack, (SLOTS + FILTERSLOTS), (SLOTS + FILTERSLOTS + CardHolderContainer.SLOTS), false)) { //Try the CardHolder First!
+                    if (!this.moveItemStackTo(stack, (SLOTS + FILTER_SLOTS), (SLOTS + FILTER_SLOTS + CardHolderContainer.SLOTS), false)) { //Try the CardHolder First!
                         return ItemStack.EMPTY;
                     }
-                    if (!this.moveItemStackTo(stack, (SLOTS + FILTERSLOTS + CardHolderContainer.SLOTS), (36 + SLOTS + FILTERSLOTS + CardHolderContainer.SLOTS), true)) {
+                    if (!this.moveItemStackTo(stack, (SLOTS + FILTER_SLOTS + CardHolderContainer.SLOTS), (36 + SLOTS + FILTER_SLOTS + CardHolderContainer.SLOTS), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else { //If no card holder, the slot targets are different
-                    if (!this.moveItemStackTo(stack, (SLOTS + FILTERSLOTS), (36 + SLOTS + FILTERSLOTS), true)) {
+                    if (!this.moveItemStackTo(stack, (SLOTS + FILTER_SLOTS), (36 + SLOTS + FILTER_SLOTS), true)) {
                         return ItemStack.EMPTY;
                     }
                 }
                 slot.onQuickCraft(stack, itemStack);
-            } else if (index >= SLOTS && index < (SLOTS + FILTERSLOTS)) {
+            } else if (index >= SLOTS && index < (SLOTS + FILTER_SLOTS)) {
                 //No-Op
             } else { //From player inventory (or Card Holder) TO something
                 ItemStack currentStack = slot.getItem().copy();
@@ -194,11 +194,11 @@ public class CardItemContainer extends AbstractContainerMenu {
                 } else if (slots.get(0).getItem().getItem() instanceof BaseFilter) {
                     if (!(slots.get(0).getItem().getItem() instanceof FilterCount))
                         currentStack.setCount(1);
-                    for (int i = SLOTS; i < (SLOTS + FILTERSLOTS); i++) { //Prevents the same item from going in there more than once.
+                    for (int i = SLOTS; i < (SLOTS + FILTER_SLOTS); i++) { //Prevents the same item from going in there more than once.
                         if (ItemHandlerHelper.canItemStacksStack(this.slots.get(i).getItem(), currentStack)) //Don't limit tags
                             return ItemStack.EMPTY;
                     }
-                    if (!this.moveItemStackTo(currentStack, SLOTS, (SLOTS + FILTERSLOTS), false)) {
+                    if (!this.moveItemStackTo(currentStack, SLOTS, (SLOTS + FILTER_SLOTS), false)) {
                         return ItemStack.EMPTY;
                     }
                 }

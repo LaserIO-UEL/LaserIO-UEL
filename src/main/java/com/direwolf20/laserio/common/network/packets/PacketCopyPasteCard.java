@@ -171,8 +171,8 @@ public class PacketCopyPasteCard {
                             slotStack = searchCardInHolder(nodeContainer, copiedCardType);
                             cardFromHolder = true;
                         }
-                        if (slotStack.getItem().toString().equals(copiedCardType)) {
-                            Item slotItem = slotStack.getItem();
+                        Item slotItem = slotStack.getItem();
+                        if (slotItem.toString().equals(copiedCardType)) {
                             ItemStack neededFilter = CardCloner.getCopiedCardFilter(clonerStack);
                             ItemStack neededOverclockers = CardCloner.getCopiedCardOverclocker(clonerStack);
                             ItemStack existingFilter = ItemStack.EMPTY;

@@ -19,7 +19,7 @@ public class CardRedstone extends BaseCard {
 
     public CardRedstone() {
         super();
-        CARDTYPE = BaseCard.CardType.REDSTONE;
+        CARDTYPE = CardType.REDSTONE;
     }
 
     @Override
