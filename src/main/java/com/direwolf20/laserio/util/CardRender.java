@@ -2,6 +2,7 @@ package com.direwolf20.laserio.util;
 
 import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +35,7 @@ public class CardRender {
         BlockState targetState = level.getBlockState(endBlock);
         VoxelShape voxelShape = targetState.getShape(level, endBlock);
         BaseCard cardItem = (BaseCard) card.getItem();
-        switch (cardItem.getCardType()) {
+        switch(cardItem.getCardType()) {
             case ITEM -> {
                 r = 0f;
                 g = 1f;
@@ -78,15 +79,15 @@ public class CardRender {
         diffZ = shapeOffset.z();
         boolean reverse = !direction.equals(Direction.DOWN);
         if (cardItem instanceof CardRedstone) {
-            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.INSERT) {
+            if (BaseCard.getNamedTransferMode(card) != TransferMode.INSERT) {
                 reverse = !reverse;
             }
         } else {
-            if (BaseCard.getNamedTransferMode(card) != BaseCard.TransferMode.EXTRACT) {
+            if (BaseCard.getNamedTransferMode(card) != TransferMode.EXTRACT) {
                 reverse = !reverse;
             }
         }
-        if (cardItem instanceof CardRedstone || BaseCard.getNamedTransferMode(card) == BaseCard.TransferMode.SENSOR) {
+        if (cardItem instanceof CardRedstone || BaseCard.getNamedTransferMode(card) == TransferMode.SENSOR) {
             floatColors = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(card)].getColorComponents(new float[3]);
         } else {
             floatColors = LaserNodeBERender.COLORS[BaseCard.getChannel(card)].getColorComponents(new float[3]);

@@ -40,7 +40,7 @@ public class FilterCountContainer extends AbstractContainerMenu {
     }
 
     public FilterCountContainer(int windowId, Inventory playerInventory, Player player, ItemStack filterItem) {
-        super(Registration.FilterCount_Container.get(), windowId);
+        super(Registration.FILTER_COUNT_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = FilterCount.getInventory(filterItem);
         this.playerInventory = new InvWrapper(playerInventory);

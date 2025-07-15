@@ -1,14 +1,15 @@
 package com.direwolf20.laserio.datagen.customrecipes;
 
 import com.direwolf20.laserio.setup.Registration;
-import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.CraftingRecipeBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -20,41 +21,36 @@ import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CardClearRecipeBuilder implements RecipeBuilder {
+public class CardClearRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
+    private final RecipeCategory category;
     private final Item result;
     private final int count;
-    private final List<Ingredient> ingredients = Lists.newArrayList();
-    private final Advancement.Builder advancement = Advancement.Builder.advancement();
+    private final List<Ingredient> ingredients = new ArrayList<>();
+    private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
     @Nullable
     private String group;
 
-    public CardClearRecipeBuilder(ItemLike result, int count) {
+    private CardClearRecipeBuilder(RecipeCategory category, ItemLike result, int count) {
+        this.category = category;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static CardClearRecipeBuilder shapeless(ItemLike result) {
-        return new CardClearRecipeBuilder(result, 1);
+    public static CardClearRecipeBuilder shapeless(RecipeCategory category, ItemLike result, int count) {
+        return new CardClearRecipeBuilder(category, result, count);
     }
 
-    public static CardClearRecipeBuilder shapeless(ItemLike result, int count) {
-        return new CardClearRecipeBuilder(result, count);
+    public static CardClearRecipeBuilder shapeless(RecipeCategory category, ItemLike result) {
+        return new CardClearRecipeBuilder(category, result, 1);
     }
 
-    public CardClearRecipeBuilder requires(TagKey<Item> tag) {
-        return this.requires(Ingredient.of(tag));
-    }
-
-    public CardClearRecipeBuilder requires(ItemLike item) {
-        return this.requires(item, 1);
-    }
-
-    public CardClearRecipeBuilder requires(ItemLike item, int quantity) {
-        for (int i = 0; i < quantity; ++i) {
-            this.requires(Ingredient.of(item));
+    public CardClearRecipeBuilder requires(Ingredient ingredient, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            this.ingredients.add(ingredient);
         }
 
         return this;
@@ -64,34 +60,39 @@ public class CardClearRecipeBuilder implements RecipeBuilder {
         return this.requires(ingredient, 1);
     }
 
-    public CardClearRecipeBuilder requires(Ingredient ingredient, int quantity) {
-        for (int i = 0; i < quantity; ++i) {
-            this.ingredients.add(ingredient);
-        }
-
-        return this;
+    public CardClearRecipeBuilder requires(TagKey<Item> tag, int quantity) {
+        return this.requires(Ingredient.of(tag), quantity);
     }
 
+    public CardClearRecipeBuilder requires(TagKey<Item> tag) {
+        return this.requires(tag, 1);
+    }
+
+    public CardClearRecipeBuilder requires(ItemLike item, int quantity) {
+        return this.requires(Ingredient.of(item), quantity);
+    }
+
+    public CardClearRecipeBuilder requires(ItemLike item) {
+        return this.requires(item, 1);
+    }
+
+    @Override
     public CardClearRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionTrigger) {
         this.advancement.addCriterion(name, criterionTrigger);
 
         return this;
     }
 
+    @Override
     public CardClearRecipeBuilder group(@Nullable String groupName) {
         this.group = groupName;
 
         return this;
     }
 
+    @Override
     public Item getResult() {
         return this.result;
-    }
-
-    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-        this.ensureValid(id);
-        this.advancement.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        consumer.accept(new CardClearRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, this.ingredients, this.advancement, new ResourceLocation(id.getNamespace(), "recipes/misc/" + id.getPath())));
     }
 
     private void ensureValid(ResourceLocation consumer) {
@@ -100,9 +101,16 @@ public class CardClearRecipeBuilder implements RecipeBuilder {
         }
     }
 
+    @Override
+    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+        this.ensureValid(id);
+        this.advancement.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+        consumer.accept(new CardClearRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, determineBookCategory(this.category), this.ingredients, this.advancement, id.withPrefix("recipes/misc/")));
+    }
+
     public static class Result extends ShapelessRecipeBuilder.Result {
-        public Result(ResourceLocation resourceLocation, Item result, int count, String group, List<Ingredient> ingredients, Advancement.Builder advancement, ResourceLocation advancementId) {
-            super(resourceLocation, result, count, group, CraftingBookCategory.MISC, ingredients, advancement, advancementId);
+        public Result(ResourceLocation resourceLocation, Item result, int count, String group, CraftingBookCategory category, List<Ingredient> ingredients, Advancement.Builder advancement, ResourceLocation advancementId) {
+            super(resourceLocation, result, count, group, category, ingredients, advancement, advancementId);
         }
 
         @Override

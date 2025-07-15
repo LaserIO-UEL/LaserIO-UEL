@@ -26,7 +26,7 @@ import java.util.Locale;
 import static com.direwolf20.laserio.util.MiscTools.tooltipMaker;
 
 public class BaseCard extends Item {
-    protected BaseCard.CardType CARDTYPE;
+    protected CardType CARDTYPE;
 
     public enum CardType {
         ITEM,

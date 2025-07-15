@@ -3,13 +3,9 @@ package com.direwolf20.laserio.client.particles.fluidparticle;
 import com.direwolf20.laserio.client.particles.ModParticles;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.arguments.item.ItemInput;
-import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,10 +16,10 @@ import java.util.Locale;
 
 public class FluidFlowParticleData implements ParticleOptions {
     private final FluidStack fluidStack;
-    public final double targetX;
-    public final double targetY;
-    public final double targetZ;
-    public final int ticksPerBlock;
+    protected final double targetX;
+    protected final double targetY;
+    protected final double targetZ;
+    protected final int ticksPerBlock;
 
     public FluidFlowParticleData(FluidStack fluidStack, double tx, double ty, double tz, int ticks) {
         this.fluidStack = fluidStack.copy(); //Forge: Fix stack updating after the fact causing particle changes
@@ -36,7 +32,7 @@ public class FluidFlowParticleData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<FluidFlowParticleData> getType() {
-        return ModParticles.FLUIDFLOWPARTICLE.get();
+        return ModParticles.FLUID_FLOW_PARTICLE.get();
     }
 
     @Override

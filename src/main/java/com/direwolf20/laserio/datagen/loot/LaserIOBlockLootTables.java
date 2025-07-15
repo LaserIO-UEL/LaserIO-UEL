@@ -18,9 +18,9 @@ public class LaserIOBlockLootTables extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        dropSelf(Registration.LaserNode.get());
-        dropSelf(Registration.LaserConnector.get());
-        dropSelf(Registration.LaserConnectorAdv.get());
+        dropSelf(Registration.LASER_NODE_BLOCK.get());
+        dropSelf(Registration.LASER_CONNECTOR_BLOCK.get());
+        dropSelf(Registration.LASER_CONNECTOR_ADV_BLOCK.get());
     }
 
     @Override

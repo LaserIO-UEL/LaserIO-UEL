@@ -34,7 +34,7 @@
             "laserio:card_chemical"
           ]
         },
-        "sends_telemetry_event": true
+        "sends_telemetry_event": false
       },
       "conditions": [
         {

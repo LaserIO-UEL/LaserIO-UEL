@@ -28,7 +28,7 @@ public class MekanismStatics {
     public static Capability<ISlurryHandler> SLURRY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static Capability<? extends IChemicalHandler<?, ?>> getCapabilityForChemical(ChemicalType chemicalType) {
-        return switch (chemicalType) {
+        return switch(chemicalType) {
             case GAS -> GAS_CAPABILITY;
             case INFUSION -> INFUSION_CAPABILITY;
             case PIGMENT -> PIGMENT_CAPABILITY;

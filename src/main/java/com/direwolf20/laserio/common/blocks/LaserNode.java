@@ -137,7 +137,7 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
         if (dest == null || stack.isEmpty()) {
             return stack;
         }
-        for (int i = 0; i < LaserNodeContainer.CARDSLOTS; i++) {
+        for (int i = 0; i < LaserNodeContainer.CARD_SLOTS; i++) {
             stack = dest.insertItem(i, stack, simulate);
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;

@@ -21,7 +21,7 @@ public class MiscTools {
 
     public static Vector3f findOffset(Direction direction, int slot, Vector3f[] offsets) {
         Vector3f offsetVector = new Vector3f(offsets[slot]);
-        switch (direction) {
+        switch(direction) {
             case UP -> {
                 Quaternionf quaternionf = Axis.XP.rotationDegrees(-270);
                 offsetVector = quaternionf.transform(offsetVector);

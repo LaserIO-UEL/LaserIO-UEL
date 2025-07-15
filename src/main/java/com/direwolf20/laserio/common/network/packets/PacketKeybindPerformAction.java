@@ -45,7 +45,7 @@ public class PacketKeybindPerformAction {
                 if (cardHolder.isEmpty()) {
                     return;
                 }
-                switch (msg.keybindAction) {
+                switch(msg.keybindAction) {
                     case OPEN_CARD_HOLDER -> {
                         cardHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
                             NetworkHooks.openScreen(sender, new SimpleMenuProvider(

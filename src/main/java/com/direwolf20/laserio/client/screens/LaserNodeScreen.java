@@ -173,7 +173,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     }
 
     public void toggleHolderSlots() {
-        for (int i = LaserNodeContainer.CARDSLOTS; i < (LaserNodeContainer.CARDSLOTS + CardHolderContainer.SLOTS); i++) {
+        for (int i = LaserNodeContainer.CARD_SLOTS; i < (LaserNodeContainer.CARD_SLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (slot instanceof CardHolderSlot cardHolderSlot) {

@@ -19,23 +19,28 @@ public class ExtractorCardCache extends BaseCardCache {
 
     public ExtractorCardCache(Direction direction, ItemStack cardItem, int cardSlot, LaserNodeBE be) {
         super(direction, cardItem, cardSlot, be);
-        if (cardType == BaseCard.CardType.ITEM) {
-            this.extractAmt = CardItem.getItemExtractAmt(cardItem);
-            this.tickSpeed = CardItem.getExtractSpeed(cardItem);
-        } else if (cardType == BaseCard.CardType.FLUID) {
-            this.extractAmt = CardFluid.getFluidExtractAmt(cardItem);
-            this.tickSpeed = CardFluid.getExtractSpeed(cardItem);
-        } else if (cardType == BaseCard.CardType.ENERGY) {
-            this.extractAmt = CardEnergy.getEnergyExtractAmt(cardItem);
-            this.tickSpeed = CardEnergy.getExtractSpeed(cardItem);
-        } else if (cardType == BaseCard.CardType.CHEMICAL) {
-            this.extractAmt = CardChemical.getChemicalExtractAmt(cardItem);
-            this.tickSpeed = CardChemical.getExtractSpeed(cardItem);
-        } else {
-            this.extractAmt = 0;
-            this.tickSpeed = 1200;
+        switch(cardType) {
+            case ITEM -> {
+                this.extractAmt = CardItem.getItemExtractAmt(cardItem);
+                this.tickSpeed = CardItem.getExtractSpeed(cardItem);
+            }
+            case FLUID -> {
+                this.extractAmt = CardFluid.getFluidExtractAmt(cardItem);
+                this.tickSpeed = CardFluid.getExtractSpeed(cardItem);
+            }
+            case ENERGY -> {
+                this.extractAmt = CardEnergy.getEnergyExtractAmt(cardItem);
+                this.tickSpeed = CardEnergy.getExtractSpeed(cardItem);
+            }
+            case CHEMICAL -> {
+                this.extractAmt = CardChemical.getChemicalExtractAmt(cardItem);
+                this.tickSpeed = CardChemical.getExtractSpeed(cardItem);
+            }
+            default -> {
+                this.extractAmt = 0;
+                this.tickSpeed = 1200;
+            }
         }
-
         this.exact = BaseCard.getExact(cardItem);
         this.roundRobin = BaseCard.getRoundRobin(cardItem);
         this.energyReceivedExternally = 0;

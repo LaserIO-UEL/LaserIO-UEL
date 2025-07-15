@@ -33,9 +33,9 @@ public class DirectorySpriteSourceMixin {
     @Inject(method = "run", require = 1, at = @At("HEAD"))
     private void laserio$loadEnergyOverclockersTextures(ResourceManager resMgr, SpriteSource.Output out, CallbackInfo ci) {
         if (sourcePath.equals("block")) {
-            IntStream.range(0, Registration.Energy_Overclocker_Cards.size())
+            IntStream.range(0, Registration.ENERGY_OVERCLOCKER_CARDS.size())
                     .forEach(i -> {
-                        ResourceLocation id = Registration.Energy_Overclocker_Cards.get(i).getId().withPrefix("item/");
+                        ResourceLocation id = Registration.ENERGY_OVERCLOCKER_CARDS.get(i).getId().withPrefix("item/");
                         out.add(id, new SpriteSource.SpriteSupplier() {
                             public SpriteContents get() {
                                 NativeImage base = MixinUtil.loadNativeImage("item/energy_overclocker_card");

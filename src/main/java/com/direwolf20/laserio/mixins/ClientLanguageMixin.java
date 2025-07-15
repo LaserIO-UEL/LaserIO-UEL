@@ -14,9 +14,9 @@ import java.util.Map;
 public class ClientLanguageMixin {
     @ModifyVariable(method = "loadFrom", require = 1, at = @At(value = "STORE", ordinal = 0))
     private static Map<String, String> laserio$loadEnergyOverclockersNames(Map<String, String> table) {
-        for (int i = 0; i < Registration.Energy_Overclocker_Cards.size(); i++) {
+        for (int i = 0; i < Registration.ENERGY_OVERCLOCKER_CARDS.size(); i++) {
             String name = (i < Config.NAME_TIERS.get().size()) ? Config.NAME_TIERS.get().get(i) : ("Energy Overclocker Tier " + (i + 1));
-            table.put(Registration.Energy_Overclocker_Cards.get(i).get().getDescriptionId(), name);
+            table.put(Registration.ENERGY_OVERCLOCKER_CARDS.get(i).get().getDescriptionId(), name);
         }
         return table;
     }
