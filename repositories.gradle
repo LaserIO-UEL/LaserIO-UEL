@@ -22,7 +22,7 @@ repositories {
     }
 
     maven { // Curios
-        url = "https://maven.theillusivec4.top"
+        url "https://maven.theillusivec4.top"
         content {
             includeGroup "top.theillusivec4.curios"
         }
@@ -37,14 +37,14 @@ repositories {
     }
 
     maven { // Mekanism
-        url = "https://modmaven.dev"
+        url "https://modmaven.dev"
         content {
             includeGroup "mekanism"
         }
     }
 
     maven { // Jade - used for testing
-        url = "https://www.cursemaven.com"
+        url "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
