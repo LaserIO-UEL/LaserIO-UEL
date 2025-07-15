@@ -6,7 +6,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-//Taken with permission from Create-Powerlines
+//Taken with permission from 'Create: Powerlines'
 public class MixinUtil {
     public static int byteScale(int x, int y) {
         return x * y / 255;

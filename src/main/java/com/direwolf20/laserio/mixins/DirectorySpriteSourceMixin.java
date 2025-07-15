@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.nio.IntBuffer;
 import java.util.stream.IntStream;
 
-//Taken with permission from Create-Powerlines
+//Taken with permission from 'Create: Powerlines'
 @Mixin(DirectoryLister.class)
 public class DirectorySpriteSourceMixin {
     @Final
