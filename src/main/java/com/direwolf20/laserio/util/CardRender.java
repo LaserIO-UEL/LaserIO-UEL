@@ -77,7 +77,7 @@ public class CardRender {
         diffX = shapeOffset.x();
         diffY = shapeOffset.y();
         diffZ = shapeOffset.z();
-        boolean reverse = !direction.equals(Direction.DOWN);
+        boolean reverse = (direction != Direction.DOWN);
         if (cardItem instanceof CardRedstone) {
             if (BaseCard.getNamedTransferMode(card) != TransferMode.INSERT) {
                 reverse = !reverse;
@@ -110,48 +110,55 @@ public class CardRender {
             diffX = (float) (((voxelShape.bounds().maxX - voxelShape.bounds().minX) * diffX) + voxelShape.bounds().minX);
             diffY = (float) (((voxelShape.bounds().maxY - voxelShape.bounds().minY) * diffY) + voxelShape.bounds().minY);
             diffZ = (float) (((voxelShape.bounds().maxZ - voxelShape.bounds().minZ) * diffZ) + voxelShape.bounds().minZ);
-            if (direction.equals(Direction.WEST)) {
-                if (targetState.getOffset(level, endBlock).x != 0) {
-                    diffX = -1 - (float) (targetState.getOffset(level, endBlock).x + (float) 1 / 16 - (voxelShape.bounds().maxX - voxelShape.bounds().minX));
-                } else {
-                    diffX = -1 + (float) voxelShape.bounds().maxX;
+            switch(direction) {
+                case WEST -> {
+                    if (targetState.getOffset(level, endBlock).x != 0) {
+                        diffX = -1 - (float) (targetState.getOffset(level, endBlock).x + (float) 1 / 16 - (voxelShape.bounds().maxX - voxelShape.bounds().minX));
+                    } else {
+                        diffX = -1 + (float) voxelShape.bounds().maxX;
+                    }
+                    offset.x = (offset.x() - 0.1875f);
                 }
-                offset.x = (offset.x() - 0.1875f);
-            } else if (direction.equals(Direction.EAST)) {
-                if (targetState.getOffset(level, endBlock).x != 0) {
-                    diffX = 1 + (float) (targetState.getOffset(level, endBlock).x - (float) 1 / 16 + (voxelShape.bounds().maxX - voxelShape.bounds().minX));
-                } else {
-                    diffX = 1 + (float) voxelShape.bounds().minX;
+                case EAST -> {
+                    if (targetState.getOffset(level, endBlock).x != 0) {
+                        diffX = 1 + (float) (targetState.getOffset(level, endBlock).x - (float) 1 / 16 + (voxelShape.bounds().maxX - voxelShape.bounds().minX));
+                    } else {
+                        diffX = 1 + (float) voxelShape.bounds().minX;
+                    }
+                    offset.x = (offset.x() + 0.1875f);
                 }
-                offset.x = (offset.x() + 0.1875f);
-            } else if (direction.equals(Direction.SOUTH)) {
-                if (targetState.getOffset(level, endBlock).z != 0) {
-                    diffZ = 1 + (float) (targetState.getOffset(level, endBlock).z - (float) 1 / 16 + (voxelShape.bounds().maxZ - voxelShape.bounds().minZ));
-                } else {
-                    diffZ = 1 + (float) voxelShape.bounds().minZ;
+                case SOUTH -> {
+                    if (targetState.getOffset(level, endBlock).z != 0) {
+                        diffZ = 1 + (float) (targetState.getOffset(level, endBlock).z - (float) 1 / 16 + (voxelShape.bounds().maxZ - voxelShape.bounds().minZ));
+                    } else {
+                        diffZ = 1 + (float) voxelShape.bounds().minZ;
+                    }
+                    offset.z = (offset.z() + 0.1875f);
                 }
-                offset.z = (offset.z() + 0.1875f);
-            } else if (direction.equals(Direction.NORTH)) {
-                if (targetState.getOffset(level, endBlock).z != 0) {
-                    diffZ = (float) (targetState.getOffset(level, endBlock).z + (float) 1 / 16 - (voxelShape.bounds().maxZ - voxelShape.bounds().minZ));
-                } else {
-                    diffZ = -1 + (float) voxelShape.bounds().maxZ;
+                case NORTH -> {
+                    if (targetState.getOffset(level, endBlock).z != 0) {
+                        diffZ = (float) (targetState.getOffset(level, endBlock).z + (float) 1 / 16 - (voxelShape.bounds().maxZ - voxelShape.bounds().minZ));
+                    } else {
+                        diffZ = -1 + (float) voxelShape.bounds().maxZ;
+                    }
+                    offset.z = (offset.z() - 0.1875f);
                 }
-                offset.z = (offset.z() - 0.1875f);
-            } else if (direction.equals(Direction.UP)) {
-                if (targetState.getOffset(level, endBlock).y != 0) {
-                    diffY = 1 + (float) (targetState.getOffset(level, endBlock).y - (float) 1 / 16 + (voxelShape.bounds().maxY - voxelShape.bounds().minY));
-                } else {
-                    diffY = 1 + (float) voxelShape.bounds().minY;
+                case UP -> {
+                    if (targetState.getOffset(level, endBlock).y != 0) {
+                        diffY = 1 + (float) (targetState.getOffset(level, endBlock).y - (float) 1 / 16 + (voxelShape.bounds().maxY - voxelShape.bounds().minY));
+                    } else {
+                        diffY = 1 + (float) voxelShape.bounds().minY;
+                    }
+                    offset.y = (offset.y() + 0.1875f);
                 }
-                offset.y = (offset.y() + 0.1875f);
-            } else if (direction.equals(Direction.DOWN)) {
-                if (targetState.getOffset(level, endBlock).y != 0) {
-                    diffY = (float) (targetState.getOffset(level, endBlock).y + (float) 1 / 16 - (voxelShape.bounds().maxY - voxelShape.bounds().minY));
-                } else {
-                    diffY = -1 + (float) voxelShape.bounds().maxY;
+                case DOWN -> {
+                    if (targetState.getOffset(level, endBlock).y != 0) {
+                        diffY = (float) (targetState.getOffset(level, endBlock).y + (float) 1 / 16 - (voxelShape.bounds().maxY - voxelShape.bounds().minY));
+                    } else {
+                        diffY = -1 + (float) voxelShape.bounds().maxY;
+                    }
+                    offset.y = (offset.y() - 0.1875f);
                 }
-                offset.y = (offset.y() - 0.1875f);
             }
         }
         return new Vector3f(diffX, diffY, diffZ);

@@ -299,8 +299,8 @@ public class BaseCardCache {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BaseCardCache other) {
-            return other.be.equals(this.be) && other.direction.equals(this.direction) && other.cardSlot == this.cardSlot;
+        if (obj instanceof BaseCardCache that) {
+            return that.be.equals(this.be) && that.direction == this.direction && that.cardSlot == this.cardSlot;
         }
         return false;
     }
