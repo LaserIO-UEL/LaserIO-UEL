@@ -7,7 +7,7 @@ A fork of LaserIO which aims to:
 # Features:
 - Chemical Cards for use with Mekanism chemicals (if Mekanism is installed)
 - Copy-paste Nodes and Network Settings
-- Auto-connect Nodes and Connectors when placed
+- Auto-connect Nodes and Connectors
 - Curios integration and keybinds for the Card Holder
 - Additional features to Redstone Cards
 - Removal of standard Overclockers from Energy Cards (default transfer rate: 1,000,000 FE/operation)
