@@ -30,5 +30,5 @@ Shiftキーを押しながらカードホルダーを右クリックすると、
 
 
 
-<Recipe id="laserio:card_holder" />
+<RecipesFor fallbackText="" id="laserio:card_holder" />
 

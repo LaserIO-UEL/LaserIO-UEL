@@ -22,5 +22,5 @@ item_ids:
 
 
 
-<Recipe id="laserio:card_cloner" />
+<RecipesFor fallbackText="" id="laserio:card_cloner" />
 

@@ -17,11 +17,11 @@ item_ids:
 
 
 
-<Recipe id="laserio:logic_chip_raw" />
+<RecipesFor fallbackText="" id="laserio:logic_chip_raw" />
 
 ## 論理チップ
 
 
 
-<Recipe id="laserio:logic_chip" />
+<RecipesFor fallbackText="" id="laserio:logic_chip" />
 

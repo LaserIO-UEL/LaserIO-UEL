@@ -48,5 +48,5 @@ Technical Note: The Forge Energy system supports energy storage up to MAX_INT wh
 
 
 
-<Recipe id="laserio:card_energy" />
+<RecipesFor fallbackText="" id="laserio:card_energy" />
 

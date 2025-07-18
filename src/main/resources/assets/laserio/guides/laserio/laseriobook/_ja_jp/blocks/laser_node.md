@@ -50,5 +50,5 @@ item_ids:
 ![](laserio:assets/blocks/laser_node/laser_node3.png)
 
 ## レーザーノード
-<Recipe id="laserio:laser_node" />
+<RecipesFor fallbackText="" id="laserio:laser_node" />
 

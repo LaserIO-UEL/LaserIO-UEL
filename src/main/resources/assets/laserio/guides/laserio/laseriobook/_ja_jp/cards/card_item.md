@@ -27,5 +27,5 @@ item_ids:
 
 
 
-<Recipe id="laserio:card_item" />
+<RecipesFor fallbackText="" id="laserio:card_item" />
 

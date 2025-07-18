@@ -32,5 +32,5 @@ Note: This feature works with (Advanced) Laser Connectors as well!
 
 
 
-<Recipe id="laserio:laser_wrench" />
+<RecipesFor fallbackText="" id="laserio:laser_wrench" />
 

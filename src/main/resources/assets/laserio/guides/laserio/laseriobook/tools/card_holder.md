@@ -30,5 +30,5 @@ Filters with stored data can still be manually added to the Card Holder.
 
 
 
-<Recipe id="laserio:card_holder" />
+<RecipesFor fallbackText="" id="laserio:card_holder" />
 

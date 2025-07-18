@@ -8,11 +8,11 @@ navigation:
 
 #### *What is TPS?*
 
-Ticks per second (TPS), is the speed at which the game runs at. When the game is running at normal speed, 20 ticks occur in every one second.
+Ticks per second (TPS), is the speed at which the game runs at. When the game is running at normal speed, 20 ticks occur in every 1 second.
 
 #### *Why does this matter?*
 
-Various factors can cause the TPS to drop below 20, making the game slower. For example, 10 TPS would cause every furnace recipe to take twice as long. If you have ever encountered mined block taking a few seconds to drop, that is the game running at a low TPS.
+Various factors can cause the TPS to drop below 20, making the game slower. For example, 10 TPS would cause every furnace recipe to take twice as long. If you have ever encountered a mined block taking a few seconds to drop, that is the game running at a very low TPS.
 
 #### *How do I measure TPS?*
 

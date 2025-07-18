@@ -20,5 +20,5 @@ item_ids:
 
 
 
-<Recipe id="laserio:overclocker_card" />
+<RecipesFor fallbackText="" id="laserio:overclocker_card" />
 

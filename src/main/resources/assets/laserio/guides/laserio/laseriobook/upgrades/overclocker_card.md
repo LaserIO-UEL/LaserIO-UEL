@@ -20,5 +20,5 @@ See the Cards section for more details on how each card is affected by overclock
 
 
 
-<Recipe id="laserio:overclocker_card" />
+<RecipesFor fallbackText="" id="laserio:overclocker_card" />
 

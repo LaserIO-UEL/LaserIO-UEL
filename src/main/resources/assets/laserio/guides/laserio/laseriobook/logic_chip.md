@@ -17,11 +17,11 @@ They are the only item crafted with 'vanilla' materials, and all subsequent item
 
 
 
-<Recipe id="laserio:logic_chip_raw" />
+<RecipesFor fallbackText="" id="laserio:logic_chip_raw" />
 
 ## Logic Chip
 
 
 
-<Recipe id="laserio:logic_chip" />
+<RecipesFor fallbackText="" id="laserio:logic_chip" />
 

@@ -27,5 +27,5 @@ NOTE: These values are the default and can be changed by config.
 
 
 
-<Recipe id="laserio:card_fluid" />
+<RecipesFor fallbackText="" id="laserio:card_fluid" />
 

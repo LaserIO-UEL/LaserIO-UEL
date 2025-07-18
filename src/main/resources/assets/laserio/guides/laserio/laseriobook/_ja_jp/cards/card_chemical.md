@@ -25,5 +25,5 @@ navigation:
 
 
 
-<Recipe id="laserio:card_chemical" />
+<RecipesFor fallbackText="" id="laserio:card_chemical" />
 

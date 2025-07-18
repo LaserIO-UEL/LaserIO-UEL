@@ -26,5 +26,5 @@ item_ids:
 
 
 
-<Recipe id="laserio:laser_wrench" />
+<RecipesFor fallbackText="" id="laserio:laser_wrench" />
 

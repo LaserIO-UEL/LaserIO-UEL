@@ -60,5 +60,5 @@ Logic Operation settings can be combined with Complementary/NOT to get their neg
 
 
 
-<Recipe id="laserio:card_redstone" />
+<RecipesFor fallbackText="" id="laserio:card_redstone" />
 

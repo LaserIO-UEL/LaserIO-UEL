@@ -8,11 +8,11 @@ navigation:
 
 You may find yourself in a situation where you want to have a chest/tank/energy source empty **before** another chest/tank/energy source respectively.
 
-[Stock mode](../mechanics/modes.md) provides a solution. Stock mode essentially "pulls" from Cards on insert mode. Traditionally, extract mode Cards "push" to Cards on insert mode. 
+[Stock mode](../mechanics/modes.md) provides a solution. Stock mode essentially "pulls" from cards on insert mode. Traditionally, extract mode Cards "push" to Cards on insert mode. 
 
 This opens up many operations to be used in a "reversed" way. For example, insert cards have a [priority setting](../mechanics/priority.md), this only applies to the destination. When using stocking mode, this now applies to the source.
 
-#### *Tutorial: Ensuring the secondary source drains before the primary*
+#### *Tutorial: Ensuring a secondary energy source drains before the primary*
 
 1. On the destination, use an [Energy Card](../cards/card_energy.md) on **Stock** mode
 2. On both the primary and secondary source, use an [Energy Card](../cards/card_energy.md) on **Insert** mode

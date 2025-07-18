@@ -33,5 +33,5 @@ item_ids:
 発展レーザー中継器はチャンクのロードは行いません。チャンクのロードはすべて自分で処理する必要があります。ロードされていないチャンク内のノードは動作しません。
 
 ## 発展レーザー中継器
-<Recipe id="laserio:laser_connector_advanced" />
+<RecipesFor fallbackText="" id="laserio:laser_connector_advanced" />
 

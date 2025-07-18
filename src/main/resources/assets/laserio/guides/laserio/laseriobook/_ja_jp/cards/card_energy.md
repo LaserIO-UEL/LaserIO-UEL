@@ -32,5 +32,5 @@ item_ids:
 
 
 
-<Recipe id="laserio:card_energy" />
+<RecipesFor fallbackText="" id="laserio:card_energy" />
 

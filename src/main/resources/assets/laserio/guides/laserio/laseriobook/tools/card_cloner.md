@@ -39,5 +39,5 @@ While **not** looking at a Node, shift+right-click will clear any stored setting
 
 
 
-<Recipe id="laserio:card_cloner" />
+<RecipesFor fallbackText="" id="laserio:card_cloner" />
 

@@ -50,5 +50,5 @@ If your nodes are father apart, it is recommended to use [Laser Connectors](../b
 ![](laserio:assets/blocks/laser_node/laser_node3.png)
 
 ## Laser Node
-<Recipe id="laserio:laser_node" />
+<RecipesFor fallbackText="" id="laserio:laser_node" />
 

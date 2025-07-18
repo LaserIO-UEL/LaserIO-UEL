@@ -33,5 +33,5 @@ When looking at the block with the [Laser Wrench](../tools/laser_wrench.md) in y
 Advanced Laser Connectors do NOT chunk load for you. You are responsible for handling all chunk loading on your own! Nodes in unloaded chunks will not operate.
 
 ## Adv. Laser Connector
-<Recipe id="laserio:laser_connector_advanced" />
+<RecipesFor fallbackText="" id="laserio:laser_connector_advanced" />
 

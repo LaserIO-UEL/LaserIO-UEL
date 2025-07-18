@@ -22,5 +22,5 @@ mb/t values (max) for Overclockers:
 NOTE: These values are the default and can be changed by config.
 
 ## Chemical Card
-<Recipe id="laserio:card_chemical" />
+<RecipesFor fallbackText="" id="laserio:card_chemical" />
 

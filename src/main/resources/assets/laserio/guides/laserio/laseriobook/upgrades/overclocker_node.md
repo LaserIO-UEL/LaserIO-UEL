@@ -36,5 +36,5 @@ Inserter cards do <Color id="red">**NOT**</Color> need overclockers to function,
 
 
 
-<Recipe id="laserio:overclocker_node" />
+<RecipesFor fallbackText="" id="laserio:overclocker_node" />
 

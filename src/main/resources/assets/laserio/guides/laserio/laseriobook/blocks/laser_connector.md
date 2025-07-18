@@ -21,5 +21,5 @@ Laser Connectors can act as a cheaper intermediary point between nodes, allowing
 ![](laserio:assets/blocks/laser_connector/laser_connector1.png)
 
 ## Laser Connector
-<Recipe id="laserio:laser_connector" />
+<RecipesFor fallbackText="" id="laserio:laser_connector" />
 

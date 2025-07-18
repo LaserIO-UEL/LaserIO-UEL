@@ -21,5 +21,5 @@ item_ids:
 ![](laserio:assets/blocks/laser_connector/laser_connector1.png)
 
 ## レーザー中継器
-<Recipe id="laserio:laser_connector" />
+<RecipesFor fallbackText="" id="laserio:laser_connector" />
 

@@ -60,5 +60,5 @@ XOR は、2つのチャンネルのうちの1つに電力が供給されてい�
 
 
 
-<Recipe id="laserio:card_redstone" />
+<RecipesFor fallbackText="" id="laserio:card_redstone" />
 
