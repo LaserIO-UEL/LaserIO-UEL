@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
 import static com.direwolf20.laserio.common.LaserIO.MODID;
-import static com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.MekanismModParticles.PARTICLE_TYPES_MEKANISM;
+import static com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.MekanismModParticles.MEKANISM_PARTICLE_TYPES;
 
 public class Registration {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -64,13 +64,14 @@ public class Registration {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, LaserIO.MODID);
-    public static final RegistryObject<CardClearRecipe.Serializer> CARD_CLEAR_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("cardclear", CardClearRecipe.Serializer::new);
 
-    public static final DeferredRegister<Item> ITEMS_MEKANISM = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    //DeferredRegisters dedicated to Mekanism (registered only if Mekanism is loaded)
+    public static final DeferredRegister<Item> MEKANISM_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<MenuType<?>> MEKANISM_CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
 
     public static void init() {
         IntStream.range(1, Config.MAX_FE_TIERS.get().size() + 1)
-                .forEach(i -> Energy_Overclocker_Cards.add(
+                .forEach(i -> ENERGY_OVERCLOCKER_CARDS.add(
                         ITEMS.register("energy_overclocker_card_tier_" + i, () -> new OverclockerCard(i))
                 ));
 
@@ -78,8 +79,9 @@ public class Registration {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         if (MekanismIntegration.isLoaded()) {
-            ITEMS_MEKANISM.register(bus);
-            PARTICLE_TYPES_MEKANISM.register(bus);
+            MEKANISM_ITEMS.register(bus);
+            MEKANISM_CONTAINERS.register(bus);
+            MEKANISM_PARTICLE_TYPES.register(bus);
         }
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
@@ -87,78 +89,77 @@ public class Registration {
         RECIPE_SERIALIZERS.register(bus);
     }
 
-    // Some common properties for our blocks and items
-    //public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
-
     //Blocks
-    public static final RegistryObject<Block> LaserConnector = BLOCKS.register("laser_connector", LaserConnector::new);
-    public static final RegistryObject<Item> LaserConnector_ITEM = ITEMS.register("laser_connector", () -> new BlockItem(LaserConnector.get(), new Item.Properties()));
-    public static final RegistryObject<LaserNode> LaserNode = BLOCKS.register("laser_node", LaserNode::new);
-    public static final RegistryObject<Item> LaserNode_ITEM = ITEMS.register("laser_node", () -> new BlockItem(LaserNode.get(), new Item.Properties()));
-    public static final RegistryObject<Block> LaserConnectorAdv = BLOCKS.register("laser_connector_advanced", LaserConnectorAdv::new);
-    public static final RegistryObject<Item> LaserConnectorAdv_ITEM = ITEMS.register("laser_connector_advanced", () -> new BlockItem(LaserConnectorAdv.get(), new Item.Properties()));
+    public static final RegistryObject<LaserNode> LASER_NODE_BLOCK = BLOCKS.register("laser_node", LaserNode::new);
+    public static final RegistryObject<Item> LASER_NODE_ITEM = ITEMS.register("laser_node", () -> new BlockItem(LASER_NODE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Block> LASER_CONNECTOR_BLOCK = BLOCKS.register("laser_connector", LaserConnector::new);
+    public static final RegistryObject<Item> LASER_CONNECTOR_ITEM = ITEMS.register("laser_connector", () -> new BlockItem(LASER_CONNECTOR_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Block> LASER_CONNECTOR_ADV_BLOCK = BLOCKS.register("laser_connector_advanced", LaserConnectorAdv::new);
+    public static final RegistryObject<Item> LASER_CONNECTOR_ADV_ITEM = ITEMS.register("laser_connector_advanced", () -> new BlockItem(LASER_CONNECTOR_ADV_BLOCK.get(), new Item.Properties()));
 
-    //BlockEntities (Not TileEntities - Honest)
-    public static final RegistryObject<BlockEntityType<LaserNodeBE>> LaserNode_BE = BLOCK_ENTITIES.register("lasernode", () -> BlockEntityType.Builder.of(LaserNodeBE::new, LaserNode.get()).build(null));
-    public static final RegistryObject<BlockEntityType<LaserConnectorBE>> LaserConnector_BE = BLOCK_ENTITIES.register("laserconnector", () -> BlockEntityType.Builder.of(LaserConnectorBE::new, LaserConnector.get()).build(null));
-    public static final RegistryObject<BlockEntityType<LaserConnectorAdvBE>> LaserConnectorAdv_BE = BLOCK_ENTITIES.register("laserconnectoradv", () -> BlockEntityType.Builder.of(LaserConnectorAdvBE::new, LaserConnectorAdv.get()).build(null));
+    //BlockEntities
+    public static final RegistryObject<BlockEntityType<LaserNodeBE>> LASER_NODE_BE = BLOCK_ENTITIES.register("lasernode", () -> BlockEntityType.Builder.of(LaserNodeBE::new, LASER_NODE_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<LaserConnectorBE>> LASER_CONNECTOR_BE = BLOCK_ENTITIES.register("laserconnector", () -> BlockEntityType.Builder.of(LaserConnectorBE::new, LASER_CONNECTOR_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<LaserConnectorAdvBE>> LASER_CONNECTOR_ADV_BE = BLOCK_ENTITIES.register("laserconnectoradv", () -> BlockEntityType.Builder.of(LaserConnectorAdvBE::new, LASER_CONNECTOR_ADV_BLOCK.get()).build(null));
 
-    //Items
-    public static final RegistryObject<Item> Laser_Wrench = ITEMS.register("laser_wrench", LaserWrench::new);
-    public static final RegistryObject<Item> Card_Holder = ITEMS.register("card_holder", CardHolder::new);
-    public static final RegistryObject<Item> Card_Cloner = ITEMS.register("card_cloner", CardCloner::new);
+    //Tools
+    public static final RegistryObject<Item> LASER_WRENCH = ITEMS.register("laser_wrench", LaserWrench::new);
+    public static final RegistryObject<Item> CARD_HOLDER = ITEMS.register("card_holder", CardHolder::new);
+    public static final RegistryObject<Item> CARD_CLONER = ITEMS.register("card_cloner", CardCloner::new);
 
     //Cards
-    public static final RegistryObject<Item> Card_Item = ITEMS.register("card_item", CardItem::new);
-    public static final RegistryObject<Item> Card_Fluid = ITEMS.register("card_fluid", CardFluid::new);
-    public static final RegistryObject<Item> Card_Energy = ITEMS.register("card_energy", CardEnergy::new);
-    public static final RegistryObject<Item> Card_Redstone = ITEMS.register("card_redstone", CardRedstone::new);
+    public static final RegistryObject<Item> CARD_ITEM = ITEMS.register("card_item", CardItem::new);
+    public static final RegistryObject<Item> CARD_FLUID = ITEMS.register("card_fluid", CardFluid::new);
+    public static final RegistryObject<Item> CARD_ENERGY = ITEMS.register("card_energy", CardEnergy::new);
+    public static final RegistryObject<Item> CARD_REDSTONE = ITEMS.register("card_redstone", CardRedstone::new);
 
-    //Mekanism
-    public static final RegistryObject<Item> Card_Chemical = ITEMS_MEKANISM.register("card_chemical", CardChemical::new);
+    //Mekanism Card (registered only if Mekanism is loaded)
+    public static final RegistryObject<Item> CARD_CHEMICAL = MEKANISM_ITEMS.register("card_chemical", CardChemical::new);
 
     //Filters
-    public static final RegistryObject<Item> Filter_Basic = ITEMS.register("filter_basic", FilterBasic::new);
-    public static final RegistryObject<Item> Filter_Count = ITEMS.register("filter_count", FilterCount::new);
-    public static final RegistryObject<Item> Filter_Tag = ITEMS.register("filter_tag", FilterTag::new);
-    public static final RegistryObject<Item> Filter_Mod = ITEMS.register("filter_mod", FilterMod::new);
-    public static final RegistryObject<Item> Filter_NBT = ITEMS.register("filter_nbt", FilterNBT::new);
+    public static final RegistryObject<Item> FILTER_BASIC = ITEMS.register("filter_basic", FilterBasic::new);
+    public static final RegistryObject<Item> FILTER_COUNT = ITEMS.register("filter_count", FilterCount::new);
+    public static final RegistryObject<Item> FILTER_TAG = ITEMS.register("filter_tag", FilterTag::new);
+    public static final RegistryObject<Item> FILTER_MOD = ITEMS.register("filter_mod", FilterMod::new);
+    public static final RegistryObject<Item> FILTER_NBT = ITEMS.register("filter_nbt", FilterNBT::new);
 
-    //Misc
-    public static final RegistryObject<Item> Logic_Chip = ITEMS.register("logic_chip", LogicChip::new);
-    public static final RegistryObject<Item> Logic_Chip_Raw = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
-    public static final RegistryObject<Item> Overclocker_Node = ITEMS.register("overclocker_node", OverclockerNode::new);
-    public static final RegistryObject<Item> Logistic_Overclocker_Card = ITEMS.register("overclocker_card", () -> new OverclockerCard(-1));
+    //Upgrades
+    public static final RegistryObject<Item> OVERCLOCKER_NODE = ITEMS.register("overclocker_node", OverclockerNode::new);
+    public static final RegistryObject<Item> LOGISTIC_OVERCLOCKER_CARD = ITEMS.register("overclocker_card", () -> new OverclockerCard(-1));
 
-    //Energy Overclocker Cards (used if tiers are added using config)
-    public static final List<RegistryObject<Item>> Energy_Overclocker_Cards = new ArrayList<>();
+    //Energy Overclockers (registered only if tiers are added using config)
+    public static final List<RegistryObject<Item>> ENERGY_OVERCLOCKER_CARDS = new ArrayList<>();
+
+    //Crafting components
+    public static final RegistryObject<Item> LOGIC_CHIP_RAW = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
+    public static final RegistryObject<Item> LOGIC_CHIP = ITEMS.register("logic_chip", LogicChip::new);
 
     //Containers
-    public static final RegistryObject<MenuType<LaserNodeContainer>> LaserNode_Container = CONTAINERS.register("lasernode",
+    public static final RegistryObject<MenuType<LaserNodeContainer>> LASER_NODE_CONTAINER = CONTAINERS.register("lasernode",
             () -> IForgeMenuType.create((windowId, inv, data) -> new LaserNodeContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardItemContainer>> CardItem_Container = CONTAINERS.register("carditem",
+    public static final RegistryObject<MenuType<CardItemContainer>> CARD_ITEM_CONTAINER = CONTAINERS.register("carditem",
             () -> IForgeMenuType.create((windowId, inv, data) -> new CardItemContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardFluidContainer>> CardFluid_Container = CONTAINERS.register("cardfluid",
+    public static final RegistryObject<MenuType<CardFluidContainer>> CARD_FLUID_CONTAINER = CONTAINERS.register("cardfluid",
             () -> IForgeMenuType.create((windowId, inv, data) -> new CardFluidContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardEnergyContainer>> CardEnergy_Container = CONTAINERS.register("cardenergy",
+    public static final RegistryObject<MenuType<CardEnergyContainer>> CARD_ENERGY_CONTAINER = CONTAINERS.register("cardenergy",
             () -> IForgeMenuType.create((windowId, inv, data) -> new CardEnergyContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardRedstoneContainer>> CardRedstone_Container = CONTAINERS.register("cardredstone",
+    public static final RegistryObject<MenuType<CardRedstoneContainer>> CARD_REDSTONE_CONTAINER = CONTAINERS.register("cardredstone",
             () -> IForgeMenuType.create((windowId, inv, data) -> new CardRedstoneContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardChemicalContainer>> CardChemical_Container = CONTAINERS.register("cardchemical",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new CardChemicalContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<CardHolderContainer>> CardHolder_Container = CONTAINERS.register("cardholder",
+    public static final RegistryObject<MenuType<CardHolderContainer>> CARD_HOLDER_CONTAINER = CONTAINERS.register("cardholder",
             () -> IForgeMenuType.create((windowId, inv, data) -> new CardHolderContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<FilterBasicContainer>> FilterBasic_Container = CONTAINERS.register("filterbasic",
+    public static final RegistryObject<MenuType<FilterBasicContainer>> FILTER_BASIC_CONTAINER = CONTAINERS.register("filterbasic",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FilterBasicContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<FilterCountContainer>> FilterCount_Container = CONTAINERS.register("filtercount",
+    public static final RegistryObject<MenuType<FilterCountContainer>> FILTER_COUNT_CONTAINER = CONTAINERS.register("filtercount",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FilterCountContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<FilterTagContainer>> FilterTag_Container = CONTAINERS.register("filtertag",
+    public static final RegistryObject<MenuType<FilterTagContainer>> FILTER_TAG_CONTAINER = CONTAINERS.register("filtertag",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FilterTagContainer(windowId, inv, inv.player, data)));
-    public static final RegistryObject<MenuType<FilterNBTContainer>> FilterNBT_Container = CONTAINERS.register("filternbt",
+    public static final RegistryObject<MenuType<FilterNBTContainer>> FILTER_NBT_CONTAINER = CONTAINERS.register("filternbt",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FilterNBTContainer(windowId, inv, inv.player, data)));
 
-    // Conveniance function: Take a RegistryObject<Block> and make a corresponding RegistryObject<Item> from it
-    /*public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
-        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
-    }*/
+    //Mekanism container (registered only if Mekanism is loaded)
+    public static final RegistryObject<MenuType<CardChemicalContainer>> CARD_CHEMICAL_CONTAINER = MEKANISM_CONTAINERS.register("cardchemical",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new CardChemicalContainer(windowId, inv, inv.player, data)));
+
+    //Recipe serializer
+    public static final RegistryObject<CardClearRecipe.Serializer> CARD_CLEAR_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("cardclear", CardClearRecipe.Serializer::new);
 }

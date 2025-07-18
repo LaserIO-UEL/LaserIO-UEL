@@ -32,17 +32,17 @@ public class LaserIOItemTags extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(WRENCHES)
-                .add(Registration.Laser_Wrench.get());
+                .add(Registration.LASER_WRENCH.get());
         tag(TOOLS_WRENCH)
-                .add(Registration.Laser_Wrench.get());
+                .add(Registration.LASER_WRENCH.get());
         tag(FILTERS)
-                .add(Registration.Filter_Basic.get())
-                .add(Registration.Filter_Count.get())
-                .add(Registration.Filter_Tag.get())
-                .add(Registration.Filter_Mod.get())
-                .add(Registration.Filter_NBT.get());
+                .add(Registration.FILTER_BASIC.get())
+                .add(Registration.FILTER_COUNT.get())
+                .add(Registration.FILTER_TAG.get())
+                .add(Registration.FILTER_MOD.get())
+                .add(Registration.FILTER_NBT.get());
         //Add Card Holder to its Curios slot
         tag(CURIOS_CARD_HOLDER_SLOT)
-                .add(Registration.Card_Holder.get());
+                .add(Registration.CARD_HOLDER.get());
     }
 }

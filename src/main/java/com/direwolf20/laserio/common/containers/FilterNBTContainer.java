@@ -39,7 +39,7 @@ public class FilterNBTContainer extends AbstractContainerMenu {
     }
 
     public FilterNBTContainer(int windowId, Inventory playerInventory, Player player, FilterBasicHandler handler, ItemStack filterItem) {
-        super(Registration.FilterNBT_Container.get(), windowId);
+        super(Registration.FILTER_NBT_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = handler;
         this.playerInventory = new InvWrapper(playerInventory);

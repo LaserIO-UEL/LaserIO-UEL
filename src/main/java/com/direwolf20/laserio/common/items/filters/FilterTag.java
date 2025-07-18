@@ -9,7 +9,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -27,17 +26,17 @@ public class FilterTag extends BaseFilter {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-
-        FilterBasicHandler handler = getInventory(itemstack);
+        ItemStack stack = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            return InteractionResultHolder.pass(stack);
+        }
+        FilterBasicHandler handler = getInventory(stack);
         NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                (windowId, playerInventory, playerEntity) -> new FilterTagContainer(windowId, playerInventory, player, handler, itemstack), Component.translatable("")), (buf -> {
-            buf.writeItem(itemstack);
+                (windowId, playerInventory, playerEntity) -> new FilterTagContainer(windowId, playerInventory, player, handler, stack), Component.translatable("")), (buf -> {
+            buf.writeItem(stack);
             buf.writeItem(ItemStack.EMPTY);
         }));
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResultHolder.pass(stack);
     }
 
     public static FilterBasicHandler getInventory(ItemStack stack) {

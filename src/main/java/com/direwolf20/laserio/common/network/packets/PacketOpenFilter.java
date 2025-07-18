@@ -37,7 +37,6 @@ public class PacketOpenFilter {
 
     public static PacketOpenFilter decode(FriendlyByteBuf buffer) {
         return new PacketOpenFilter(buffer.readInt());
-
     }
 
     public static void doOpenFilter(ItemStack filterItem, ItemStack cardItem, ServerPlayer sender, BlockPos sourcePos) {
@@ -48,23 +47,20 @@ public class PacketOpenFilter {
                 buf.writeItem(filterItem);
                 buf.writeItem(cardItem);
             }));
-        }
-        if (filterItem.getItem() instanceof FilterCount) {
+        } else if (filterItem.getItem() instanceof FilterCount) {
             NetworkHooks.openScreen(sender, new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new FilterCountContainer(windowId, playerInventory, sender, sourcePos, filterItem, cardItem), Component.translatable("")), (buf -> {
                 buf.writeItem(filterItem);
                 buf.writeItem(cardItem);
             }));
-        }
-        if (filterItem.getItem() instanceof FilterTag) {
+        } else if (filterItem.getItem() instanceof FilterTag) {
             FilterBasicHandler handler = FilterBasic.getInventory(filterItem);
             NetworkHooks.openScreen(sender, new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new FilterTagContainer(windowId, playerInventory, sender, handler, sourcePos, filterItem, cardItem), Component.translatable("")), (buf -> {
                 buf.writeItem(filterItem);
                 buf.writeItem(ItemStack.EMPTY);
             }));
-        }
-        if (filterItem.getItem() instanceof FilterNBT) {
+        } else if (filterItem.getItem() instanceof FilterNBT) {
             FilterBasicHandler handler = FilterBasic.getInventory(filterItem);
             NetworkHooks.openScreen(sender, new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new FilterNBTContainer(windowId, playerInventory, sender, handler, sourcePos, filterItem, cardItem), Component.translatable("")), (buf -> {
@@ -78,18 +74,17 @@ public class PacketOpenFilter {
         public static void handle(PacketOpenFilter msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 ServerPlayer sender = ctx.get().getSender();
-                if (sender == null)
+                if (sender == null) {
                     return;
-
+                }
                 AbstractContainerMenu container = sender.containerMenu;
-                if (container == null)
+                if (container == null) {
                     return;
-
+                }
                 Slot slot = container.slots.get(msg.slotNumber);
                 ItemStack itemStack = slot.getItem();
-
-                if (container instanceof CardItemContainer)
-                    doOpenFilter(itemStack, ((CardItemContainer) container).cardItem, sender, ((CardItemContainer) container).sourceContainer);
+                if (container instanceof CardItemContainer cardItemContainer)
+                    doOpenFilter(itemStack, cardItemContainer.cardItem, sender, cardItemContainer.sourceContainer);
                 else if (container instanceof CardHolderContainer)
                     doOpenFilter(itemStack, ItemStack.EMPTY, sender, BlockPos.ZERO);
                 else

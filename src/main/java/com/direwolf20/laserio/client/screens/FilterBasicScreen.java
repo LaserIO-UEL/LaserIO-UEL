@@ -26,7 +26,7 @@ import java.util.List;
 
 public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/basicfilter.png");
-    protected final FilterBasicContainer container;
+    private final FilterBasicContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private boolean isCompareNBT;
@@ -42,14 +42,14 @@ public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContai
         this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-        if (MiscTools.inBounds(getGuiLeft() + 5, getGuiTop() + 10, 16, 16, mouseX, mouseY)) {
+        if (MiscTools.inBounds(this.leftPos + 5, this.topPos + 10, 16, 16, mouseX, mouseY)) {
             if (isAllowList)
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.allowlist"), mouseX, mouseY);
             else
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.denylist"), mouseX, mouseY);
         }
         if (!(filter.getItem() instanceof FilterMod)) {
-            if (MiscTools.inBounds(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, mouseX, mouseY)) {
+            if (MiscTools.inBounds(this.leftPos + 5, this.topPos + 25, 16, 16, mouseX, mouseY)) {
                 if (isCompareNBT)
                     guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.nbttrue"), mouseX, mouseY);
                 else
@@ -70,7 +70,7 @@ public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContai
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png")
         };
-        leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
+        leftWidgets.add(new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
             isAllowList = !isAllowList;
             ((ToggleButton) button).setTexturePosition(isAllowList ? 1 : 0);
         }));
@@ -80,7 +80,7 @@ public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContai
                     new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png"),
                     new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png")
             };
-            leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
+            leftWidgets.add(new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
                 isCompareNBT = !isCompareNBT;
                 ((ToggleButton) button).setTexturePosition(isCompareNBT ? 1 : 0);
             }));
@@ -103,9 +103,7 @@ public class FilterBasicScreen extends AbstractContainerScreen<FilterBasicContai
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override

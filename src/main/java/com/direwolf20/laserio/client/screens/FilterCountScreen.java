@@ -28,7 +28,7 @@ import java.util.List;
 
 public class FilterCountScreen extends AbstractContainerScreen<FilterCountContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtercount.png");
-    protected final FilterCountContainer container;
+    private final FilterCountContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private boolean isCompareNBT;
@@ -46,7 +46,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
         updateItemCounts();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-        if (MiscTools.inBounds(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, mouseX, mouseY)) {
+        if (MiscTools.inBounds(this.leftPos + 5, this.topPos + 25, 16, 16, mouseX, mouseY)) {
             if (isCompareNBT)
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.nbttrue"), mouseX, mouseY);
             else
@@ -74,7 +74,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbtfalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/matchnbttrue.png")
         };
-        leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
+        leftWidgets.add(new ToggleButton(this.leftPos + 5, this.topPos + 25, 16, 16, nbtTextures, isCompareNBT ? 1 : 0, (button) -> {
             isCompareNBT = !isCompareNBT;
             ((ToggleButton) button).setTexturePosition(isCompareNBT ? 1 : 0);
         }));
@@ -96,9 +96,7 @@ public class FilterCountScreen extends AbstractContainerScreen<FilterCountContai
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override

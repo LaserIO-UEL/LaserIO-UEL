@@ -2,6 +2,8 @@ package com.direwolf20.laserio.util;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.cards.BaseCard.CardType;
+import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.items.cards.CardItem;
@@ -46,7 +48,7 @@ public class BaseCardCache {
     public final List<String> filterNBTs;
     public final byte sneaky;
     public final LaserNodeBE be;
-    public final BaseCard.CardType cardType;
+    public final CardType cardType;
     public int extractLimit = 0;
     public int insertLimit = 0;
     public boolean enabled = true;
@@ -71,20 +73,21 @@ public class BaseCardCache {
         this.filterCard = BaseCard.getFilter(cardItem);
         this.cardSlot = cardSlot;
         if (cardItem.getItem() instanceof CardItem) {
-            cardType = BaseCard.CardType.ITEM;
+            cardType = CardType.ITEM;
         } else if (cardItem.getItem() instanceof CardFluid) {
-            cardType = BaseCard.CardType.FLUID;
+            cardType = CardType.FLUID;
         } else if (cardItem.getItem() instanceof CardEnergy) {
-            cardType = BaseCard.CardType.ENERGY;
+            cardType = CardType.ENERGY;
             this.insertLimit = CardEnergy.getInsertLimitPercent(cardItem);
             this.extractLimit = CardEnergy.getExtractLimitPercent(cardItem);
         } else if (cardItem.getItem() instanceof CardRedstone) {
-            cardType = BaseCard.CardType.REDSTONE;
+            cardType = CardType.REDSTONE;
         } else if (cardItem.getItem() instanceof CardChemical) {
-            cardType = BaseCard.CardType.CHEMICAL;
+            cardType = CardType.CHEMICAL;
             mekanismCardCache = new MekanismCardCache(this);
-        } else
-            cardType = BaseCard.CardType.MISSING;
+        } else {
+            cardType = CardType.MISSING;
+        }
         this.be = be;
         if (filterCard.isEmpty()) {
             filteredItems = new ArrayList<>();
@@ -105,7 +108,7 @@ public class BaseCardCache {
     }
 
     public void setEnabled() {
-        if (redstoneMode == 0 || BaseCard.getNamedTransferMode(cardItem).equals(BaseCard.TransferMode.SENSOR)) { //Sensors are always enabled
+        if (redstoneMode == 0 || BaseCard.getNamedTransferMode(cardItem) == TransferMode.SENSOR) { //Sensors are always enabled
             enabled = true;
         } else {
             byte strength = be.getRedstoneChannelStrength(redstoneChannel);
@@ -296,8 +299,8 @@ public class BaseCardCache {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BaseCardCache) {
-            return ((BaseCardCache) obj).be.equals(this.be) && ((BaseCardCache) obj).direction.equals(this.direction) && ((BaseCardCache) obj).cardSlot == this.cardSlot;
+        if (obj instanceof BaseCardCache that) {
+            return that.be.equals(this.be) && that.direction == this.direction && that.cardSlot == this.cardSlot;
         }
         return false;
     }

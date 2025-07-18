@@ -14,8 +14,8 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketUpdateFilter {
-    boolean allowList;
-    boolean compareNBT;
+    private boolean allowList;
+    private boolean compareNBT;
 
     public PacketUpdateFilter(boolean allowList, boolean compareNBT) {
         this.allowList = allowList;
@@ -34,11 +34,11 @@ public class PacketUpdateFilter {
     public static class Handler {
         public static void handle(PacketUpdateFilter msg, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null) {
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) {
                     return;
                 }
-                AbstractContainerMenu container = player.containerMenu;
+                AbstractContainerMenu container = sender.containerMenu;
                 if (container == null) {
                     return;
                 }
@@ -47,13 +47,11 @@ public class PacketUpdateFilter {
                     if (stack.isEmpty()) return;
                     FilterBasic.setAllowList(stack, msg.allowList);
                     FilterBasic.setCompareNBT(stack, msg.compareNBT);
-                }
-                if (container instanceof FilterBasicContainer filterBasicContainer) {
+                } else if (container instanceof FilterBasicContainer filterBasicContainer) {
                     ItemStack stack = filterBasicContainer.filterItem;
                     FilterBasic.setAllowList(stack, msg.allowList);
                     FilterBasic.setCompareNBT(stack, msg.compareNBT);
-                }
-                if (container instanceof FilterCountContainer filterCountContainer) {
+                } else if (container instanceof FilterCountContainer filterCountContainer) {
                     ItemStack stack = filterCountContainer.filterItem;
                     FilterCount.setAllowList(stack, msg.allowList);
                     FilterCount.setCompareNBT(stack, msg.compareNBT);

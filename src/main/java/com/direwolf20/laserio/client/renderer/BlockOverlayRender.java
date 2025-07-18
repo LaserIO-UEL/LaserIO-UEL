@@ -16,7 +16,7 @@ import org.joml.Matrix4f;
 import java.awt.Color;
 
 public class BlockOverlayRender {
-    public static void renderSelectedBlock(RenderLevelStageEvent event, BlockPos pos, BaseLaserBE be) {
+    public static void renderSelectedBlock(RenderLevelStageEvent event, BlockPos pos, BaseLaserBE be, Color color) {
         final Minecraft mc = Minecraft.getInstance();
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -38,7 +38,7 @@ public class BlockOverlayRender {
         matrix.mulPose(Axis.YP.rotationDegrees(-90.0F));
 
         Matrix4f positionMatrix = matrix.last().pose();
-        RenderUtils.render(positionMatrix, builder, pos, Color.GREEN, scale);
+        RenderUtils.render(positionMatrix, builder, pos, color, scale);
         matrix.popPose();
 
         matrix.popPose();

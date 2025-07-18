@@ -44,7 +44,6 @@ public class PacketOpenNode {
 
     public static PacketOpenNode decode(FriendlyByteBuf buffer) {
         return new PacketOpenNode(buffer.readBlockPos(), buffer.readByte());
-
     }
 
     public static class Handler {
@@ -55,21 +54,17 @@ public class PacketOpenNode {
                     return;
                 }
                 AbstractContainerMenu container = sender.containerMenu;
-                if (container == null) {
-                    return;
-                }
-                BlockPos pos;
+                BlockPos sourcePos;
                 if (container instanceof LaserNodeContainer)
-                    pos = msg.sourcePos;
+                    sourcePos = msg.sourcePos;
                 else if (container instanceof CardItemContainer cardItemContainer)
-                    pos = cardItemContainer.sourceContainer;
+                    sourcePos = cardItemContainer.sourceContainer;
                 else if (container instanceof CardEnergyContainer cardEnergyContainer)
-                    pos = cardEnergyContainer.sourceContainer;
+                    sourcePos = cardEnergyContainer.sourceContainer;
                 else if (container instanceof CardRedstoneContainer cardRedstoneContainer)
-                    pos = cardRedstoneContainer.sourceContainer;
-                else return;
-
-                final BlockPos sourcePos = pos;
+                    sourcePos = cardRedstoneContainer.sourceContainer;
+                else
+                    return;
                 BlockEntity be = sender.level().getBlockEntity(sourcePos);
                 if (be == null || !(be instanceof BaseLaserBE)) {
                     return;

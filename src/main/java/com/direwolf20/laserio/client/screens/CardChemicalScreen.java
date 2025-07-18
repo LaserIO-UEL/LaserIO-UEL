@@ -31,11 +31,11 @@ import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.doesIt
 import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.getFirstChemicalOnItemStack;
 
 public class CardChemicalScreen extends CardItemScreen {
-    public int currentChemicalExtractAmt;
-    public final int filterStartX;
-    public final int filterStartY;
-    public final int filterEndX;
-    public final int filterEndY;
+    private int currentChemicalExtractAmt;
+    protected final int filterStartX;
+    protected final int filterStartY;
+    protected final int filterEndX;
+    protected final int filterEndY;
 
     public CardChemicalScreen(CardItemContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -55,7 +55,7 @@ public class CardChemicalScreen extends CardItemScreen {
 
     @Override
     public void addAmtButton() {
-        buttons.put("amount", new NumberButton(getGuiLeft() + 139, getGuiTop() + 25, 32, 12, currentMode == 0 ? currentPriority : currentChemicalExtractAmt, (button) -> {
+        buttons.put("amount", new NumberButton(this.leftPos + 139, this.topPos + 25, 32, 12, currentMode == 0 ? currentPriority : currentChemicalExtractAmt, (button) -> {
             changeAmount(-1);
         }));
     }
@@ -68,7 +68,7 @@ public class CardChemicalScreen extends CardItemScreen {
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modestocker.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modesensor.png")
         };
-        buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
+        buttons.put("mode", new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = BaseCard.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
             ((NumberButton) buttons.get("amount")).setValue(currentMode == 0 ? currentPriority : currentChemicalExtractAmt);

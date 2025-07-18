@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Resources used for LaserIO UEL",
+        "description": "Resources used for ${mod_name}",
         "pack_format": 9
     }
 }

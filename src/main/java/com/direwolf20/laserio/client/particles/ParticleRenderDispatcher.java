@@ -15,10 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 public class ParticleRenderDispatcher {
     @SubscribeEvent
     public static void registerProviders(RegisterParticleProvidersEvent evt) {
-        evt.registerSpecial(ModParticles.ITEMFLOWPARTICLE.get(), ItemFlowParticle.FACTORY);
-        evt.registerSpecial(ModParticles.FLUIDFLOWPARTICLE.get(), FluidFlowParticle.FACTORY);
+        evt.registerSpecial(ModParticles.ITEM_FLOW_PARTICLE.get(), ItemFlowParticle.FACTORY);
+        evt.registerSpecial(ModParticles.FLUID_FLOW_PARTICLE.get(), FluidFlowParticle.FACTORY);
         if (MekanismIntegration.isLoaded()) {
-            evt.registerSpecial(MekanismModParticles.CHEMICALFLOWPARTICLE.get(), ChemicalFlowParticle.FACTORY);
+            evt.registerSpecial(MekanismModParticles.CHEMICAL_FLOW_PARTICLE.get(), ChemicalFlowParticle.FACTORY);
         }
     }
 }

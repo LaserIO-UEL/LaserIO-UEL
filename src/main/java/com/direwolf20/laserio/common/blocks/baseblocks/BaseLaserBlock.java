@@ -56,7 +56,7 @@ public class BaseLaserBlock extends Block {
                 targetAdv.handleAdvancedConnection(sourceAdv);
             } else if (!targetPos.closerThan(sourcePos, Config.MAX_NODES_DISTANCE.get()) || !targetDim.equals(sourceDim)) {
                 //If we're too far away, send an error to the client
-                player.displayClientMessage(Component.translatable("message.laserio.wrenchrange", Config.MAX_NODES_DISTANCE.get()), true);
+                player.displayClientMessage(Component.translatable("message.laserio.laser_wrench.exceeded_maximum_connection_range", Config.MAX_NODES_DISTANCE.get()), true);
             } else {
                 //Connect the node to the network
                 ((BaseLaserBE) targetBE).addConnection(sourceDimPos.blockPos, (BaseLaserBE) sourceBE);

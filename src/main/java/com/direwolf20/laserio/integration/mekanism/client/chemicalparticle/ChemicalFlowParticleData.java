@@ -18,11 +18,11 @@ import java.util.Locale;
 
 public class ChemicalFlowParticleData implements ParticleOptions {
     private final ChemicalStack<?> chemicalStack;
-    public final String type;
-    public final double targetX;
-    public final double targetY;
-    public final double targetZ;
-    public final int ticksPerBlock;
+    private final String type;
+    protected final double targetX;
+    protected final double targetY;
+    protected final double targetZ;
+    protected final int ticksPerBlock;
 
     public ChemicalFlowParticleData(ChemicalStack<?> chemicalStack, double tx, double ty, double tz, int ticks, String type) {
         this.chemicalStack = chemicalStack.copy(); //Forge: Fix stack updating after the fact causing particle changes
@@ -36,7 +36,7 @@ public class ChemicalFlowParticleData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<ChemicalFlowParticleData> getType() {
-        return MekanismModParticles.CHEMICALFLOWPARTICLE.get();
+        return MekanismModParticles.CHEMICAL_FLOW_PARTICLE.get();
     }
 
     @Override

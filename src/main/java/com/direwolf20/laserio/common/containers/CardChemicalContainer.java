@@ -21,7 +21,7 @@ public class CardChemicalContainer extends CardItemContainer {
     }
 
     public CardChemicalContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
-        super(Registration.CardChemical_Container.get(), windowId);
+        super(Registration.CARD_CHEMICAL_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = BaseCard.getInventory(cardItem);
         this.playerInventory = new InvWrapper(playerInventory);

@@ -3,13 +3,13 @@ package com.direwolf20.laserio.common.items.filters;
 import com.direwolf20.laserio.common.containers.FilterCountContainer;
 import com.direwolf20.laserio.common.containers.customhandler.FilterCountHandler;
 import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.mekanism.MekanismStatics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -22,8 +22,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.network.NetworkHooks;
 
-import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.doesItemStackHoldChemicals;
-
 public class FilterCount extends BaseFilter {
     public FilterCount() {
         super();
@@ -31,16 +29,16 @@ public class FilterCount extends BaseFilter {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-
+        ItemStack stack = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            return InteractionResultHolder.pass(stack);
+        }
         NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                (windowId, playerInventory, playerEntity) -> new FilterCountContainer(windowId, playerInventory, player, itemstack), Component.translatable("")), (buf -> {
-            buf.writeItem(itemstack);
+                (windowId, playerInventory, playerEntity) -> new FilterCountContainer(windowId, playerInventory, player, stack), Component.translatable("")), (buf -> {
+            buf.writeItem(stack);
             buf.writeItem(ItemStack.EMPTY);
         }));
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResultHolder.pass(stack);
     }
 
     public static int getSlotAmount(ItemStack stack, int getSlot) {
@@ -130,7 +128,7 @@ public class FilterCount extends BaseFilter {
             CompoundTag countTag = new CompoundTag();
             ItemStack itemStack = handler.getStackInSlot(i);
             countTag.putInt("Slot", i);
-            if (doesItemStackHoldFluids(itemStack) || (MekanismIntegration.isLoaded() && doesItemStackHoldChemicals(itemStack))) {
+            if (doesItemStackHoldFluids(itemStack) || (MekanismIntegration.isLoaded() && MekanismStatics.doesItemStackHoldChemicals(itemStack))) {
                 int mbAmt = getSlotAmount(stack, i);
                 if (mbAmt > 0) {
                     countTag.putInt("Count", Math.max(1, (int) Math.floor(mbAmt / 1000)));

@@ -74,7 +74,7 @@ public class RenderUtils {
         float diffY = endBlock.getY() - startBlock.getY();
         float diffZ = endBlock.getZ() - startBlock.getZ();
 
-        switch (facing) {
+        switch(facing) {
             case UP -> {
                 diffX += 0.5f;
                 diffY -= 0.25f;
@@ -175,7 +175,7 @@ public class RenderUtils {
                 BlockPos endBlock = be.getWorldPos(target);
                 Color color = be.getColor();
                 Player player = Minecraft.getInstance().player;
-                ItemStack wrench = ClientEvents.getWrench(player);
+                ItemStack wrench = ClientEvents.findWrench(player);
                 int alpha = wrench.isEmpty() ? color.getAlpha() : Math.min(color.getAlpha() + be.getWrenchAlpha(), 255);
                 float diffX = endBlock.getX() + .5f - startBlock.getX();
                 float diffY = endBlock.getY() + .5f - startBlock.getY();
@@ -184,12 +184,12 @@ public class RenderUtils {
                 drawLaser(builder, positionMatrix, endLaser, startLaser, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, alpha / 255f, 0.025f, v, v + diffY * 1.5, be);
             }
 
-            if (be instanceof LaserConnectorAdvBE laserConnectorAdvBE && laserConnectorAdvBE.getPartnerDimBlockPos() != null && level.getBlockState(be.getBlockPos()).getBlock().equals(Registration.LaserConnectorAdv.get())) {
+            if (be instanceof LaserConnectorAdvBE laserConnectorAdvBE && laserConnectorAdvBE.getPartnerDimBlockPos() != null && level.getBlockState(be.getBlockPos()).getBlock().equals(Registration.LASER_CONNECTOR_ADV_BLOCK.get())) {
                 Direction facing = level.getBlockState(be.getBlockPos()).getValue(BlockStateProperties.FACING).getOpposite();
                 BlockPos endBlock = laserConnectorAdvBE.getBlockPos().relative(facing);
                 Color color = be.getColor();
                 Player player = Minecraft.getInstance().player;
-                ItemStack wrench = ClientEvents.getWrench(player);
+                ItemStack wrench = ClientEvents.findWrench(player);
                 int alpha = wrench.isEmpty() ? color.getAlpha() : Math.min(color.getAlpha() + be.getWrenchAlpha(), 255);
                 Vector3f endLaser = calculateEndAdvConnector(startBlock, endBlock, facing);
                 drawLaser(builder, positionMatrix, endLaser, startLaser, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, alpha / 255f, 0.025f, v, v + endLaser.y() * 1.5, be);

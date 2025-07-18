@@ -32,7 +32,7 @@ public class CardHolderContainer extends AbstractContainerMenu {
     }
 
     public CardHolderContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardHolder, IItemHandler itemHandler) {
-        super(Registration.CardHolder_Container.get(), windowId);
+        super(Registration.CARD_HOLDER_CONTAINER.get(), windowId);
         playerEntity = player;
         this.itemHandler = itemHandler;
         this.playerInventory = new InvWrapper(playerInventory);

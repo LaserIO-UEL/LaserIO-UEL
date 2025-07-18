@@ -54,12 +54,10 @@ public class PacketHandler {
         HANDLER.registerMessage(id++, PacketChangeColor.class, PacketChangeColor::encode, PacketChangeColor::decode, PacketChangeColor.Handler::handle);
         HANDLER.registerMessage(id++, PacketCopyPasteCard.class, PacketCopyPasteCard::encode, PacketCopyPasteCard::decode, PacketCopyPasteCard.Handler::handle);
         HANDLER.registerMessage(id++, PacketKeybindPerformAction.class, PacketKeybindPerformAction::encode, PacketKeybindPerformAction::decode, PacketKeybindPerformAction.Handler::handle);
-        //HANDLER.registerMessage(id++, PacketExtractUpgrade.class,     PacketExtractUpgrade::encode,       PacketExtractUpgrade::decode,       PacketExtractUpgrade.Handler::handle);
 
         //Client Side
         HANDLER.registerMessage(id++, PacketNodeParticles.class, PacketNodeParticles::encode, PacketNodeParticles::decode, PacketNodeParticles.Handler::handle);
         HANDLER.registerMessage(id++, PacketNodeParticlesFluid.class, PacketNodeParticlesFluid::encode, PacketNodeParticlesFluid::decode, PacketNodeParticlesFluid.Handler::handle);
-        //HANDLER.registerMessage(id++, PacketDurabilitySync.class,     PacketDurabilitySync::encode,       PacketDurabilitySync::decode,       PacketDurabilitySync.Handler::handle);
 
         //Mekanism Packets Only
         if (MekanismIntegration.isLoaded()) {
@@ -69,14 +67,16 @@ public class PacketHandler {
     }
 
     public static void sendTo(Object msg, ServerPlayer player) {
-        if (!(player instanceof FakePlayer))
+        if (!(player instanceof FakePlayer)) {
             HANDLER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        }
     }
 
     public static void sendToAll(Object msg, Level level) {
         for (Player player : level.players()) {
-            if (!(player instanceof FakePlayer))
+            if (!(player instanceof FakePlayer)) {
                 HANDLER.sendTo(msg, ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+            }
         }
     }
 

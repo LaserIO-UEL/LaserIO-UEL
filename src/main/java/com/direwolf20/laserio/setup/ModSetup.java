@@ -21,7 +21,7 @@ public class ModSetup {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, LaserIO.MODID);
     public static final RegistryObject<CreativeModeTab> MOD_TAB = TABS.register(TAB_NAME, () -> CreativeModeTab.builder()
             .title(Component.literal(LaserIO.MODNAME))
-            .icon(() -> new ItemStack(Registration.Laser_Wrench.get()))
+            .icon(() -> new ItemStack(Registration.LASER_WRENCH.get()))
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .displayItems((featureFlags, output) -> {
                 Registration.ITEMS.getEntries().forEach(e -> {
@@ -30,7 +30,7 @@ public class ModSetup {
 
                     if (item instanceof CardFluid) {
                         if (MekanismIntegration.isLoaded()) {
-                            Registration.ITEMS_MEKANISM.getEntries().forEach(f -> {
+                            Registration.MEKANISM_ITEMS.getEntries().forEach(f -> {
                                 Item itemMek = f.get();
                                 output.accept(itemMek);
                             });

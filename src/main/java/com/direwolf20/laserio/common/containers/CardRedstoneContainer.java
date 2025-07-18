@@ -32,7 +32,7 @@ public class CardRedstoneContainer extends AbstractContainerMenu {
     }
 
     public CardRedstoneContainer(int windowId, Inventory playerInventory, Player player, ItemStack cardItem) {
-        super(Registration.CardRedstone_Container.get(), windowId);
+        super(Registration.CARD_REDSTONE_CONTAINER.get(), windowId);
         playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.cardItem = cardItem;

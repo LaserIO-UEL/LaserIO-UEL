@@ -39,6 +39,8 @@ import java.util.List;
 
 public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node.png");
+    protected static final ResourceLocation SELECTED_TABS_OVERLAY = new ResourceLocation(LaserIO.MODID, "textures/gui/laser_node_selected_tabs.png");
+    private static final ResourceLocation CARD_HOLDER_GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
     private static final MutableComponent[] SIDES = {
             Component.translatable("screen.laserio.down"),
             Component.translatable("screen.laserio.up"),
@@ -52,7 +54,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     //array because like that we follow the Direction enum order.
     //Thanks to that, we can use Direction's ordinal values to get
     //the corresponding tab
-    public static final Vec2i[] TABS = {
+    protected static final Vec2i[] TABS = {
             new Vec2i(34, 4), //Down
             new Vec2i(6, 4), //Up
             new Vec2i(62, 4), //North
@@ -60,7 +62,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
             new Vec2i(118, 4), //West
             new Vec2i(146, 4) //East
     };
-    protected final LaserNodeContainer container;
+    private final LaserNodeContainer container;
     private boolean showCardHolderUI;
     private boolean currentParticles;
     private Button settingsButton;
@@ -74,13 +76,17 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         this.currentParticles = container.tile.getShowParticles();
     }
 
+    public boolean isCardHolderUIShown() {
+        return showCardHolderUI;
+    }
+
     @Override
     public void init() {
         super.init();
         List<AbstractWidget> leftWidgets = new ArrayList<>();
         ResourceLocation settings = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/settings.png");
-        settingsButton = new IconButton(getGuiLeft() + 155, getGuiTop() + 25, 16, 16, settings, (button) -> {
-            Minecraft.getInstance().setScreen(new LaserNodeSettingsScreen(container, Component.translatable("screen.laserio.settings")));
+        settingsButton = new IconButton(this.leftPos + 155, this.topPos + 25, 16, 16, settings, (button) -> {
+            Minecraft.getInstance().setScreen(new LaserNodeSettingsScreen(container, Component.translatable("screen.laserio.network_settings")));
         });
         leftWidgets.add(settingsButton);
 
@@ -88,7 +94,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatefalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/regulatetrue.png")
         };
-        particlesButton = new ToggleButton(getGuiLeft() + 155, getGuiTop() + 45, 16, 16, regulateTextures, currentParticles ? 1 : 0, (button) -> {
+        particlesButton = new ToggleButton(this.leftPos + 155, this.topPos + 45, 16, 16, regulateTextures, currentParticles ? 1 : 0, (button) -> {
             currentParticles = !currentParticles;
             ((ToggleButton) button).setTexturePosition(currentParticles ? 1 : 0);
             PacketHandler.sendToServer(new PacketToggleParticles(currentParticles));
@@ -113,6 +119,9 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         toggleHolderSlots();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+        if (MiscTools.inBounds(settingsButton.getX(), settingsButton.getY(), settingsButton.getWidth(), settingsButton.getHeight(), mouseX, mouseY)) {
+            guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.network_settings"), mouseX, mouseY);
+        }
         if (MiscTools.inBounds(particlesButton.getX(), particlesButton.getY(), particlesButton.getWidth(), particlesButton.getHeight(), mouseX, mouseY)) {
             MutableComponent[] translatableComponents = {
                     Component.translatable("screen.laserio.showparticles"),
@@ -124,10 +133,6 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        Vec2i tab = TABS[container.side];
-        guiGraphics.fill(tab.x + 2, tab.y + 2, tab.x + 22, tab.y + 14, 0xFFC6C6C6);
-        guiGraphics.fill(tab.x, tab.y + 11, tab.x + 2, tab.y + 12, 0xFFFFFFFF);
-        guiGraphics.fill(tab.x + 22, tab.y + 11, tab.x + 24, tab.y + 12, 0xFFFFFFFF);
         String side = SIDES[container.side].getString();
         int color = Color.DARK_GRAY.getRGB();
         guiGraphics.drawString(font, side, imageWidth / 2 - font.width(side) / 2, 20, color, false);
@@ -135,15 +140,15 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         guiGraphics.drawString(font, "D", 43, 7, color, false);
         guiGraphics.drawString(font, "N", 71, 7, color, false);
         guiGraphics.drawString(font, "S", 99, 7, color, false);
-        guiGraphics.drawString(font, "W", 128, 7, color, false);
+        guiGraphics.drawString(font, "W", 127, 7, color, false);
         guiGraphics.drawString(font, "E", 155, 7, color, false);
         for (Direction direction : Direction.values()) {
             ItemStack itemStack = getAdjacentBlock(direction);
             if (!itemStack.isEmpty()) {
-                tab = TABS[direction.ordinal()];
+                Vec2i tab = TABS[direction.ordinal()];
                 guiGraphics.renderItem(itemStack, tab.x + 4, tab.y - 14, 0);
-                if (MiscTools.inBounds(getGuiLeft() + tab.x + 4, getGuiTop() + tab.y - 14, 16, 16, mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(font, itemStack, mouseX - getGuiLeft(), mouseY - getGuiTop());
+                if (MiscTools.inBounds(this.leftPos + tab.x + 4, this.topPos + tab.y - 14, 16, 16, mouseX, mouseY)) {
+                    guiGraphics.renderTooltip(font, itemStack, mouseX - this.leftPos, mouseY - this.topPos);
                 }
             }
         }
@@ -158,18 +163,17 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        int tabOffset = TABS[container.side].x - 2;
+        guiGraphics.blit(SELECTED_TABS_OVERLAY, this.leftPos + tabOffset, this.topPos, tabOffset, 0, 28, 24);
         if (showCardHolderUI) {
-            ResourceLocation CardHolderGUI = new ResourceLocation(LaserIO.MODID, "textures/gui/cardholder_node.png");
-            RenderSystem.setShaderTexture(0, CardHolderGUI);
-            guiGraphics.blit(CardHolderGUI, getGuiLeft() - 100, getGuiTop() + 24, 0, 0, this.imageWidth, this.imageHeight);
+            RenderSystem.setShaderTexture(0, CARD_HOLDER_GUI);
+            guiGraphics.blit(CARD_HOLDER_GUI, this.leftPos - 100, this.topPos + 24, 0, 0, this.imageWidth, this.imageHeight);
         }
     }
 
     public void toggleHolderSlots() {
-        for (int i = LaserNodeContainer.CARDSLOTS; i < (LaserNodeContainer.CARDSLOTS + CardHolderContainer.SLOTS); i++) {
+        for (int i = LaserNodeContainer.CARD_SLOTS; i < (LaserNodeContainer.CARD_SLOTS + CardHolderContainer.SLOTS); i++) {
             if (i >= container.slots.size()) continue;
             Slot slot = container.getSlot(i);
             if (slot instanceof CardHolderSlot cardHolderSlot) {
@@ -210,7 +214,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         if (hoveredSlot != null && container.getCarried().getItem() instanceof CardCloner) {
-            if (hoveredSlot instanceof LaserNodeSlot && !hoveredSlot.getItem().isEmpty()) {
+            if (hoveredSlot instanceof LaserNodeSlot) {
                 if (btn == 0) //Left click
                     PacketHandler.sendToServer(new PacketCopyPasteCard(hoveredSlot.getSlotIndex(), true));
                 else if (btn == 1) //Right click
@@ -220,7 +224,7 @@ public class LaserNodeScreen extends AbstractContainerScreen<LaserNodeContainer>
         }
         for (byte i = 0; i < TABS.length; i++) {
             Vec2i tab = TABS[i];
-            if (MiscTools.inBounds(getGuiLeft() + tab.x, getGuiTop() + tab.y, 24, 12, x, y) && container.side != i) {
+            if (MiscTools.inBounds(this.leftPos + tab.x, this.topPos + tab.y, 24, 12, x, y) && container.side != i) {
                 openTab(i);
                 return true;
             }

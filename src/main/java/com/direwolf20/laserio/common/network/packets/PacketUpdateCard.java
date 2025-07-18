@@ -18,20 +18,20 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketUpdateCard {
-    byte mode;
-    byte channel;
-    int extractAmt;
-    short priority;
-    byte sneaky;
-    short ticks;
-    boolean exact;
-    boolean regulate;
-    byte roundRobin;
-    int extractLimit;
-    int insertLimit;
-    byte redstoneMode;
-    byte redstoneChannel;
-    boolean andMode;
+    private byte mode;
+    private byte channel;
+    private int extractAmt;
+    private short priority;
+    private byte sneaky;
+    private short ticks;
+    private boolean exact;
+    private boolean regulate;
+    private byte roundRobin;
+    private int extractLimit;
+    private int insertLimit;
+    private byte redstoneMode;
+    private byte redstoneChannel;
+    private boolean andMode;
 
     public PacketUpdateCard(byte mode, byte channel, int extractAmt, short priority, byte sneaky, short ticks, boolean exact, boolean regulate, byte roundRobin, int extractLimit, int insertLimit, byte redstoneMode, byte redstoneChannel, boolean andMode) {
         this.mode = mode;

@@ -28,14 +28,14 @@ public class CardItemHandler extends ItemStackHandler {
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (this.stack.getItem() instanceof CardEnergy) {
-            //If in energy card, accept only Energy Overclockers
+            //If in Energy Card, accept only Energy Overclockers
             return (stack.getItem() instanceof OverclockerCard card && card.getEnergyTier() > 0);
         }
         if (slot == 0) {
-            //Allow filter for cards different from Energy
+            //Allow Filters for Cards different from Energy
             return stack.getItem() instanceof BaseFilter;
         }
-        //Else allow Logistic Overclocker
+        //Else allow Logistic Overclockers
         return (stack.getItem() instanceof OverclockerCard card && card.getEnergyTier() < 0);
     }
 
@@ -51,8 +51,9 @@ public class CardItemHandler extends ItemStackHandler {
 
     public void reSize(int size) {
         NonNullList<ItemStack> newStacks = NonNullList.withSize(size, ItemStack.EMPTY);
-        for (int i = 0; i < stacks.size(); i++)
+        for (int i = 0; i < stacks.size(); i++) {
             newStacks.set(i, stacks.get(i));
+        }
         stacks = newStacks;
     }
 }

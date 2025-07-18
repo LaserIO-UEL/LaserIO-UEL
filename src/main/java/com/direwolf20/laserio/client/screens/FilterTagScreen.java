@@ -44,7 +44,7 @@ import java.util.Optional;
 
 public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer> {
     private static final ResourceLocation GUI = new ResourceLocation(LaserIO.MODID, "textures/gui/filtertag.png");
-    protected final FilterTagContainer container;
+    private final FilterTagContainer container;
     private ItemStack filter;
     private boolean isAllowList;
     private EditBox tagField;
@@ -71,21 +71,21 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-        if (MiscTools.inBounds(getGuiLeft() + 5, getGuiTop() + 10, 16, 16, mouseX, mouseY)) {
+        if (MiscTools.inBounds(this.leftPos + 5, this.topPos + 10, 16, 16, mouseX, mouseY)) {
             if (isAllowList)
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.allowlist"), mouseX, mouseY);
             else
                 guiGraphics.renderTooltip(font, Component.translatable("screen.laserio.denylist"), mouseX, mouseY);
         }
         cycleRenders++;
-        int availableItemsstartX = getGuiLeft() + 7;
-        int availableItemstartY = getGuiTop() + 47;
+        int availableItemsStartX = this.leftPos + 7;
+        int availableItemsStartY = this.topPos + 47;
         int color = 0x885B5B5B;
         PoseStack matrixStack = guiGraphics.pose();
         matrixStack.pushPose();
         RenderSystem.disableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
-        guiGraphics.fillGradient(availableItemsstartX - 2, availableItemstartY - 4, availableItemsstartX + 162, availableItemstartY + 110, color, color);
+        guiGraphics.fillGradient(availableItemsStartX - 2, availableItemsStartY - 4, availableItemsStartX + 162, availableItemsStartY + 110, color, color);
         RenderSystem.colorMask(true, true, true, true);
         matrixStack.popPose();
 
@@ -106,14 +106,14 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         maxPages = Math.max((int) Math.ceil((double) tempTags.size() / tagsPerPage) - 1, 0);
         if (page > maxPages) page = maxPages;
         String pagesLabel = MagicHelpers.withSuffix(page + 1) + " / " + MagicHelpers.withSuffix(maxPages + 1);
-        guiGraphics.drawString(font, pagesLabel, (availableItemsstartX - 2) / 2 + (availableItemsstartX + 162) / 2 - font.width(pagesLabel) / 2, getGuiTop() + 160, Color.DARK_GRAY.getRGB(), false);
+        guiGraphics.drawString(font, pagesLabel, (availableItemsStartX - 2) / 2 + (availableItemsStartX + 162) / 2 - font.width(pagesLabel) / 2, this.topPos + 160, Color.DARK_GRAY.getRGB(), false);
 
         int itemStackMin = (page * tagsPerPage);
         int itemStackMax = Math.min((page * tagsPerPage) + tagsPerPage, tempTags.size());
 
         displayTags = tempTags.subList(itemStackMin, itemStackMax);
 
-        int tagStartY = availableItemstartY;
+        int tagStartY = availableItemsStartY;
 
         int slot = 0;
         overSlot = -1;
@@ -125,7 +125,7 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
                 drawStack = new ItemStack(tagItems.get((cycleRenders / 120) % tagItems.size()));
                 matrixStack.pushPose();
                 if (!drawStack.isEmpty())
-                    laserGuiGraphics.renderItemScale(8f, drawStack, (availableItemsstartX) - 4, (tagStartY) - 5);
+                    laserGuiGraphics.renderItemScale(8f, drawStack, (availableItemsStartX) - 4, (tagStartY) - 5);
                 matrixStack.popPose();
             }
 
@@ -138,25 +138,25 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
                 if (!drawFluidStack.isEmpty()) {
                     bucketStack = new ItemStack(drawFluidStack.getFluid().getBucket(), 1);
                     if (!bucketStack.isEmpty())
-                        laserGuiGraphics.renderItemScale(8f, bucketStack, (availableItemsstartX) - 4, (tagStartY) - 5);
+                        laserGuiGraphics.renderItemScale(8f, bucketStack, (availableItemsStartX) - 4, (tagStartY) - 5);
                 }
                 matrixStack.popPose();
             }
             matrixStack.pushPose();
             matrixStack.scale(0.75f, 0.75f, 0.75f);
             int fontColor = stackInSlotTags.contains(tag) ? Color.BLUE.getRGB() : Color.DARK_GRAY.getRGB();
-            guiGraphics.drawString(font, tag, availableItemsstartX / 0.75f + 16, tagStartY / 0.75f, fontColor, false);
+            guiGraphics.drawString(font, tag, availableItemsStartX / 0.75f + 16, tagStartY / 0.75f, fontColor, false);
             matrixStack.popPose();
 
-            if (MiscTools.inBounds(availableItemsstartX, tagStartY - 2, 160, 8, mouseX, mouseY)) {
+            if (MiscTools.inBounds(availableItemsStartX, tagStartY - 2, 160, 8, mouseX, mouseY)) {
                 overSlot = slot;
                 color = -2130706433;// : 0xFF5B5B5B;
 
                 matrixStack.pushPose();
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
-                guiGraphics.fillGradient(availableItemsstartX - 1, tagStartY - 2, availableItemsstartX + 160, tagStartY + 8, color, color);
-                if (MiscTools.inBounds(availableItemsstartX, tagStartY - 2, 8, 8, mouseX, mouseY)) {
+                guiGraphics.fillGradient(availableItemsStartX - 1, tagStartY - 2, availableItemsStartX + 160, tagStartY + 8, color, color);
+                if (MiscTools.inBounds(availableItemsStartX, tagStartY - 2, 8, 8, mouseX, mouseY)) {
                     if (!drawStack.isEmpty())
                         guiGraphics.renderTooltip(font, drawStack, mouseX, mouseY);
                     if (!bucketStack.isEmpty())
@@ -173,11 +173,11 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
 
-                int x1 = availableItemsstartX + 160;
+                int x1 = availableItemsStartX + 160;
                 int y1 = tagStartY + 10;
-                guiGraphics.hLine(availableItemsstartX - 2, x1 - 0, tagStartY - 2, color);
-                guiGraphics.hLine(availableItemsstartX - 2, x1 - 0, y1 - 3, color);
-                guiGraphics.vLine(availableItemsstartX - 2, tagStartY - 2, y1 - 2, color);
+                guiGraphics.hLine(availableItemsStartX - 2, x1 - 0, tagStartY - 2, color);
+                guiGraphics.hLine(availableItemsStartX - 2, x1 - 0, y1 - 3, color);
+                guiGraphics.vLine(availableItemsStartX - 2, tagStartY - 2, y1 - 2, color);
                 guiGraphics.vLine(x1 - 0, tagStartY - 2, y1 - 2, color);
 
                 RenderSystem.colorMask(true, true, true, true);
@@ -233,13 +233,13 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlistfalse.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/allowlisttrue.png")
         };
-        leftWidgets.add(new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
+        leftWidgets.add(new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, allowListTextures, isAllowList ? 1 : 0, (button) -> {
             isAllowList = !isAllowList;
             ((ToggleButton) button).setTexturePosition(isAllowList ? 1 : 0);
         }));
 
         ResourceLocation add = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/add.png");
-        Button addButton = new IconButton(getGuiLeft() + 155, getGuiTop() + 5, 16, 16, add, (button) -> {
+        Button addButton = new IconButton(this.leftPos + 155, this.topPos + 5, 16, 16, add, (button) -> {
             if (!tagField.getValue().isEmpty()) {
                 String tag = tagField.getValue().toLowerCase(Locale.ROOT);
                 tag = tag.replaceAll("[^a-z0-9/:._-]", "");
@@ -271,7 +271,7 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         leftWidgets.add(addButton);
 
         ResourceLocation remove = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/remove.png");
-        Button removeButton = new IconButton(getGuiLeft() + 135, getGuiTop() + 5, 16, 16, remove, (button) -> {
+        Button removeButton = new IconButton(this.leftPos + 135, this.topPos + 5, 16, 16, remove, (button) -> {
             if (selectedSlot != -1) {
                 tags.remove(displayTags.get(selectedSlot));
                 selectedSlot = -1;
@@ -280,24 +280,24 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         leftWidgets.add(removeButton);
 
         ResourceLocation clear = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/clear.png");
-        Button clearButton = new IconButton(getGuiLeft() + 115, getGuiTop() + 5, 16, 16, clear, (button) -> {
+        Button clearButton = new IconButton(this.leftPos + 115, this.topPos + 5, 16, 16, clear, (button) -> {
             tags.clear();
         });
         leftWidgets.add(clearButton);
 
         ResourceLocation pageup = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/pageup.png");
-        Button pageUp = new IconButton(getGuiLeft() + 100, getGuiTop() + 157, 12, 12, pageup, (button) -> {
+        Button pageUp = new IconButton(this.leftPos + 100, this.topPos + 157, 12, 12, pageup, (button) -> {
             if (page < maxPages) page++;
         });
         leftWidgets.add(pageUp);
 
         ResourceLocation pagedown = new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/pagedown.png");
-        Button pageDown = new IconButton(getGuiLeft() + 58, getGuiTop() + 157, 12, 12, pagedown, (button) -> {
+        Button pageDown = new IconButton(this.leftPos + 58, this.topPos + 157, 12, 12, pagedown, (button) -> {
             if (page > 0) page--;
         });
         leftWidgets.add(pageDown);
 
-        tagField = new EditBox(font, getGuiLeft() + 7, getGuiTop() + 25, 160, 15, Component.empty());
+        tagField = new EditBox(font, this.leftPos + 7, this.topPos + 25, 160, 15, Component.empty());
         leftWidgets.add(tagField);
 
 
@@ -318,7 +318,7 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        guiGraphics.blit(GUI, getGuiLeft(), getGuiTop(), 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
     }
 
     @Override

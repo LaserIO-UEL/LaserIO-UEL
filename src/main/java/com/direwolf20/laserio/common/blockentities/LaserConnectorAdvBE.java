@@ -14,7 +14,7 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
     protected DimBlockPos partnerDimBlockPos;
 
     public LaserConnectorAdvBE(BlockPos pos, BlockState state) {
-        super(Registration.LaserConnectorAdv_BE.get(), pos, state);
+        super(Registration.LASER_CONNECTOR_ADV_BE.get(), pos, state);
     }
 
     public DimBlockPos getPartnerDimBlockPos() {

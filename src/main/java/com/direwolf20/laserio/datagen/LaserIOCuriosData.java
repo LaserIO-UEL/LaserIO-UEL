@@ -5,10 +5,9 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import top.theillusivec4.curios.api.CuriosDataProvider;
 
 import java.util.concurrent.CompletableFuture;
-
-import top.theillusivec4.curios.api.CuriosDataProvider;
 
 public class LaserIOCuriosData extends CuriosDataProvider {
     public LaserIOCuriosData(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<Provider> registries) {

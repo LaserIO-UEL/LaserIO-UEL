@@ -41,7 +41,7 @@ public class BaseFilter extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings.shift_key", ChatFormatting.GRAY));
         } else {
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.filter.type", ChatFormatting.GRAY);
             boolean allowMode = getAllowList(stack);
@@ -57,10 +57,6 @@ public class BaseFilter extends Item {
                 ChatFormatting nbtColor = nbtMode ? ChatFormatting.GREEN : ChatFormatting.RED;
                 toWrite.append(tooltipMaker(nbtString, nbtColor));
                 tooltip.add(toWrite);
-            }
-
-            if (!(stack.getItem() instanceof FilterTag)) {
-
             }
         }
     }

@@ -55,19 +55,16 @@ public class PacketNodeParticlesChemical {
         for (int i = 0; i < size; i++) {
             String type = buffer.readUtf();
             ChemicalType chemicalType = ChemicalType.fromString(type);
-            ChemicalStack<?> chemicalStack;
-
-            if (chemicalType == ChemicalType.GAS)
-                chemicalStack = ChemicalUtils.readGasStack(buffer);
-            else if (chemicalType == ChemicalType.INFUSION)
-                chemicalStack = ChemicalUtils.readInfusionStack(buffer);
-            else if (chemicalType == ChemicalType.PIGMENT)
-                chemicalStack = ChemicalUtils.readPigmentStack(buffer);
-            else if (chemicalType == ChemicalType.SLURRY)
-                chemicalStack = ChemicalUtils.readSlurryStack(buffer);
-            else
-                continue; //Shouldn't happen?
-
+            ChemicalStack<?> chemicalStack = switch(chemicalType) {
+                case GAS -> ChemicalUtils.readGasStack(buffer);
+                case INFUSION -> ChemicalUtils.readInfusionStack(buffer);
+                case PIGMENT -> ChemicalUtils.readPigmentStack(buffer);
+                case SLURRY -> ChemicalUtils.readSlurryStack(buffer);
+                default -> null; //Shouldn't happen?
+            };
+            if (chemicalStack == null) {
+                continue;
+            }
             DimBlockPos fromNode = new DimBlockPos(buffer.readResourceKey(Registries.DIMENSION), buffer.readBlockPos());
             byte fromDirection = buffer.readByte();
             byte extractPosition = buffer.readByte();

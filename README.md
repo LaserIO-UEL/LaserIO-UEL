@@ -6,7 +6,8 @@ A fork of LaserIO which aims to:
 
 # Features:
 - Chemical Cards for use with Mekanism chemicals (if Mekanism is installed)
-- Laser Nodes and Connectors auto-linking
+- Copy-paste Nodes and Network Settings
+- Auto-connect Nodes and Connectors
 - Curios integration and keybinds for the Card Holder
 - Additional features to Redstone Cards
 - Removal of standard Overclockers from Energy Cards (default transfer rate: 1,000,000 FE/operation)
@@ -39,7 +40,8 @@ Existing blocks and items will not disappear, for the most part (only Overclocke
 A very special thanks to:
 - Direwolf20 and all contributors to the original LaserIO
 - Spicierspace153 for the help with some parts of the code and tips
-- Create-Powerlines devs and embeddedt for the mixin part
+- 'Create: Powerlines' devs and embeddedt for the mixin part
+- Cyphecx for the initial concept and original PR of the Node cloning feature
 - Blackalf for testing the changes and giving suggestions on how to improve the mod
 - All current and future contributors
 

@@ -32,11 +32,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class CardFluidScreen extends CardItemScreen {
-    public int currentFluidExtractAmt;
-    public final int filterStartX;
-    public final int filterStartY;
-    public final int filterEndX;
-    public final int filterEndY;
+    private int currentFluidExtractAmt;
+    protected final int filterStartX;
+    protected final int filterStartY;
+    protected final int filterEndX;
+    protected final int filterEndY;
 
     public CardFluidScreen(CardItemContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -56,7 +56,7 @@ public class CardFluidScreen extends CardItemScreen {
 
     @Override
     public void addAmtButton() {
-        buttons.put("amount", new NumberButton(getGuiLeft() + 141, getGuiTop() + 25, 30, 12, currentMode == 0 ? currentPriority : currentFluidExtractAmt, (button) -> {
+        buttons.put("amount", new NumberButton(this.leftPos + 141, this.topPos + 25, 30, 12, currentMode == 0 ? currentPriority : currentFluidExtractAmt, (button) -> {
             changeAmount(-1);
         }));
     }
@@ -69,7 +69,7 @@ public class CardFluidScreen extends CardItemScreen {
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modestocker.png"),
                 new ResourceLocation(LaserIO.MODID, "textures/gui/buttons/modesensor.png")
         };
-        buttons.put("mode", new ToggleButton(getGuiLeft() + 5, getGuiTop() + 5, 16, 16, modeTextures, currentMode, (button) -> {
+        buttons.put("mode", new ToggleButton(this.leftPos + 5, this.topPos + 5, 16, 16, modeTextures, currentMode, (button) -> {
             currentMode = BaseCard.nextTransferMode(card);
             ((ToggleButton) button).setTexturePosition(currentMode);
             ((NumberButton) buttons.get("amount")).setValue(currentMode == 0 ? currentPriority : currentFluidExtractAmt);

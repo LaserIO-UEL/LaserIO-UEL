@@ -39,7 +39,7 @@ public class FilterTagContainer extends AbstractContainerMenu {
     }
 
     public FilterTagContainer(int windowId, Inventory playerInventory, Player player, FilterBasicHandler handler, ItemStack filterItem) {
-        super(Registration.FilterTag_Container.get(), windowId);
+        super(Registration.FILTER_TAG_CONTAINER.get(), windowId);
         playerEntity = player;
         this.handler = handler;
         this.playerInventory = new InvWrapper(playerInventory);

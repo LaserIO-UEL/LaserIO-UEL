@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -23,36 +22,36 @@ public class CardEnergy extends BaseCard {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-
+        ItemStack card = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            return InteractionResultHolder.pass(card);
+        }
         NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-                (windowId, playerInventory, playerEntity) -> new CardEnergyContainer(windowId, playerInventory, player, itemstack), Component.translatable("")), (buf -> {
-            buf.writeItem(itemstack);
+                (windowId, playerInventory, playerEntity) -> new CardEnergyContainer(windowId, playerInventory, player, card), Component.translatable("")), (buf -> {
+            buf.writeItem(card);
             buf.writeByte(-1);
         }));
-
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResultHolder.pass(card);
     }
 
-    public static CardItemHandler getInventory(ItemStack stack) {
-        CompoundTag compound = stack.getTag();
-        if (compound == null || !compound.contains("inv")) return new CardItemHandler(CardEnergyContainer.SLOTS, stack);
-        CardItemHandler handler = new CardItemHandler(CardEnergyContainer.SLOTS, stack);
+    public static CardItemHandler getInventory(ItemStack card) {
+        CompoundTag compound = card.getTag();
+        if (compound == null || !compound.contains("inv")) return new CardItemHandler(CardEnergyContainer.SLOTS, card);
+        CardItemHandler handler = new CardItemHandler(CardEnergyContainer.SLOTS, card);
         handler.deserializeNBT(compound.getCompound("inv"));
         if (handler.getSlots() < CardEnergyContainer.SLOTS)
             handler.reSize(CardEnergyContainer.SLOTS);
         return handler;
     }
 
-    public static CardItemHandler setInventory(ItemStack stack, CardItemHandler handler) {
+    public static CardItemHandler setInventory(ItemStack card, CardItemHandler handler) {
         for (int i = 0; i < handler.getSlots(); i++) {
             if (!handler.getStackInSlot(i).isEmpty()) {
-                stack.getOrCreateTag().put("inv", handler.serializeNBT());
+                card.getOrCreateTag().put("inv", handler.serializeNBT());
                 return handler;
             }
         }
-        stack.removeTagKey("inv");
+        card.removeTagKey("inv");
         return handler;
     }
 

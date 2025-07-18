@@ -26,7 +26,7 @@ import java.util.Locale;
 import static com.direwolf20.laserio.util.MiscTools.tooltipMaker;
 
 public class BaseCard extends Item {
-    protected BaseCard.CardType CARDTYPE;
+    protected CardType CARDTYPE;
 
     public enum CardType {
         ITEM,
@@ -45,8 +45,7 @@ public class BaseCard extends Item {
     }
 
     public BaseCard() {
-        super(new Item.Properties()
-                .stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public CardType getCardType() {
@@ -67,19 +66,17 @@ public class BaseCard extends Item {
         boolean sneakPressed = Screen.hasShiftDown();
 
         if (!sneakPressed) {
-            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings", ChatFormatting.GRAY));
+            tooltip.add(tooltipMaker("laserio.tooltip.item.show_settings.shift_key", ChatFormatting.GRAY));
         } else {
-            String currentMode = getNamedTransferMode(stack).toString();
+            TransferMode currentMode = getNamedTransferMode(stack);
             MutableComponent toWrite = tooltipMaker("laserio.tooltip.item.card.mode", ChatFormatting.GRAY);
-            ChatFormatting modeColor = ChatFormatting.GRAY;
-            if (currentMode.equals("EXTRACT"))
-                modeColor = ChatFormatting.RED;
-            else if (currentMode.equals("INSERT"))
-                modeColor = ChatFormatting.GREEN;
-            else if (currentMode.equals("STOCK"))
-                modeColor = ChatFormatting.BLUE;
-            else if (currentMode.equals("SENSOR"))
-                modeColor = ChatFormatting.YELLOW;
+            ChatFormatting modeColor = switch(currentMode) {
+                case EXTRACT -> ChatFormatting.RED;
+                case INSERT -> ChatFormatting.GREEN;
+                case STOCK -> ChatFormatting.BLUE;
+                case SENSOR -> ChatFormatting.YELLOW;
+                default -> ChatFormatting.GRAY;
+            };
             toWrite.append(tooltipMaker("laserio.tooltip.item.card.mode." + currentMode, modeColor));
             tooltip.add(toWrite);
 
