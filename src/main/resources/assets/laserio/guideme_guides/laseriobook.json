@@ -2,13 +2,13 @@
   "item_settings": {
     "display_name": {
       "type": "translatable",
-      "translate": "guideme.laserio.bookname"
+      "translate": "guideme.laserio.guidebook.name"
     },
     "tooltip_lines": [
       {
         "type": "translatable",
-        "translate": "guideme.laserio.bookdescription",
-        "color": "dark_gray"
+        "translate": "guideme.laserio.guidebook.description",
+        "color": "gray"
       }
     ],
     "default_language": "en_us"

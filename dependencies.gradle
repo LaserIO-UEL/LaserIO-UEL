@@ -61,10 +61,10 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools") // Mekanism: Tools
 
     // Jade - used for testing
-    runtimeOnly fg.deobf("curse.maven:jade-324717:5876199")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_file_id}")
 
-    // Antiblocks - used for pictures
-    runtimeOnly fg.deobf("curse.maven:antiblocksrechiseled-715567:6116668")
+    // Antiblocks - used for guidebook screenshots
+    runtimeOnly fg.deobf("curse.maven:antiblocksrechiseled-715567:${antiblocks_file_id}")
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 

@@ -191,9 +191,10 @@ public class LaserIOLanguage extends LanguageProvider {
         //Curios Card Holder slot
         add("curios.identifier.card_holder", "Card Holder");
 
-        //GuideME
-        add("guideme.laserio.bookname","LaserIO 101");
-        add("guideme.laserio.bookdescription", "Can't have DireWire without Wires!");
+        //GuideME guidebook
+        add("guideme.laserio.guidebook.name","LaserIO 101");
+        add("guideme.laserio.guidebook.description", "Thinking with Lasers(IO)!");
+
         //add("", "");
     }
 }
