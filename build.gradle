@@ -108,7 +108,7 @@ minecraft {
             parent runs.client
 
             // Enable GuideME live-preview
-            property "guideme.laserio.laseriobook.sources", file('src/main/resources/assets/laserio/guides/laserio/laseriobook').absolutePath
+            property "guideme.${mod_id}.guidebook.sources", file("src/main/resources/assets/${mod_id}/guides/${mod_id}/guidebook").absolutePath
         }
 
         server {
