@@ -26,6 +26,7 @@ import com.direwolf20.laserio.common.network.packets.PacketOpenFilter;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
+import com.direwolf20.laserio.integration.mekanism.client.screens.LaserGuiGraphicsChemical;
 import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -95,6 +96,10 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         this.card = container.cardItem;
         this.filter = container.slots.get(0).getItem();
         this.showCardHolderUI = !container.cardHolder.isEmpty();
+    }
+
+    public ItemStack getFilter() {
+        return filter;
     }
 
     public boolean isCardHolderUIShown() {

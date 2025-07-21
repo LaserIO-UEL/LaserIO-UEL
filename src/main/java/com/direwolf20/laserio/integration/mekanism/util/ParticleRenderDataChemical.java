@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism.client.chemicalparticle;
+package com.direwolf20.laserio.integration.mekanism.util;
 
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.BlockPos;

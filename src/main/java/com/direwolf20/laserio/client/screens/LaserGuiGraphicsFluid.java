@@ -58,7 +58,7 @@ public class LaserGuiGraphicsFluid extends GuiGraphics {
             int sloty = (int) Math.floor((y - cardFluidScreen.filterStartY) / 18);
             int slotx = (int) Math.floor((x - cardFluidScreen.filterStartX) / 18);
             int slot = ((5 * sloty) + slotx);
-            ItemStack filter = ((CardFluidScreen) screen).filter;
+            ItemStack filter = cardFluidScreen.filter;
             int totalmbAmt = FilterCount.getSlotAmount(filter, slot);
             int count = (int) Math.floor(totalmbAmt / 1000);
             int mbAmt = totalmbAmt % 1000;

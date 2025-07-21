@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism;
+package com.direwolf20.laserio.integration.mekanism.util;
 
 import com.direwolf20.laserio.common.containers.customhandler.FilterCountHandler;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;

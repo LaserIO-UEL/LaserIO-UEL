@@ -1,6 +1,8 @@
-package com.direwolf20.laserio.common.containers;
+package com.direwolf20.laserio.integration.mekanism.common.containers;
 
 import com.direwolf20.laserio.common.blocks.LaserNode;
+import com.direwolf20.laserio.common.containers.CardHolderContainer;
+import com.direwolf20.laserio.common.containers.CardItemContainer;
 import com.direwolf20.laserio.common.items.CardHolder;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.setup.Registration;
