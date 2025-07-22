@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.jei;
+package com.direwolf20.laserio.integration.jei.handlers;
 
 import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.client.screens.FilterCountScreen;

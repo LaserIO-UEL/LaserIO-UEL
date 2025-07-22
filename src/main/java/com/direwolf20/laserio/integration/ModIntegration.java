@@ -3,6 +3,7 @@ package com.direwolf20.laserio.integration;
 import net.minecraftforge.fml.ModList;
 
 public enum ModIntegration {
+    CURIOS("curios"),
     MEKANISM("mekanism");
 
     private final String modId;

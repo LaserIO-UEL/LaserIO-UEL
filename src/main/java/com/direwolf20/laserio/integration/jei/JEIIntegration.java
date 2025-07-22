@@ -9,6 +9,8 @@ import com.direwolf20.laserio.client.screens.FilterTagScreen;
 import com.direwolf20.laserio.client.screens.LaserNodeScreen;
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.jei.handlers.GhostIngredientHandler;
+import com.direwolf20.laserio.integration.jei.handlers.GuiContainerHandler;
 import com.direwolf20.laserio.setup.Registration;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
