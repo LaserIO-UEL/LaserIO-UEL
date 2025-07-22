@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.client.jei;
+package com.direwolf20.laserio.integration.jei;
 
 import com.direwolf20.laserio.client.screens.CardEnergyScreen;
 import com.direwolf20.laserio.client.screens.CardItemScreen;

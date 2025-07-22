@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.client.jei;
+package com.direwolf20.laserio.integration.jei;
 
 import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.client.screens.FilterCountScreen;
@@ -33,7 +33,7 @@ public class GhostIngredientHandler<T extends AbstractContainerScreen<?>> implem
                 continue;
             }
 
-            Rect2i bounds = new Rect2i(gui.getGuiLeft() + slot.x, gui.getGuiTop() + slot.y, 16, 16); //RS Had this as 17 17
+            Rect2i bounds = new Rect2i(gui.getGuiLeft() + slot.x, gui.getGuiTop() + slot.y, 16, 16); //RS had this as 17 17
 
             if (ingredient.getIngredient() instanceof ItemStack) {
                 targets.add(new Target<I>() {
