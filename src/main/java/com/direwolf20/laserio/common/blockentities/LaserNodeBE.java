@@ -162,6 +162,7 @@ public class LaserNodeBE extends BaseLaserBE {
     private boolean showParticles = true;
     private boolean refreshedInvNodesThisTick = false;
 
+    /** Mekanism integration **/
     public MekanismCache mekanismCache;
 
     public LaserNodeBE(BlockPos pos, BlockState state) {

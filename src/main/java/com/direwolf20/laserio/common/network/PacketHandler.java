@@ -59,7 +59,7 @@ public class PacketHandler {
         HANDLER.registerMessage(id++, PacketNodeParticles.class, PacketNodeParticles::encode, PacketNodeParticles::decode, PacketNodeParticles.Handler::handle);
         HANDLER.registerMessage(id++, PacketNodeParticlesFluid.class, PacketNodeParticlesFluid::encode, PacketNodeParticlesFluid::decode, PacketNodeParticlesFluid.Handler::handle);
 
-        //Mekanism Packets Only
+        //Mekanism packets
         if (MekanismIntegration.isLoaded()) {
             //Client Side
             HANDLER.registerMessage(id++, PacketNodeParticlesChemical.class, PacketNodeParticlesChemical::encode, PacketNodeParticlesChemical::decode, PacketNodeParticlesChemical.Handler::handle);

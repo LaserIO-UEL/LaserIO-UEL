@@ -17,6 +17,7 @@ public class ParticleRenderDispatcher {
     public static void registerProviders(RegisterParticleProvidersEvent evt) {
         evt.registerSpecial(ModParticles.ITEM_FLOW_PARTICLE.get(), ItemFlowParticle.FACTORY);
         evt.registerSpecial(ModParticles.FLUID_FLOW_PARTICLE.get(), FluidFlowParticle.FACTORY);
+        //Mekanism particles
         if (MekanismIntegration.isLoaded()) {
             evt.registerSpecial(MekanismModParticles.CHEMICAL_FLOW_PARTICLE.get(), ChemicalFlowParticle.FACTORY);
         }

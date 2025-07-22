@@ -29,6 +29,7 @@ public class ModSetup {
                     output.accept(item);
 
                     if (item instanceof CardFluid) {
+                        //If registered, place the Mekanism Card after the Fluid one
                         if (MekanismIntegration.isLoaded()) {
                             Registration.MEKANISM_ITEMS.getEntries().forEach(f -> {
                                 Item itemMek = f.get();
