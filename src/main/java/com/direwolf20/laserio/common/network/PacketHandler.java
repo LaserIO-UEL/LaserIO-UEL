@@ -15,7 +15,7 @@ import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilterTag;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateRedstoneCard;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.common.network.packets.PacketNodeParticlesChemical;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +60,7 @@ public class PacketHandler {
         HANDLER.registerMessage(id++, PacketNodeParticlesFluid.class, PacketNodeParticlesFluid::encode, PacketNodeParticlesFluid::decode, PacketNodeParticlesFluid.Handler::handle);
 
         //Mekanism packets
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             //Client Side
             HANDLER.registerMessage(id++, PacketNodeParticlesChemical.class, PacketNodeParticlesChemical::encode, PacketNodeParticlesChemical::decode, PacketNodeParticlesChemical.Handler::handle);
         }

@@ -34,7 +34,7 @@ import com.direwolf20.laserio.common.items.filters.FilterTag;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.world.inventory.MenuType;
@@ -78,7 +78,7 @@ public class Registration {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             MEKANISM_ITEMS.register(bus);
             MEKANISM_CONTAINERS.register(bus);
             MEKANISM_PARTICLE_TYPES.register(bus);

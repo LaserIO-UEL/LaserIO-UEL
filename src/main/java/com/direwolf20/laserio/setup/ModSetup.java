@@ -4,7 +4,7 @@ import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.events.ServerTickHandler;
 import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.network.PacketHandler;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,7 +30,7 @@ public class ModSetup {
 
                     if (item instanceof CardFluid) {
                         //If registered, place the Mekanism Card after the Fluid one
-                        if (MekanismIntegration.isLoaded()) {
+                        if (ModIntegration.MEKANISM.isLoaded()) {
                             Registration.MEKANISM_ITEMS.getEntries().forEach(f -> {
                                 Item itemMek = f.get();
                                 output.accept(itemMek);

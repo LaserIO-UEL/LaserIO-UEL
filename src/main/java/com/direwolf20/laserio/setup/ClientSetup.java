@@ -23,7 +23,7 @@ import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.screens.CardChemicalScreen;
 import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.client.color.item.ItemColors;
@@ -94,7 +94,7 @@ public class ClientSetup {
         });
 
         //Mekanism
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             event.enqueueWork(() -> {
                 MenuScreens.register(Registration.CARD_CHEMICAL_CONTAINER.get(), CardChemicalScreen::new);
                 ItemProperties.register(Registration.CARD_CHEMICAL.get(),
@@ -175,7 +175,7 @@ public class ClientSetup {
         }, Registration.CARD_REDSTONE.get());
 
         //Mekanism Card (registered only if Mekanism is loaded)
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             colors.register((stack, index) -> {
                 if (index == 2) {
                     if (BaseCard.getNamedTransferMode(stack) == TransferMode.SENSOR) {

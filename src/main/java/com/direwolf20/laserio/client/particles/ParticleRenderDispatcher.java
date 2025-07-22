@@ -3,7 +3,7 @@ package com.direwolf20.laserio.client.particles;
 import com.direwolf20.laserio.client.particles.fluidparticle.FluidFlowParticle;
 import com.direwolf20.laserio.client.particles.itemparticle.ItemFlowParticle;
 import com.direwolf20.laserio.common.LaserIO;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.client.MekanismModParticles;
 import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ChemicalFlowParticle;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +18,7 @@ public class ParticleRenderDispatcher {
         evt.registerSpecial(ModParticles.ITEM_FLOW_PARTICLE.get(), ItemFlowParticle.FACTORY);
         evt.registerSpecial(ModParticles.FLUID_FLOW_PARTICLE.get(), FluidFlowParticle.FACTORY);
         //Mekanism particles
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             evt.registerSpecial(MekanismModParticles.CHEMICAL_FLOW_PARTICLE.get(), ChemicalFlowParticle.FACTORY);
         }
     }
