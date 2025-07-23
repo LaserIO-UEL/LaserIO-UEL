@@ -3,6 +3,7 @@ package com.direwolf20.laserio.integration;
 import net.minecraftforge.fml.ModList;
 
 public enum ModIntegration {
+    OCULUS("oculus"),
     CURIOS("curios"),
     MEKANISM("mekanism");
 

@@ -8,6 +8,7 @@ import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
 import com.direwolf20.laserio.common.blocks.LaserConnectorAdv;
 import com.direwolf20.laserio.common.items.CardCloner;
 import com.direwolf20.laserio.common.items.LaserWrench;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.util.DimBlockPos;
 import com.direwolf20.laserio.util.VectorHelper;
@@ -29,17 +30,17 @@ import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 
 import java.awt.Color;
 
 public class ClientEvents {
-    public static final boolean IS_OCULUS_LOADED = ModList.get().isLoaded("oculus");
-    private static final Stage RENDERING_STAGE = IS_OCULUS_LOADED ? Stage.AFTER_TRANSLUCENT_BLOCKS : Stage.AFTER_CUTOUT_BLOCKS;
+    private static final Stage DEFAULT_RENDERING_STAGE = Stage.AFTER_CUTOUT_BLOCKS;
+    private static final Stage OCULUS_RENDERING_STAGE = Stage.AFTER_TRANSLUCENT_BLOCKS;
 
     @SubscribeEvent
     static void renderWorldLastEvent(RenderLevelStageEvent evt) {
-        if (evt.getStage() != RENDERING_STAGE) {
+        Stage renderingStage = ModIntegration.OCULUS.isLoaded() ? OCULUS_RENDERING_STAGE : DEFAULT_RENDERING_STAGE;
+        if (evt.getStage() != renderingStage) {
             return;
         }
         Player player = Minecraft.getInstance().player;

@@ -4,6 +4,7 @@ import com.direwolf20.laserio.client.events.ClientEvents;
 import com.direwolf20.laserio.common.blockentities.LaserConnectorAdvBE;
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.CardRender;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -248,7 +249,7 @@ public class RenderUtils {
         float alpha = 1f;
         float thickness = 0.0175f;
 
-        if (ClientEvents.IS_OCULUS_LOADED) {
+        if (ModIntegration.OCULUS.isLoaded()) {
             drawConnectingLasersMainCore(beConnectingRenders, matrixStackIn, buffer, projectedView, alpha, thickness);
             drawConnectingLasersMainBeam(beConnectingRenders, matrixStackIn, buffer, projectedView, alpha, thickness);
         } else {
