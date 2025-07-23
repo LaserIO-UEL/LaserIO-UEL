@@ -6,7 +6,6 @@ import com.direwolf20.laserio.client.blockentityrenders.LaserNodeBERender;
 import com.direwolf20.laserio.client.events.ClientEvents;
 import com.direwolf20.laserio.client.events.EventTooltip;
 import com.direwolf20.laserio.client.events.KeybindHandler;
-import com.direwolf20.laserio.client.screens.CardChemicalScreen;
 import com.direwolf20.laserio.client.screens.CardEnergyScreen;
 import com.direwolf20.laserio.client.screens.CardFluidScreen;
 import com.direwolf20.laserio.client.screens.CardHolderScreen;
@@ -24,8 +23,9 @@ import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.mekanism.client.screens.CardChemicalScreen;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -51,28 +51,29 @@ public class ClientSetup {
         ItemBlockRenderTypes.setRenderLayer(Registration.LASER_NODE_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(Registration.LASER_CONNECTOR_BLOCK.get(), RenderType.cutout());
 
-        //Register our Render Events Class
+        //Register our render events
         MinecraftForge.EVENT_BUS.register(ClientEvents.class);
         MinecraftForge.EVENT_BUS.register(EventTooltip.class);
 
-        //Register our KeybindHandler
+        //Register our keybinds handler
         MinecraftForge.EVENT_BUS.register(new KeybindHandler());
 
         //Screens
         event.enqueueWork(() -> {
-            MenuScreens.register(Registration.LASER_NODE_CONTAINER.get(), LaserNodeScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.CARD_ITEM_CONTAINER.get(), CardItemScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.CARD_FLUID_CONTAINER.get(), CardFluidScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.CARD_ENERGY_CONTAINER.get(), CardEnergyScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.CARD_REDSTONE_CONTAINER.get(), CardRedstoneScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.CARD_HOLDER_CONTAINER.get(), CardHolderScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.FILTER_BASIC_CONTAINER.get(), FilterBasicScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.FILTER_COUNT_CONTAINER.get(), FilterCountScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.FILTER_TAG_CONTAINER.get(), FilterTagScreen::new);           // Attach our container to the screen
-            MenuScreens.register(Registration.FILTER_NBT_CONTAINER.get(), FilterNBTScreen::new);           // Attach our container to the screen
+            //Attach our containers to the screens
+            MenuScreens.register(Registration.LASER_NODE_CONTAINER.get(), LaserNodeScreen::new);
+            MenuScreens.register(Registration.CARD_ITEM_CONTAINER.get(), CardItemScreen::new);
+            MenuScreens.register(Registration.CARD_FLUID_CONTAINER.get(), CardFluidScreen::new);
+            MenuScreens.register(Registration.CARD_ENERGY_CONTAINER.get(), CardEnergyScreen::new);
+            MenuScreens.register(Registration.CARD_REDSTONE_CONTAINER.get(), CardRedstoneScreen::new);
+            MenuScreens.register(Registration.CARD_HOLDER_CONTAINER.get(), CardHolderScreen::new);
+            MenuScreens.register(Registration.FILTER_BASIC_CONTAINER.get(), FilterBasicScreen::new);
+            MenuScreens.register(Registration.FILTER_COUNT_CONTAINER.get(), FilterCountScreen::new);
+            MenuScreens.register(Registration.FILTER_TAG_CONTAINER.get(), FilterTagScreen::new);
+            MenuScreens.register(Registration.FILTER_NBT_CONTAINER.get(), FilterNBTScreen::new);
         });
 
-        //Item Properties -- For giving the Cards an Insert/Extract on the itemstack
+        //Give the Cards an insert/extract on the ItemStack
         event.enqueueWork(() -> {
             ItemProperties.register(Registration.CARD_ITEM.get(),
                     new ResourceLocation(LaserIO.MODID, "mode"), (stack, level, living, id) -> {
@@ -93,7 +94,7 @@ public class ClientSetup {
         });
 
         //Mekanism
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             event.enqueueWork(() -> {
                 MenuScreens.register(Registration.CARD_CHEMICAL_CONTAINER.get(), CardChemicalScreen::new);
                 ItemProperties.register(Registration.CARD_CHEMICAL.get(),
@@ -104,7 +105,7 @@ public class ClientSetup {
         }
     }
 
-    //Register Block Entity Renders
+    //Register block-entity renderers
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(Registration.LASER_CONNECTOR_BE.get(), LaserConnectorBERender::new);
@@ -114,7 +115,6 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerTooltipFactory(RegisterClientTooltipComponentFactoriesEvent event) {
-        //LOGGER.debug("Registering custom tooltip component factories for {}", Reference.MODID);
         event.register(EventTooltip.CopyPasteTooltipComponent.Data.class, EventTooltip.CopyPasteTooltipComponent::new);
     }
 
@@ -125,11 +125,11 @@ public class ClientSetup {
         event.register(KeybindHandler.TOGGLE_CARD_HOLDER_PULLING);
     }
 
-    //For giving the cards their channel color on the itemstack
     @SubscribeEvent
     static void itemColors(RegisterColorHandlersEvent.Item event) {
         final ItemColors colors = event.getItemColors();
 
+        //Give the Cards their channel color on the ItemStack
         colors.register((stack, index) -> {
             if (index == 2) {
                 if (BaseCard.getNamedTransferMode(stack) == TransferMode.SENSOR) {
@@ -154,20 +154,6 @@ public class ClientSetup {
             }
             return 0xFFFFFFFF;
         }, Registration.CARD_FLUID.get());
-        if (MekanismIntegration.isLoaded()) {
-            colors.register((stack, index) -> {
-                if (index == 2) {
-                    if (BaseCard.getNamedTransferMode(stack) == TransferMode.SENSOR) {
-                        Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
-                        return color.getRGB();
-                    } else {
-                        Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
-                        return color.getRGB();
-                    }
-                }
-                return 0xFFFFFFFF;
-            }, Registration.CARD_CHEMICAL.get());
-        }
         colors.register((stack, index) -> {
             if (index == 2) {
                 if (BaseCard.getNamedTransferMode(stack) == TransferMode.SENSOR) {
@@ -187,6 +173,24 @@ public class ClientSetup {
             }
             return 0xFFFFFFFF;
         }, Registration.CARD_REDSTONE.get());
+
+        //Mekanism Card (registered only if Mekanism is loaded)
+        if (ModIntegration.MEKANISM.isLoaded()) {
+            colors.register((stack, index) -> {
+                if (index == 2) {
+                    if (BaseCard.getNamedTransferMode(stack) == TransferMode.SENSOR) {
+                        Color color = LaserNodeBERender.COLORS[BaseCard.getRedstoneChannel(stack)];
+                        return color.getRGB();
+                    } else {
+                        Color color = LaserNodeBERender.COLORS[BaseCard.getChannel(stack)];
+                        return color.getRGB();
+                    }
+                }
+                return 0xFFFFFFFF;
+            }, Registration.CARD_CHEMICAL.get());
+        }
+
+        //Give Nodes and Connectors their color on the ItemStack
         colors.register((stack, index) -> {
             if (index == 1) {
                 Color color = new Color(255, 0, 0, 255);
@@ -210,6 +214,7 @@ public class ClientSetup {
         }, Registration.LASER_CONNECTOR_ADV_ITEM.get());
     }
 
+    //Give Nodes and Connectors their color when placed in world
     @SubscribeEvent
     public static void blockColors(RegisterColorHandlersEvent.Block event) {
         event.register(

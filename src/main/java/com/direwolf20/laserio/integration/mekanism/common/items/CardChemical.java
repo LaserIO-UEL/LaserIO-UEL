@@ -1,7 +1,7 @@
-package com.direwolf20.laserio.integration.mekanism;
+package com.direwolf20.laserio.integration.mekanism.common.items;
 
-import com.direwolf20.laserio.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.setup.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

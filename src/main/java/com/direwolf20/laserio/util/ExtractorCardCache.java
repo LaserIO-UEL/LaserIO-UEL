@@ -5,7 +5,7 @@ import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.items.cards.CardItem;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 

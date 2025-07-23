@@ -1,6 +1,5 @@
 package com.direwolf20.laserio.common.network.packets;
 
-import com.direwolf20.laserio.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardFluidContainer;
 import com.direwolf20.laserio.common.containers.CardItemContainer;
@@ -13,7 +12,8 @@ import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.items.cards.CardItem;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

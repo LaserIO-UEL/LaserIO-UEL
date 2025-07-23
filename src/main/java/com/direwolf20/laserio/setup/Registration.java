@@ -7,7 +7,6 @@ import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
 import com.direwolf20.laserio.common.blocks.LaserConnector;
 import com.direwolf20.laserio.common.blocks.LaserConnectorAdv;
 import com.direwolf20.laserio.common.blocks.LaserNode;
-import com.direwolf20.laserio.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.common.containers.CardEnergyContainer;
 import com.direwolf20.laserio.common.containers.CardFluidContainer;
 import com.direwolf20.laserio.common.containers.CardHolderContainer;
@@ -35,8 +34,9 @@ import com.direwolf20.laserio.common.items.filters.FilterTag;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
 import static com.direwolf20.laserio.common.LaserIO.MODID;
-import static com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.MekanismModParticles.MEKANISM_PARTICLE_TYPES;
+import static com.direwolf20.laserio.integration.mekanism.client.MekanismModParticles.MEKANISM_PARTICLE_TYPES;
 
 public class Registration {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -78,7 +78,7 @@ public class Registration {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             MEKANISM_ITEMS.register(bus);
             MEKANISM_CONTAINERS.register(bus);
             MEKANISM_PARTICLE_TYPES.register(bus);

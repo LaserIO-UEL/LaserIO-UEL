@@ -19,10 +19,10 @@ import com.direwolf20.laserio.common.items.filters.FilterCount;
 import com.direwolf20.laserio.common.items.filters.FilterMod;
 import com.direwolf20.laserio.common.items.filters.FilterTag;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.MekanismCache;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
-import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.util.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.BaseCardCache;
 import com.direwolf20.laserio.util.CardRender;
@@ -162,11 +162,12 @@ public class LaserNodeBE extends BaseLaserBE {
     private boolean showParticles = true;
     private boolean refreshedInvNodesThisTick = false;
 
+    /** Mekanism integration **/
     public MekanismCache mekanismCache;
 
     public LaserNodeBE(BlockPos pos, BlockState state) {
         super(Registration.LASER_NODE_BE.get(), pos, state);
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             mekanismCache = new MekanismCache(this);
         }
         for (Direction direction : Direction.values()) {

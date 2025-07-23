@@ -1,8 +1,8 @@
-package com.direwolf20.laserio.common.network.packets;
+package com.direwolf20.laserio.integration.mekanism.common.network.packets;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
-import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleDataChemical;
-import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ParticleRenderDataChemical;
+import com.direwolf20.laserio.integration.mekanism.util.ParticleDataChemical;
+import com.direwolf20.laserio.integration.mekanism.util.ParticleRenderDataChemical;
 import com.direwolf20.laserio.util.DimBlockPos;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;

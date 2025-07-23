@@ -1,5 +1,6 @@
-package com.direwolf20.laserio.client.screens;
+package com.direwolf20.laserio.integration.mekanism.client.screens;
 
+import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.client.screens.widgets.NumberButton;
 import com.direwolf20.laserio.client.screens.widgets.ToggleButton;
 import com.direwolf20.laserio.common.LaserIO;
@@ -12,7 +13,8 @@ import com.direwolf20.laserio.common.network.packets.PacketGhostSlot;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
-import com.direwolf20.laserio.integration.mekanism.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import com.direwolf20.laserio.setup.Config;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.client.Minecraft;
@@ -26,9 +28,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.doesItemStackHoldChemicals;
-import static com.direwolf20.laserio.integration.mekanism.MekanismStatics.getFirstChemicalOnItemStack;
 
 public class CardChemicalScreen extends CardItemScreen {
     private int currentChemicalExtractAmt;
@@ -81,7 +80,7 @@ public class CardChemicalScreen extends CardItemScreen {
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
             ItemStack itemStack = this.hoveredSlot.getItem();
             if (hoveredSlot instanceof FilterBasicSlot) {
-                ChemicalStack<?> chemicalStack = getFirstChemicalOnItemStack(itemStack);
+                ChemicalStack<?> chemicalStack = MekanismStatics.getFirstChemicalOnItemStack(itemStack);
                 if (chemicalStack.isEmpty())
                     pGuiGraphics.renderTooltip(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), itemStack, pX, pY);
                 else
@@ -127,7 +126,7 @@ public class CardChemicalScreen extends CardItemScreen {
     @Override
     public boolean filterSlot(int btn, boolean isScrollWheel) {
         ItemStack slotStack = hoveredSlot.getItem();
-        if (!doesItemStackHoldChemicals(slotStack))
+        if (!MekanismStatics.doesItemStackHoldChemicals(slotStack))
             return super.filterSlot(btn, isScrollWheel);
         if (slotStack.isEmpty()) return true;
         if (btn == 2) {

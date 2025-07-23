@@ -1,5 +1,6 @@
 package com.direwolf20.laserio.integration.mekanism.client.chemicalparticle;
 
+import com.direwolf20.laserio.integration.mekanism.client.MekanismModParticles;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mekanism.api.chemical.ChemicalStack;

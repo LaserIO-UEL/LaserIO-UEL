@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism;
+package com.direwolf20.laserio.integration.mekanism.util;
 
 import com.direwolf20.laserio.common.containers.customhandler.FilterCountHandler;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;
@@ -29,7 +29,7 @@ public class MekanismCardCache {
 
     public MekanismCardCache(BaseCardCache baseCardCache) {
         this.baseCardCache = baseCardCache;
-        if (this.baseCardCache.filterCard.equals(ItemStack.EMPTY)) {
+        if (this.baseCardCache.filterCard.isEmpty()) {
             filteredChemicals = new ArrayList<>();
         } else {
             this.filteredChemicals = getFilteredChemicals();
@@ -65,7 +65,7 @@ public class MekanismCardCache {
 
     public boolean isStackValidForCard(ChemicalStack<?> testStack) {
         ItemStack filterCard = baseCardCache.filterCard;
-        if (filterCard.equals(ItemStack.EMPTY)) return true; //If theres no filter in the card
+        if (filterCard.isEmpty()) return true; //If theres no filter in the card
         ChemicalStackKey key = new ChemicalStackKey(testStack);
         if (filterCacheChemical.containsKey(key)) return filterCacheChemical.get(key);
         if (filterCard.getItem() instanceof FilterMod) {
@@ -97,7 +97,7 @@ public class MekanismCardCache {
 
     public int getFilterAmt(ChemicalStack<?> testStack) {
         ItemStack filterCard = baseCardCache.filterCard;
-        if (filterCard.equals(ItemStack.EMPTY))
+        if (filterCard.isEmpty())
             return 0; //If theres no filter in the card (This should never happen in theory)
         if (!(filterCard.getItem() instanceof FilterCount)) { //If this is a basic or tag Card return -1 which will mean infinite amount
             return -1;

@@ -1,7 +1,8 @@
-package com.direwolf20.laserio.client.screens;
+package com.direwolf20.laserio.integration.mekanism.client.screens;
 
+import com.direwolf20.laserio.client.screens.CardItemScreen;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
-import com.direwolf20.laserio.integration.mekanism.MekanismStatics;
+import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import com.direwolf20.laserio.util.MiscTools;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -52,7 +53,7 @@ public class LaserGuiGraphicsChemical extends GuiGraphics {
             int sloty = (int) Math.floor((y - cardChemicalScreen.filterStartY) / 18);
             int slotx = (int) Math.floor((x - cardChemicalScreen.filterStartX) / 18);
             int slot = ((5 * sloty) + slotx);
-            ItemStack filter = ((CardChemicalScreen) screen).filter;
+            ItemStack filter = cardChemicalScreen.getFilter();
             int totalmbAmt = FilterCount.getSlotAmount(filter, slot);
             int count = (int) Math.floor(totalmbAmt / 1000);
             int mbAmt = totalmbAmt % 1000;

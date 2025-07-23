@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism;
+package com.direwolf20.laserio.integration.mekanism.util;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;

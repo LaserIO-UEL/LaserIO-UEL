@@ -5,7 +5,6 @@ import com.direwolf20.laserio.common.network.packets.PacketChangeColor;
 import com.direwolf20.laserio.common.network.packets.PacketCopyPasteCard;
 import com.direwolf20.laserio.common.network.packets.PacketGhostSlot;
 import com.direwolf20.laserio.common.network.packets.PacketNodeParticles;
-import com.direwolf20.laserio.common.network.packets.PacketNodeParticlesChemical;
 import com.direwolf20.laserio.common.network.packets.PacketNodeParticlesFluid;
 import com.direwolf20.laserio.common.network.packets.PacketOpenCard;
 import com.direwolf20.laserio.common.network.packets.PacketKeybindPerformAction;
@@ -16,7 +15,8 @@ import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilterTag;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateRedstoneCard;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.mekanism.common.network.packets.PacketNodeParticlesChemical;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,8 +59,8 @@ public class PacketHandler {
         HANDLER.registerMessage(id++, PacketNodeParticles.class, PacketNodeParticles::encode, PacketNodeParticles::decode, PacketNodeParticles.Handler::handle);
         HANDLER.registerMessage(id++, PacketNodeParticlesFluid.class, PacketNodeParticlesFluid::encode, PacketNodeParticlesFluid::decode, PacketNodeParticlesFluid.Handler::handle);
 
-        //Mekanism Packets Only
-        if (MekanismIntegration.isLoaded()) {
+        //Mekanism packets
+        if (ModIntegration.MEKANISM.isLoaded()) {
             //Client Side
             HANDLER.registerMessage(id++, PacketNodeParticlesChemical.class, PacketNodeParticlesChemical::encode, PacketNodeParticlesChemical::decode, PacketNodeParticlesChemical.Handler::handle);
         }

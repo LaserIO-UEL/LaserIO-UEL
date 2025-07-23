@@ -2,8 +2,8 @@ package com.direwolf20.laserio.common.items.filters;
 
 import com.direwolf20.laserio.common.containers.FilterCountContainer;
 import com.direwolf20.laserio.common.containers.customhandler.FilterCountHandler;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
-import com.direwolf20.laserio.integration.mekanism.MekanismStatics;
+import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -128,7 +128,7 @@ public class FilterCount extends BaseFilter {
             CompoundTag countTag = new CompoundTag();
             ItemStack itemStack = handler.getStackInSlot(i);
             countTag.putInt("Slot", i);
-            if (doesItemStackHoldFluids(itemStack) || (MekanismIntegration.isLoaded() && MekanismStatics.doesItemStackHoldChemicals(itemStack))) {
+            if (doesItemStackHoldFluids(itemStack) || (ModIntegration.MEKANISM.isLoaded() && MekanismStatics.doesItemStackHoldChemicals(itemStack))) {
                 int mbAmt = getSlotAmount(stack, i);
                 if (mbAmt > 0) {
                     countTag.putInt("Count", Math.max(1, (int) Math.floor(mbAmt / 1000)));

@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.client.jei;
+package com.direwolf20.laserio.integration.jei;
 
 import com.direwolf20.laserio.client.screens.CardEnergyScreen;
 import com.direwolf20.laserio.client.screens.CardItemScreen;
@@ -8,7 +8,9 @@ import com.direwolf20.laserio.client.screens.FilterNBTScreen;
 import com.direwolf20.laserio.client.screens.FilterTagScreen;
 import com.direwolf20.laserio.client.screens.LaserNodeScreen;
 import com.direwolf20.laserio.common.LaserIO;
-import com.direwolf20.laserio.integration.mekanism.MekanismIntegration;
+import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.jei.handlers.GhostIngredientHandler;
+import com.direwolf20.laserio.integration.jei.handlers.GuiContainerHandler;
 import com.direwolf20.laserio.setup.Registration;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -53,7 +55,7 @@ public class JEIIntegration implements IModPlugin {
         addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_REDSTONE);
 
         //Mekanism card NBT clearing recipe (registered only if Mekanism is loaded)
-        if (MekanismIntegration.isLoaded()) {
+        if (ModIntegration.MEKANISM.isLoaded()) {
             addHiddenRecipe(hiddenRecipes, recipeManager, Registration.CARD_CHEMICAL);
         }
 

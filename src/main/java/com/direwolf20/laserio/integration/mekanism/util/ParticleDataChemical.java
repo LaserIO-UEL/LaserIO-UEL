@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism.client.chemicalparticle;
+package com.direwolf20.laserio.integration.mekanism.util;
 
 import com.direwolf20.laserio.util.DimBlockPos;
 import mekanism.api.chemical.ChemicalStack;
