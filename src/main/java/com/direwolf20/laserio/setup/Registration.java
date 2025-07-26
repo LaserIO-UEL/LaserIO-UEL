@@ -36,7 +36,7 @@ import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
 import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
-import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

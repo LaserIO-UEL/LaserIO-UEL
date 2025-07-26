@@ -7,7 +7,7 @@ import com.direwolf20.laserio.common.items.cards.CardEnergy;
 import com.direwolf20.laserio.common.items.cards.CardFluid;
 import com.direwolf20.laserio.common.items.cards.CardItem;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
-import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import com.direwolf20.laserio.setup.Config;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

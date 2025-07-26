@@ -13,7 +13,7 @@ import com.direwolf20.laserio.common.items.cards.CardItem;
 import com.direwolf20.laserio.common.items.cards.CardRedstone;
 import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
-import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

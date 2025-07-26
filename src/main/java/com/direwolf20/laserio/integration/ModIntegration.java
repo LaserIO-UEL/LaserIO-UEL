@@ -13,6 +13,10 @@ public enum ModIntegration {
         this.modId = modId;
     }
 
+    public String getModId() {
+        return modId;
+    }
+
     public boolean isLoaded() {
         return ModList.get().isLoaded(modId);
     }

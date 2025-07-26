@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism.common.items;
+package com.direwolf20.laserio.integration.mekanism.common.items.cards;
 
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;

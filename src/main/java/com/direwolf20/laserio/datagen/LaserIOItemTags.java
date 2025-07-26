@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.datagen;
 
 import com.direwolf20.laserio.common.LaserIO;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.TagUtil;
 import net.minecraft.core.HolderLookup;
@@ -14,10 +15,10 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 public class LaserIOItemTags extends ItemTagsProvider {
-    private static final TagKey<Item> WRENCHES = TagUtil.createForgeTag("wrenches");
-    private static final TagKey<Item> TOOLS_WRENCH = TagUtil.createForgeTag("tools/wrench");
-    private static final TagKey<Item> FILTERS = TagUtil.createLaserIOTag("filters");
-    private static final TagKey<Item> CURIOS_CARD_HOLDER_SLOT = TagUtil.createTag("curios", "card_holder");
+    private static final TagKey<Item> WRENCHES = TagUtil.createForgeItemTag("wrenches");
+    private static final TagKey<Item> TOOLS_WRENCH = TagUtil.createForgeItemTag("tools/wrench");
+    private static final TagKey<Item> FILTERS = TagUtil.createLaserIOItemTag("filters");
+    private static final TagKey<Item> CURIOS_CARD_HOLDER_SLOT = TagUtil.createItemTag(ModIntegration.CURIOS.getModId(), "card_holder");
 
     public LaserIOItemTags(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, BlockTagsProvider blockTags, ExistingFileHelper helper) {
         super(packOutput, lookupProvider, blockTags.contentsGetter(), LaserIO.MODID, helper);

@@ -21,7 +21,7 @@ import com.direwolf20.laserio.common.items.filters.FilterTag;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.MekanismCache;
-import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import com.direwolf20.laserio.integration.mekanism.util.ParticleRenderDataChemical;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.BaseCardCache;
