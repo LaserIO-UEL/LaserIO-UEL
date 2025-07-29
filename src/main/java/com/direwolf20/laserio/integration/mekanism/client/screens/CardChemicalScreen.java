@@ -13,7 +13,7 @@ import com.direwolf20.laserio.common.network.packets.PacketGhostSlot;
 import com.direwolf20.laserio.common.network.packets.PacketOpenNode;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateCard;
 import com.direwolf20.laserio.common.network.packets.PacketUpdateFilter;
-import com.direwolf20.laserio.integration.mekanism.common.items.CardChemical;
+import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import com.direwolf20.laserio.setup.Config;
 import mekanism.api.chemical.ChemicalStack;

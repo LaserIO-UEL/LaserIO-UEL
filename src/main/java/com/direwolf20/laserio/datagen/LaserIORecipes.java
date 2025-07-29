@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.datagen;
 
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipeBuilder;
+import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.setup.Registration;
 import com.direwolf20.laserio.util.TagUtil;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import java.util.function.Consumer;
 
 public class LaserIORecipes extends RecipeProvider implements IConditionBuilder {
-    private static final TagKey<Item> CIRCUITS_BASIC = TagUtil.createForgeTag("circuits/basic");
+    private static final TagKey<Item> CIRCUITS_BASIC = TagUtil.createForgeItemTag("circuits/basic");
 
     public LaserIORecipes(PackOutput packOutput) {
         super(packOutput);
@@ -162,7 +163,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
 
         //Mekanism Card
         ConditionalRecipe.builder()
-                .addCondition(modLoaded("mekanism"))
+                .addCondition(modLoaded(ModIntegration.MEKANISM.getModId()))
                 .addRecipe(t ->
                     ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.CARD_CHEMICAL.get(), 1)
                             .pattern("rlr")
@@ -261,7 +262,7 @@ public class LaserIORecipes extends RecipeProvider implements IConditionBuilder 
 
         //Mekanism Card NBT clearing recipe
         ConditionalRecipe.builder()
-                .addCondition(modLoaded("mekanism"))
+                .addCondition(modLoaded(ModIntegration.MEKANISM.getModId()))
                 .addRecipe(t ->
                     CardClearRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.CARD_CHEMICAL.get())
                             .requires(Registration.CARD_CHEMICAL.get())

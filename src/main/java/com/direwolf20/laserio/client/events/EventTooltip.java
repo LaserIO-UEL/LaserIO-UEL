@@ -4,15 +4,13 @@ import com.direwolf20.laserio.client.screens.LaserGuiGraphics;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
 import com.direwolf20.laserio.common.items.filters.FilterTag;
+import com.direwolf20.laserio.util.TagUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -139,13 +137,13 @@ public class EventTooltip {
 
     private static void renderTagStack(GuiGraphics guiGraphics, String tag, int x, int y) {
         Minecraft mc = Minecraft.getInstance();
-        List<Item> tagItems = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(new ResourceLocation(tag))).stream().toList();
+        List<Item> tagItems = ForgeRegistries.ITEMS.tags().getTag(TagUtil.createItemTag(tag)).stream().toList();
         if (tagItems.size() > 0) {
             ItemStack drawStack = new ItemStack(tagItems.get((int) (mc.level.getGameTime() / 20) % tagItems.size()));
             renderFilterStack(guiGraphics, drawStack, x, y);
         }
 
-        List<Fluid> tagFluids = ForgeRegistries.FLUIDS.tags().getTag(FluidTags.create(new ResourceLocation(tag))).stream().toList();
+        List<Fluid> tagFluids = ForgeRegistries.FLUIDS.tags().getTag(TagUtil.createFluidTag(tag)).stream().toList();
         if (tagFluids.size() > 0) {
             FluidStack drawFluidStack = new FluidStack(tagFluids.get((int) (mc.level.getGameTime() / 20) % tagFluids.size()), 1000);
             if (!drawFluidStack.isEmpty()) {

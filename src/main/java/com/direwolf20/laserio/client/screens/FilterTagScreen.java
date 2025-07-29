@@ -13,6 +13,7 @@ import com.direwolf20.laserio.integration.ModIntegration;
 import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import com.direwolf20.laserio.util.MagicHelpers;
 import com.direwolf20.laserio.util.MiscTools;
+import com.direwolf20.laserio.util.TagUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,8 +24,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -119,7 +118,7 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         overSlot = -1;
         LaserGuiGraphics laserGuiGraphics = new LaserGuiGraphics(minecraft, guiGraphics.bufferSource());
         for (String tag : displayTags) {
-            List<Item> tagItems = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(new ResourceLocation(tag))).stream().toList();
+            List<Item> tagItems = ForgeRegistries.ITEMS.tags().getTag(TagUtil.createItemTag(tag)).stream().toList();
             ItemStack drawStack = ItemStack.EMPTY;
             if (tagItems.size() > 0) {
                 drawStack = new ItemStack(tagItems.get((cycleRenders / 120) % tagItems.size()));
@@ -129,7 +128,7 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
                 matrixStack.popPose();
             }
 
-            List<Fluid> tagFluids = ForgeRegistries.FLUIDS.tags().getTag(FluidTags.create(new ResourceLocation(tag))).stream().toList();
+            List<Fluid> tagFluids = ForgeRegistries.FLUIDS.tags().getTag(TagUtil.createFluidTag(tag)).stream().toList();
             FluidStack drawFluidStack = FluidStack.EMPTY;
             ItemStack bucketStack = ItemStack.EMPTY;
             if (tagFluids.size() > 0) {
@@ -396,8 +395,6 @@ public class FilterTagScreen extends AbstractContainerScreen<FilterTagContainer>
         }
 
         if (hoveredSlot instanceof FilterBasicSlot) {
-
-
             // By splitting the stack we can get air easily :) perfect removal basically
             ItemStack stack = this.menu.getCarried();// getMinecraft().player.inventoryMenu.getCarried();
             stack = stack.copy().split(hoveredSlot.getMaxStackSize()); // Limit to slot limit
