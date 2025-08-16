@@ -1,4 +1,6 @@
 # eclipse
+eclipse
+run
 bin
 *.launch
 .settings
@@ -6,6 +8,10 @@ bin
 .classpath
 .factorypath
 .project
+
+# eclipse apt
+/.apt_generated/
+/.apt_generated_tests/
 
 # idea
 out
@@ -19,14 +25,9 @@ src/generated/resources/.cache
 build
 .gradle
 
-# other
-eclipse
-run
-
 # Files from Forge MDK
 forge*changelog.txt
 server
 Minecraft
 changelog.txt
 CREDITS.txt
-/.apt_generated_tests/
