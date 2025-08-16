@@ -108,7 +108,7 @@ minecraft {
             parent runs.client
 
             // Enable GuideME live-preview
-            property "guideme.${mod_id}.guidebook.sources", file("src/main/resources/assets/${mod_id}/guides/${mod_id}/guidebook").absolutePath
+            property "guideme.${mod_id}.guide.sources", file("src/main/resources/assets/${mod_id}/${mod_id}_guidebook").absolutePath
         }
 
         server {
