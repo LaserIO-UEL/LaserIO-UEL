@@ -8,6 +8,7 @@ import com.direwolf20.laserio.integration.ModIntegration;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,18 +29,25 @@ public class ModSetup {
                     Item item = e.get();
                     output.accept(item);
 
+                    //Place the Mekanism Card after the Fluid one (if Mekanism is loaded)
                     if (item instanceof CardFluid) {
-                        //If registered, place the Mekanism Card after the Fluid one
-                        if (ModIntegration.MEKANISM.isLoaded()) {
-                            Registration.MEKANISM_ITEMS.getEntries().forEach(f -> {
-                                Item itemMek = f.get();
-                                output.accept(itemMek);
-                            });
-                        }
+                        addModIntegrationItems(ModIntegration.MEKANISM, Registration.MEKANISM_ITEMS, output);
                     }
                 });
+                //Place the Guidebook at the end (if GuideME is loaded)
+                addModIntegrationItems(ModIntegration.GUIDE_ME, Registration.GUIDE_ME_ITEMS, output);
             })
             .build());
+
+    private static void addModIntegrationItems(ModIntegration modIntegration, DeferredRegister<Item> itemsRegister, Output output) {
+        if (!modIntegration.isLoaded()) {
+            return;
+        }
+        itemsRegister.getEntries().forEach(e -> {
+            Item item = e.get();
+            output.accept(item);
+        });
+    }
 
     public static void init(final FMLCommonSetupEvent event) {
         PacketHandler.register();

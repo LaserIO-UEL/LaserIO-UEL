@@ -5,6 +5,7 @@ import net.minecraftforge.fml.ModList;
 public enum ModIntegration {
     OCULUS("oculus"),
     CURIOS("curios"),
+    GUIDE_ME("guideme"),
     MEKANISM("mekanism");
 
     private final String modId;
