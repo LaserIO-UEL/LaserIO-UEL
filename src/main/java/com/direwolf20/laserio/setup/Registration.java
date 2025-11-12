@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 
 import static com.direwolf20.laserio.client.particles.ModParticles.PARTICLE_TYPES;
 import static com.direwolf20.laserio.common.LaserIO.MODID;
-import static com.direwolf20.laserio.integration.mekanism.client.MekanismModParticles.MEKANISM_PARTICLE_TYPES;
+import static com.direwolf20.laserio.integration.mekanism.client.particles.MekanismModParticles.MEKANISM_PARTICLE_TYPES;
 
 public class Registration {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);

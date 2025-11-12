@@ -10,7 +10,7 @@ import com.direwolf20.laserio.common.items.cards.BaseCard.CardType;
 import com.direwolf20.laserio.common.items.filters.FilterBasic;
 import com.direwolf20.laserio.common.items.filters.FilterCount;
 import com.direwolf20.laserio.common.items.filters.FilterTag;
-import com.direwolf20.laserio.integration.mekanism.client.chemicalparticle.ChemicalFlowParticleData;
+import com.direwolf20.laserio.integration.mekanism.client.particles.chemicalparticle.ChemicalFlowParticleData;
 import com.direwolf20.laserio.integration.mekanism.util.ChemicalStackKey;
 import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
 import com.direwolf20.laserio.integration.mekanism.util.ParticleDataChemical;

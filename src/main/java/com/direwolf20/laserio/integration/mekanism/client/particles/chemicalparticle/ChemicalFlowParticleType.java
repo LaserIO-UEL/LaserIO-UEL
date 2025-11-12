@@ -1,4 +1,4 @@
-package com.direwolf20.laserio.integration.mekanism.client.chemicalparticle;
+package com.direwolf20.laserio.integration.mekanism.client.particles.chemicalparticle;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.particles.ParticleType;
