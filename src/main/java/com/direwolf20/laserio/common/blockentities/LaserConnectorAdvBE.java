@@ -88,6 +88,9 @@ public class LaserConnectorAdvBE extends BaseLaserBE {
     /** Validates the connections are still valid -- for use if a block is moved **/
     @Override
     public void validateConnections(BlockPos originalPos) {
+        if (level == null || level.isClientSide) {
+            return;
+        }
         //If we got here, it means the Adv Laser connector was moved, and so we assume it needs to update its partner
         DimBlockPos partner = getPartnerDimBlockPos();
         if (partner == null) {
