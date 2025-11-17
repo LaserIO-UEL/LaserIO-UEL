@@ -1529,9 +1529,9 @@ public class LaserNodeBE extends BaseLaserBE {
 
     /**
      * Trys to pull from the last place we found this item - checking the same slot first, then the rest of the inventory.
-     * Returns the TransferResult (Simulate enabled) that we found.
+     * Returns the TransferResult (Simulate enabled) that we found and adds to the set of checkedSources the DimBlockPos of the source checked.
      */
-    public TransferResult tryStockerCacheCount(StockerCardCache stockerCardCache, ItemStack itemStack, IItemHandler stockerInventory) {
+    public TransferResult tryStockerCacheCount(StockerCardCache stockerCardCache, ItemStack itemStack, IItemHandler stockerInventory, Set<DimBlockPos> checkedSources) {
         TransferResult extractResult = new TransferResult();
         ItemStackKey itemStackKey = new ItemStackKey(itemStack, stockerCardCache.isCompareNBT);
         StockerRequest stockerRequest = new StockerRequest(stockerCardCache, itemStackKey);
@@ -1540,6 +1540,7 @@ public class LaserNodeBE extends BaseLaserBE {
         int origItemsWanted = itemStack.getCount();
         int itemsStillNeeded = origItemsWanted;
         StockerSource checkSource = stockerDestinationCache.get(stockerRequest);
+        checkedSources.add(checkSource.inserterCardCache.relativePos);
         ItemStack stackInSlot = getStackAtStockerCachePosition(checkSource);
         if (stackInSlot == null) //Null means the inventory no longer exists or is unloaded
             return extractResult;
@@ -1706,7 +1707,8 @@ public class LaserNodeBE extends BaseLaserBE {
         for (ItemStack itemStack : filteredItemsList) {
             if (!isCount) itemStack.setCount(extractAmt); //If this isn't a counting card, we want the extractAmt value
             int origCountNeeded = itemStack.getCount();
-            TransferResult transferResult = tryStockerCacheCount(stockerCardCache, itemStack, stockerInventory);
+            Set<DimBlockPos> checkedSources = new HashSet<>();
+            TransferResult transferResult = tryStockerCacheCount(stockerCardCache, itemStack, stockerInventory, checkedSources);
             if (transferResult.getTotalItemCounts() == origCountNeeded) {//The item stack knows how many we need, so did we get enough?
                 itemStack.setCount(transferResult.getTotalItemCounts()); //Set the itemStack to how many items we got
                 ItemStack insertedStack = ItemHandlerHelper.insertItem(stockerInventory, itemStack, true);
@@ -1732,8 +1734,8 @@ public class LaserNodeBE extends BaseLaserBE {
             for (InserterCardCache inserterCardCache : getChannelMatchInserters(stockerCardCache)) { //Iterate through ALL inserter nodes on this channel only
                 if (!inserterCardCache.isStackValidForCard(itemStack))
                     continue;
-                if (transferResult.getTotalItemCounts() != 0 && inserterCardCache.equals(transferResult.results.get(0).extractorCardCache))  //If we found something in the cache chest, we have to skip that chest, because of the fake pullout
-                    continue;
+                if (!checkedSources.add(inserterCardCache.relativePos))
+                    continue; //Avoid counting multiple times the same source if there are multiple inserters (or if the cached source didn't have enough items)
 
                 LaserNodeItemHandler laserNodeItemHandler = getLaserNodeHandlerItem(inserterCardCache);
                 if (laserNodeItemHandler == null) continue;
