@@ -254,13 +254,13 @@ public class CardCloner extends Item {
             case "card_chemical" -> ChatFormatting.LIGHT_PURPLE;
             default -> ChatFormatting.WHITE;
         };
-        if (cardType.equals("")) {
+        if (cardType.isEmpty()) {
             toWrite.append(tooltipMaker("laserio.tooltip.item.card.None", cardColor));
         } else {
             toWrite.append(tooltipMaker("item.laserio." + cardType, cardColor));
         }
         tooltip.add(toWrite);
-        if (cardType.equals("")) {
+        if (cardType.isEmpty()) {
             return;
         }
 
