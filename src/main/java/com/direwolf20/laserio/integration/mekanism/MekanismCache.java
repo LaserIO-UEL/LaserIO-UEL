@@ -512,31 +512,11 @@ public class MekanismCache {
     /** Finds all inserters that can be extracted to **/
     public List<InserterCardCache> getPossibleInserters(ExtractorCardCache extractorCardCache, ChemicalStack<?> stack) {
         ChemicalStackKey key = new ChemicalStackKey(stack);
-        if (inserterCacheChemical.containsKey(extractorCardCache)) { //If this extractor card is already in the cache
-            if (inserterCacheChemical.get(extractorCardCache).containsKey(key)) //If this extractor card AND itemKey are already in the cache
-                return inserterCacheChemical.get(extractorCardCache).get(key); //Return the cached results
-            else { //Find the list of items that can be extracted by this extractor and cache them
-                List<InserterCardCache> nodes = laserNodeBE.getInserterNodes().stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (p.enabled)
-                                && (p.mekanismCardCache.isStackValidForCard(stack))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                        .toList();
-                inserterCacheChemical.get(extractorCardCache).put(key, nodes);
-                return nodes;
-            }
-        } else { //Find the list of items that can be extracted by this extractor and cache them along with the extractor card
-            List<InserterCardCache> nodes = laserNodeBE.getInserterNodes().stream().filter(p -> (p.channel == extractorCardCache.channel)
-                            && (p.cardType.equals(extractorCardCache.cardType))
-                            && (p.enabled)
-                            && (p.mekanismCardCache.isStackValidForCard(stack))
-                            && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                    .toList();
-            HashMap<ChemicalStackKey, List<InserterCardCache>> tempMap = new HashMap<>();
-            tempMap.put(key, nodes);
-            inserterCacheChemical.put(extractorCardCache, tempMap);
-            return nodes;
-        }
+
+        return inserterCacheChemical.computeIfAbsent(extractorCardCache, t -> new HashMap<>())
+                .computeIfAbsent(key, t ->
+                        laserNodeBE.filterPossibleInserters(extractorCardCache, inserterCardCache -> inserterCardCache.mekanismCardCache.isStackValidForCard(stack))
+                );
     }
 
     public LaserNodeChemicalHandler getLaserNodeHandlerChemical(InserterCardCache inserterCardCache, ChemicalType chemicalType) {

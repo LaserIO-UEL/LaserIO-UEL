@@ -94,6 +94,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class LaserNodeBE extends BaseLaserBE {
@@ -535,79 +536,48 @@ public class LaserNodeBE extends BaseLaserBE {
         this.inserterNodes.sort(Comparator.comparingInt(InserterCardCache::getPriority).reversed());
     }
 
+    public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache, Predicate<InserterCardCache> isCardValidForStack) {
+        return inserterNodes.stream()
+                .filter(inserterCardCache ->
+                        inserterCardCache.channel == extractorCardCache.channel
+                        && inserterCardCache.cardType == extractorCardCache.cardType
+                        && inserterCardCache.enabled
+                        && isCardValidForStack.test(inserterCardCache)
+                        && (!inserterCardCache.relativePos.blockPos.equals(BlockPos.ZERO)
+                            || inserterCardCache.direction != extractorCardCache.direction
+                            || inserterCardCache.sneaky != extractorCardCache.sneaky)
+                ).toList();
+    }
+
+    public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache) {
+        return filterPossibleInserters(extractorCardCache, inserterCardCache -> true);
+    }
+
     /** Finds all inserters that can be extracted to **/
     public List<InserterCardCache> getPossibleInserters(ExtractorCardCache extractorCardCache, ItemStack stack) {
         ItemStackKey key = new ItemStackKey(stack, true);
-        if (inserterCache.containsKey(extractorCardCache)) { //If this extractor card is already in the cache
-            if (inserterCache.get(extractorCardCache).containsKey(key)) //If this extractor card AND itemKey are already in the cache
-                return inserterCache.get(extractorCardCache).get(key); //Return the cached results
-            else { //Find the list of items that can be extracted by this extractor and cache them
-                List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction) && p.sneaky == extractorCardCache.sneaky)))
-                        .toList();
-                inserterCache.get(extractorCardCache).put(key, nodes);
-                return nodes;
-            }
-        } else { //Find the list of items that can be extracted by this extractor and cache them along with the extractor card
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction) && p.sneaky == extractorCardCache.sneaky)))
-                        .toList();
-            HashMap<ItemStackKey, List<InserterCardCache>> tempMap = new HashMap<>();
-            tempMap.put(key, nodes);
-            inserterCache.put(extractorCardCache, tempMap);
-            return nodes;
-        }
+
+        return inserterCache.computeIfAbsent(extractorCardCache, t -> new HashMap<>())
+                .computeIfAbsent(key, t ->
+                        filterPossibleInserters(extractorCardCache, inserterCardCache -> inserterCardCache.isStackValidForCard(stack))
+                );
     }
 
     /** Finds all inserters that can be extracted to **/
     public List<InserterCardCache> getPossibleInserters(ExtractorCardCache extractorCardCache, FluidStack stack) {
         FluidStackKey key = new FluidStackKey(stack, true);
-        if (inserterCacheFluid.containsKey(extractorCardCache)) { //If this extractor card is already in the cache
-            if (inserterCacheFluid.get(extractorCardCache).containsKey(key)) //If this extractor card AND itemKey are already in the cache
-                return inserterCacheFluid.get(extractorCardCache).get(key); //Return the cached results
-            else { //Find the list of items that can be extracted by this extractor and cache them
-                List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                        .toList();
-                inserterCacheFluid.get(extractorCardCache).put(key, nodes);
-                return nodes;
-            }
-        } else { //Find the list of items that can be extracted by this extractor and cache them along with the extractor card
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                            && (p.enabled)
-                            && (p.isStackValidForCard(stack))
-                            && (p.cardType.equals(extractorCardCache.cardType))
-                            && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                    .toList();
-            HashMap<FluidStackKey, List<InserterCardCache>> tempMap = new HashMap<>();
-            tempMap.put(key, nodes);
-            inserterCacheFluid.put(extractorCardCache, tempMap);
-            return nodes;
-        }
+
+        return inserterCacheFluid.computeIfAbsent(extractorCardCache, t -> new HashMap<>())
+                .computeIfAbsent(key, t ->
+                        filterPossibleInserters(extractorCardCache, inserterCardCache -> inserterCardCache.isStackValidForCard(stack))
+                );
     }
 
     /** Finds all inserters that match the channel (Used for stockers) **/
     public List<InserterCardCache> getChannelMatchInserters(ExtractorCardCache extractorCardCache) {
-        if (channelOnlyCache.containsKey(extractorCardCache)) {
-            return channelOnlyCache.get(extractorCardCache);
-        } else {
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                            && (p.cardType.equals(extractorCardCache.cardType))
-                            && (p.enabled)
-                            && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                    .toList();
-            channelOnlyCache.put(extractorCardCache, nodes);
-            return nodes;
-        }
+        return channelOnlyCache.computeIfAbsent(extractorCardCache, t ->
+                filterPossibleInserters(extractorCardCache)
+        );
     }
 
     public boolean chunksLoaded(DimBlockPos nodePos, BlockPos destinationPos) {
