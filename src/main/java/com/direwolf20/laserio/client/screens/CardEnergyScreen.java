@@ -465,11 +465,6 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
     public void onClose() {
         saveSettings();
         super.onClose();
@@ -483,16 +478,6 @@ public class CardEnergyScreen extends AbstractContainerScreen<CardEnergyContaine
             return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-    }
-
-
-    public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
-        return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     public void setExtract(NumberButton amountButton, int btn) {

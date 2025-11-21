@@ -633,16 +633,7 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        /*stack.pushPose();
-        stack.scale(0.5f, 0.5f, 0.5f);
-        if (showExtractAmt()) {
-            font.draw(stack, Component.translatable("screen.laserio.extractamt").getString() + ":", 5*2, 45*2, Color.DARK_GRAY.getRGB());
-        }
-        if (showPriority()) {
-            font.draw(stack, Component.translatable("screen.laserio.priority").getString() + ":", 5*2, 50*2, Color.DARK_GRAY.getRGB());
-        }
-        stack.popPose();*/
-        //super.renderLabels(matrixStack, x, y);
+
     }
 
     @Override
@@ -660,11 +651,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
     public void onClose() {
         saveSettings();
         super.onClose();
@@ -678,11 +664,6 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
             return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-    }
-
-
-    public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
-        return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
     }
 
     @Override
