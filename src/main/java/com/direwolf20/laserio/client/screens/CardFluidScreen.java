@@ -184,9 +184,11 @@ public class CardFluidScreen extends CardItemScreen {
         }
 
         currentFluidExtractAmt = Math.max(newOverclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_FLUID.get(), Config.BASE_MILLI_BUCKETS_FLUID.get());
+        currentTicks = Math.max(Config.MIN_TICKS_FLUID.get().get(newOverclockerCount), currentTicks);
         lastOverclockerCount = newOverclockerCount;
         if (currentMode != 0) {
             ((NumberButton) buttons.get("amount")).setValue(currentFluidExtractAmt);
+            ((NumberButton) buttons.get("speed")).setValue(currentTicks);
         }
     }
 }

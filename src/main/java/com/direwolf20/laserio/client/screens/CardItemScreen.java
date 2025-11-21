@@ -821,9 +821,11 @@ public class CardItemScreen extends AbstractContainerScreen<CardItemContainer> {
         }
 
         currentItemExtractAmt = (byte) Math.max(newOverclockerCount * 16, 8);
+        currentTicks = Math.max(Config.MIN_TICKS_ITEM.get().get(newOverclockerCount), currentTicks);
         lastOverclockerCount = newOverclockerCount;
         if (currentMode != 0) {
             ((NumberButton) buttons.get("amount")).setValue(currentItemExtractAmt);
+            ((NumberButton) buttons.get("speed")).setValue(currentTicks);
         }
     }
 }

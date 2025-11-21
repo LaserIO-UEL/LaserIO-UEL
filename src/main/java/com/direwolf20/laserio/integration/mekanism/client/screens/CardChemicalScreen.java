@@ -173,9 +173,11 @@ public class CardChemicalScreen extends CardItemScreen {
         }
 
         currentChemicalExtractAmt = Math.max(newOverclockerCount * Config.MULTIPLIER_MILLI_BUCKETS_CHEMICAL.get(), Config.BASE_MILLI_BUCKETS_CHEMICAL.get());
+        currentTicks = Math.max(Config.MIN_TICKS_CHEMICAL.get().get(newOverclockerCount), currentTicks);
         lastOverclockerCount = newOverclockerCount;
         if (currentMode != 0) {
             ((NumberButton) buttons.get("amount")).setValue(currentChemicalExtractAmt);
+            ((NumberButton) buttons.get("speed")).setValue(currentTicks);
         }
     }
 }
