@@ -538,15 +538,8 @@ public class LaserNodeBE extends BaseLaserBE {
 
     public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache, Predicate<InserterCardCache> isCardValidForStack) {
         return inserterNodes.stream()
-                .filter(inserterCardCache ->
-                        inserterCardCache.channel == extractorCardCache.channel
-                        && inserterCardCache.cardType == extractorCardCache.cardType
-                        && inserterCardCache.enabled
-                        && isCardValidForStack.test(inserterCardCache)
-                        && (!inserterCardCache.relativePos.blockPos.equals(BlockPos.ZERO)
-                            || inserterCardCache.direction != extractorCardCache.direction
-                            || inserterCardCache.sneaky != extractorCardCache.sneaky)
-                ).toList();
+                .filter(inserterCardCache -> inserterCardCache.isValidDestination(extractorCardCache, isCardValidForStack))
+                .toList();
     }
 
     public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache) {
