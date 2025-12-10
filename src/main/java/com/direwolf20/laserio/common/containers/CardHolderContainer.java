@@ -2,8 +2,11 @@ package com.direwolf20.laserio.common.containers;
 
 import com.direwolf20.laserio.common.containers.customslot.CardHolderSlot;
 import com.direwolf20.laserio.common.items.CardHolder;
+import com.direwolf20.laserio.common.items.cards.BaseCard;
+import com.direwolf20.laserio.common.items.filters.BaseFilter;
 import com.direwolf20.laserio.setup.Registration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +18,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CardHolderContainer extends AbstractContainerMenu {
@@ -193,6 +197,54 @@ public class CardHolderContainer extends AbstractContainerMenu {
             }
         }
         return itemStack;
+    }
+
+    public void clearCards(Player sender) {
+        List<ItemStack> extraItems = new ArrayList<>();
+        for (int i = 0; i < SLOTS; i++) {
+            var stack = this.slots.get(i).getItem();
+            var item = stack.getItem();
+            if (item instanceof BaseFilter) {
+                stack.setTag(new CompoundTag());
+            } else if (item instanceof BaseCard card) {
+                List<ItemStack> cardItems = card.getContainerItems(stack);
+                for (var innerItem : cardItems) {
+                    if (!innerItem.isEmpty()) {
+                        // x cards each with y filters
+                        // so turn it into x*y filters
+                        innerItem.setCount(stack.getCount() * innerItem.getCount());
+                        extraItems.add(innerItem);
+                    }
+                }
+                stack.setTag(new CompoundTag());
+            }
+        }
+
+        // bunch up equal cards
+        for (int i = SLOTS - 1; i >= 0; i--) {
+            var stack = this.slots.get(i).getItem();
+            var item = stack.getItem();
+            if (item instanceof BaseFilter || item instanceof BaseCard) {
+                for (int j = 0; j < i; j++) {
+                    var otherSlot = this.slots.get(j);
+                    var otherStack = otherSlot.getItem();
+                    if (ItemStack.isSameItemSameTags(stack, otherStack)) {
+                        otherSlot.safeInsert(stack);
+                        if (stack.isEmpty()) break;
+                    }
+                }
+            }
+        }
+
+        for (var stack : extraItems) {
+            for (var slot : slots) {
+                slot.safeInsert(stack);
+                if (stack.isEmpty()) break;
+            }
+            if (!stack.isEmpty()) {
+                sender.drop(stack, false);
+            }
+        }
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
