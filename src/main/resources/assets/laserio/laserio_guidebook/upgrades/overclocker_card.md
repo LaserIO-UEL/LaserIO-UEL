@@ -12,7 +12,7 @@ item_ids:
 
 Logistic Overclockers allow individual cards (except the Energy ones) to operate more quickly.
 
-For example, [Item Cards](../cards/card_item.md) can only extract at most 8 items every 20 ticks (1 second). With 4 overclockers installed they can reach 64 items every 4 ticks!
+For example, <ItemLink id="laserio:card_item" /> can only extract at most 8 items every 20 ticks (1 second). With 4 overclockers installed they can reach 64 items every 4 ticks!
 
 See the Cards section for more details on how each card is affected by overclockers.
 

@@ -13,7 +13,7 @@ This setting determines how many items (or how much fluid/fe) are extracted per 
 
 For example, if set to 8 items per 20 ticks, the extractor will extract 8 items at a time, every 20 ticks.
 
-Extractor and Stocker cards have a default value of 1, and a maximum value of 8, unless [Card Overclockers](../upgrades/overclocker_card.md) are installed.  The following extract amounts are allowed with the designated overclockers installed:
+Extractor and Stocker cards have a default value of 1, and a maximum value of 8, unless <ItemLink id="laserio:overclocker_card" /> are installed.  The following extract amounts are allowed with the designated overclockers installed:
 1. 16
 2. 32
 3. 48

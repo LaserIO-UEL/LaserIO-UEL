@@ -11,7 +11,7 @@ Tick Speed is only available on Extractor and Stocker Modes.
 
 This setting determines how quickly a card operates. The default value of 20 ticks means an extractor card will only extract items every 20 ticks, or 1 second.
 
-Extractor and Stocker cards have a default and minimum value of 20, with a maximum value of 1200, unless [Card Overclockers](../upgrades/overclocker_card.md) are installed.  The following minimum tick speeds are allowed with the designated overclockers installed:
+Extractor and Stocker cards have a default and minimum value of 20, with a maximum value of 1200, unless <ItemLink id="laserio:overclocker_card" /> are installed.  The following minimum tick speeds are allowed with the designated overclockers installed:
 1. 15
 2. 10
 3. 5

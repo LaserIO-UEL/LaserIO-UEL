@@ -9,8 +9,8 @@ navigation:
 Transport items, fluids, energy, and gasses around your world - with Lasers!
 
 If you are new to LaserIO, the fundamentals are:
-- The [Laser Node](./blocks/laser_node.md)
-- The [Laser Wrench](tools/laser_wrench.md)
+- The <ItemLink id="laserio:laser_node" />
+- The <ItemLink id="laserio:laser_wrench" />
 - The [Basics](mechanics/basics.md) of the many [Cards](./cards/cards.md)
 
 This is an encyclopedia on the items, blocks, and mechanics in LaserIO.

@@ -4,6 +4,8 @@ navigation:
   icon: "laserio:filter_count"
   position: 2
   parent: laserio:filters/filters.md
+item_ids:
+  - laserio:filter_count
 ---
 
 # Counting Filter
@@ -18,5 +20,5 @@ If a counting filter is used in an Inserter card, it will limit how many items a
 
 If a counting filter is used in a extractor mode card, it will leave the designated number of items behind. For example, if you set an extract card with a filter of 8 cobblestone, it will pull out all but the last 8 cobblestone from a chest.
 
-Counting filters do not have an Allow vs Deny button - as Deny mode would not make any sense for a counting filter. All counting filters are 'Allow mode'.  JEI Interaction works the same as it does in a [Basic Filter](./filter_basic.md).
+Counting filters do not have an Allow vs Deny button - as Deny mode would not make any sense for a counting filter. All counting filters are 'Allow mode'.  JEI Interaction works the same as it does in a <ItemLink id="laserio:filter_basic" />.
 

@@ -9,5 +9,5 @@ navigation:
 
 Cards have a 'redstone channel' separate from the main channel.
 
-This is the channel of Redstone Signal that will affect the card. See more details in the [Redstone Mode](./redstonemode.md) and [Redstone Card](../cards/card_redstone.md) sections.
+This is the channel of Redstone Signal that will affect the card. See more details in the [Redstone Mode](./redstonemode.md) and <ItemLink id="laserio:card_redstone" /> sections.
 

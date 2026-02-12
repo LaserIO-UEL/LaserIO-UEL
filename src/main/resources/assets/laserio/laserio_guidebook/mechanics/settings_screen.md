@@ -7,7 +7,7 @@ navigation:
 
 # Network Settings
 
-The network settings screen is available from any [Laser Node](../blocks/laser_node.md) screen. In this settings screen, you may change the color of the network. This color will affect:
+The network settings screen is available from any <ItemLink id="laserio:laser_node" /> screen. In this settings screen, you may change the color of the network. This color will affect:
 - Laser Node Block (in world)
 - Laser Connector Block (in world)
 - Color of lasers between blocks. 

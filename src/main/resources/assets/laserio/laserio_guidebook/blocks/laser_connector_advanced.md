@@ -10,7 +10,7 @@ item_ids:
 
 # Adv. Connector
 
-Advanced Laser Connectors work just like [Laser Connectors](./laser_connector.md), connecting to other (basic) connectors and nodes up to 8 blocks away.
+Advanced Laser Connectors work just like <ItemLink id="laserio:laser_connector" />, connecting to other (basic) connectors and nodes up to 8 blocks away.
 
 They can only be connected to one other Advanced Connector, however, forming a pair. The connection range from one advanced connector to its partner is infinite - including across dimensions!
 
@@ -22,7 +22,7 @@ They can only be connected to one other Advanced Connector, however, forming a p
 
 If an Advanced Connector already has a partner, and you attempt to pair it with a new partner, the original connection will be broken to form the new connection.
 
-When looking at the block with the [Laser Wrench](../tools/laser_wrench.md) in your hand, you'll see the coordindates of the partner block.
+When looking at the block with the <ItemLink id="laserio:laser_wrench" /> in your hand, you'll see the coordindates of the partner block.
 
 ## Partner Coordindates
 

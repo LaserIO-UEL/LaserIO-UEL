@@ -6,13 +6,13 @@ navigation:
 
 # Basics
 
-Right clicking a Card in your hand will open up it's UI. You can also right click a card inside a [Node](laserio:blocks/laser_node.md) UI.
+Right clicking a Card in your hand will open up it's UI. You can also right click a card inside a <ItemLink id="laserio:laser_node" /> UI.
 
 Insert Mode:
 1. [Mode](./modes.md)
 2. [Sneaky](./sneaky.md)
 3. [Filter](../filters/filters.md)
-4. [Card Overclocker](../upgrades/overclocker_card.md)
+4. <ItemLink id="laserio:overclocker_card" />
 5. [Priority](./priority.md)
 6. [Channel](./channel.md)
 7. [Redstone Mode](./redstonemode.md)
@@ -31,7 +31,7 @@ Extract Mode:
 3. [Round Robin](./roundrobin.md)
 4. [Exact](./exact.md)
 5. [Filter](../filters/filters.md)
-6. [Card Overclocker](../upgrades/overclocker_card.md)
+6. <ItemLink id="laserio:overclocker_card" />
 7. [Extract Amount](./extractamount.md)
 8. [Tick Speed](./tickspeed.md)
 9. [Channel](./channel.md)
@@ -49,7 +49,7 @@ Stock Mode:
 3. [Regulate](./regulate.md)
 4. [Exact](./exact.md)
 5. [Filter](../filters/filters.md)
-6. [Card Overclocker](../upgrades/overclocker_card.md)
+6. <ItemLink id="laserio:overclocker_card" />
 7. [Extract Amount](./extractamount.md)
 8. [Tick Speed](./tickspeed.md)
 9. [Channel](./channel.md)

@@ -4,6 +4,8 @@ navigation:
   icon: "laserio:filter_mod"
   position: 3
   parent: laserio:filters/filters.md
+item_ids:
+  - laserio:filter_mod
 ---
 
 # Mod Filter

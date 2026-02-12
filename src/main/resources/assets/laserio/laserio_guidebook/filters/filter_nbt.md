@@ -4,11 +4,13 @@ navigation:
   icon: "laserio:filter_nbt"
   position: 3
   parent: laserio:filters/filters.md
+item_ids:
+  - laserio:filter_nbt
 ---
 
 # NBT Filter
 
-The NBT filter has a very similar UI and functionality as the [Tag Filter](./filter_tag.md).
+The NBT filter has a very similar UI and functionality as the <ItemLink id="laserio:filter_tag" />.
 
 Placing an item in the top right slot will show you all nbt tag labels on that item. Adding them to the list (in the same way you do with the tag filter) will filter items that contain those tags, regardless of the values those tags are assigned.
 
@@ -22,5 +24,5 @@ For example, all enchanted items have an 'Enchantments' tag, which specifies thi
 
 Enchanted swords can go in one inventory, and non-enchanted to another. Regardless of which enchantments are applied.
 
-All other functionality is identical to the [Tag Filter](./filter_tag.md), see that entry for more information.
+All other functionality is identical to the <ItemLink id="laserio:filter_tag" />, see that entry for more information.
 

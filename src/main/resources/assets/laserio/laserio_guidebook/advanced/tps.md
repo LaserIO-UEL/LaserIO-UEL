@@ -31,7 +31,7 @@ When using LaserIO (or any other logistic mod), ask yourself:
 2. If not, increase the [Extract Amount](../mechanics/extractamount.md), is it sufficient now?
 3. If it is still insufficient, decrease the [Tick Speed](../mechanics/tickspeed.md) until it is sufficient.
 
-NOTE: [Energy Cards](../cards/card_energy.md) do **NOT** follow the guidelines above. You should **not worry about them**.
+NOTE: <ItemLink id="laserio:card_energy" /> do **NOT** follow the guidelines above. You should **not worry about them**.
 
 This is only a partial explanation, if you are interested in learning more, see the [Minecraft Wiki](https://minecraft.wiki/w/Tick) 
 

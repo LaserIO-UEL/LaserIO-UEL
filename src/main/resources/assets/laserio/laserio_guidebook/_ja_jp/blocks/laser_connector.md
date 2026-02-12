@@ -10,7 +10,7 @@ item_ids:
 
 # レーザー中継器
 
-複数の[レーザーノード](./laser_node.md)は、[レーザーレンチ](../tools/laser_wrench.md)を使用して直接相互に接続できますが、最大範囲は8ブロックです。
+複数の<ItemLink id="laserio:laser_node" />は、<ItemLink id="laserio:laser_wrench" />を使用して直接相互に接続できますが、最大範囲は8ブロックです。
 
 レーザー中継器は、ノード間のより安価な中間ポイントとして機能し、相互接続されたインベントリのネットワークを構築できます。
 

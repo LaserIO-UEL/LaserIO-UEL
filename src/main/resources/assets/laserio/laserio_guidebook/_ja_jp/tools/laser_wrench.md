@@ -12,7 +12,7 @@ item_ids:
 
 レーザーレンチは、主に複数のブロックを接続するために使用されます。
 
-[ノード](../blocks/laser_node.md)と[接続器](../blocks/laser_connector.md)は、Shiftキーを押しながら右クリックしてブロックを選択し、別のブロックを右クリックして接続を形成することで接続できます。
+<ItemLink id="laserio:laser_node" />と<ItemLink id="laserio:laser_connector" />は、Shiftキーを押しながら右クリックしてブロックを選択し、別のブロックを右クリックして接続を形成することで接続できます。
 
 最大接続範囲は8ブロックです。
 

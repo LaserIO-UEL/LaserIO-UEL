@@ -12,7 +12,7 @@ item_ids:
 
 Node Overclockers are a more complex component.
 
-Each [Node](../blocks/laser_node.md) can only operate on 1 card per side per tick. 
+Each <ItemLink id="laserio:laser_node" /> can only operate on 1 card per side per tick. 
 
 If there are 3 extractor cards in the side of a node, only the first one will operate during a game tick, and the second will only operate if the first fails to do anything.
 

@@ -11,7 +11,7 @@ Modes determine what a card fundamentally does. The following pages define each 
 
 Each type of card (Item/Fluid/Energy) supports the the following three modes. Item cards are used as an example.
 
-[Redstone cards](laserio:cards/card_redstone.md) will support a different set of modes.
+<ItemLink id="laserio:card_redstone" /> will support a different set of modes.
 
 Insert Mode cards are a validate destination for objects being extracted by Extract Mode cards.
 

@@ -11,7 +11,7 @@ item_ids:
 
 The Laser Node is the most important block in LaserIO as it allows interaction with adjacent blocks. 
 
-By using Cards such as the [Item Card](../cards/card_item.md), you can interact with the adjacent block to transfer Items, Fluids, Energy, or Redstone.
+By using Cards such as the <ItemLink id="laserio:card_item" />, you can interact with the adjacent block to transfer Items, Fluids, Energy, or Redstone.
 
 ## Laser Node
 
@@ -39,9 +39,9 @@ Nodes can interact with multiple adjacent inventories at the same time.
 
 ![](laserio:assets/blocks/laser_node/laser_node2.png)
 
-Nodes can be connected together using the [Laser Wrench](../tools/laser_wrench.md), allowing connections between distant inventories.  The maximum range between connections is 8 blocks.
+Nodes can be connected together using the <ItemLink id="laserio:laser_wrench" />, allowing connections between distant inventories.  The maximum range between connections is 8 blocks.
 
-If your nodes are father apart, it is recommended to use [Laser Connectors](../blocks/laser_connector.md).
+If your nodes are father apart, it is recommended to use <ItemLink id="laserio:laser_connector" />.
 
 ## Laser Nodes Connected
 

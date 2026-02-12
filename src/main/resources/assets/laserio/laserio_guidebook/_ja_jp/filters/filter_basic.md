@@ -4,6 +4,8 @@ navigation:
   icon: "laserio:filter_basic"
   position: 1
   parent: laserio:filters/filters.md
+item_ids:
+  - laserio:filter_basic
 ---
 
 # 基本フィルター

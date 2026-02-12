@@ -10,15 +10,15 @@ item_ids:
 
 # Card Cloner
 
-The Card Cloner can be used to 'copy and paste' individual **[Cards](../cards/cards.md)** or entire **[Nodes](../blocks/laser_node.md)!**
+The Card Cloner can be used to 'copy and paste' individual **[Cards](../cards/cards.md)** or entire **<ItemLink id="laserio:laser_node" />!**
 
-When pasting, cards, [Overclockers](../upgrades/overclocker_card.md), and [Filters](../filters/filters.md) will be automatically taken from (or placed back inside) the currently available [Card Holder](card_holder.md). These items will **not** be pulled out of the player's inventory.
+When pasting, cards, <ItemLink id="laserio:overclocker_card" />, and [Filters](../filters/filters.md) will be automatically taken from (or placed back inside) the currently available <ItemLink id="laserio:card_holder" />. These items will **not** be pulled out of the player's inventory.
 
 If any of the necessary items are missing, the paste will fail. It will NOT partially paste the settings.
 
 ## Card Cloning
 
-From within a [Node](../blocks/laser_node.md) screen, pickup the Card Cloner (on your cursor) and left-click on a card to copy its settings.
+From within a <ItemLink id="laserio:laser_node" /> screen, pickup the Card Cloner (on your cursor) and left-click on a card to copy its settings.
 
 Right-click on a card or an empty Node slot to paste the stored settings.
 
@@ -28,7 +28,7 @@ While in world, (with the Card Cloner in hand) shift+right-click on a Node to co
 
 While **not** looking at a Node, right-click can be used to change the paste mode. There are two paste modes:
 
-- Node contents: will paste only card settings (including [Filters](../filters/filters.md) and [Overclockers](../upgrades/overclocker_card.md)) and placement, [Node Overclockers](../upgrades/overclocker_node.md), and the particle setting
+- Node contents: will paste only card settings (including [Filters](../filters/filters.md) and <ItemLink id="laserio:overclocker_card" />) and placement, <ItemLink id="laserio:overclocker_node" />, and the particle setting
 - Network settings: will paste only the [Network Settings](../mechanics/settings_screen.md) (color, alpha, and wrench alpha)
 
 While looking at a Node, right-click to paste a copied Node.

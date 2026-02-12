@@ -4,6 +4,8 @@ navigation:
   icon: "laserio:filter_tag"
   position: 2
   parent: laserio:filters/filters.md
+item_ids:
+  - laserio:filter_tag
 ---
 
 # Tag Filter
