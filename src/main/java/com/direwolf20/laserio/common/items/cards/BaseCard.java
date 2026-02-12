@@ -26,7 +26,7 @@ import java.util.Locale;
 import static com.direwolf20.laserio.util.MiscTools.tooltipMaker;
 
 public class BaseCard extends Item {
-    protected CardType CARDTYPE;
+    private final CardType cardType;
 
     public enum CardType {
         ITEM,
@@ -44,12 +44,13 @@ public class BaseCard extends Item {
         SENSOR
     }
 
-    public BaseCard() {
+    public BaseCard(CardType cardType) {
         super(new Item.Properties().stacksTo(1));
+        this.cardType = cardType;
     }
 
     public CardType getCardType() {
-        return CARDTYPE;
+        return cardType;
     }
 
     @OnlyIn(Dist.CLIENT)

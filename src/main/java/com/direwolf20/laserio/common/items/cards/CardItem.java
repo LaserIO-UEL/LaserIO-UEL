@@ -15,8 +15,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class CardItem extends BaseCard {
     public CardItem() {
-        super();
-        CARDTYPE = CardType.ITEM;
+        super(CardType.ITEM);
     }
 
     @Override

@@ -16,8 +16,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class CardChemical extends BaseCard {
     public CardChemical() {
-        super();
-        CARDTYPE = CardType.CHEMICAL;
+        super(CardType.CHEMICAL);
     }
 
     @Override

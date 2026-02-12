@@ -15,8 +15,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class CardFluid extends BaseCard {
     public CardFluid() {
-        super();
-        CARDTYPE = CardType.FLUID;
+        super(CardType.FLUID);
     }
 
     @Override

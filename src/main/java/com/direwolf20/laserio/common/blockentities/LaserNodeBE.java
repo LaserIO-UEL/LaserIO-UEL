@@ -94,6 +94,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class LaserNodeBE extends BaseLaserBE {
@@ -535,79 +536,41 @@ public class LaserNodeBE extends BaseLaserBE {
         this.inserterNodes.sort(Comparator.comparingInt(InserterCardCache::getPriority).reversed());
     }
 
+    public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache, Predicate<InserterCardCache> isCardValidForStack) {
+        return inserterNodes.stream()
+                .filter(inserterCardCache -> inserterCardCache.isValidDestination(extractorCardCache, isCardValidForStack))
+                .toList();
+    }
+
+    public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache) {
+        return filterPossibleInserters(extractorCardCache, inserterCardCache -> true);
+    }
+
     /** Finds all inserters that can be extracted to **/
     public List<InserterCardCache> getPossibleInserters(ExtractorCardCache extractorCardCache, ItemStack stack) {
         ItemStackKey key = new ItemStackKey(stack, true);
-        if (inserterCache.containsKey(extractorCardCache)) { //If this extractor card is already in the cache
-            if (inserterCache.get(extractorCardCache).containsKey(key)) //If this extractor card AND itemKey are already in the cache
-                return inserterCache.get(extractorCardCache).get(key); //Return the cached results
-            else { //Find the list of items that can be extracted by this extractor and cache them
-                List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction) && p.sneaky == extractorCardCache.sneaky)))
-                        .toList();
-                inserterCache.get(extractorCardCache).put(key, nodes);
-                return nodes;
-            }
-        } else { //Find the list of items that can be extracted by this extractor and cache them along with the extractor card
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction) && p.sneaky == extractorCardCache.sneaky)))
-                        .toList();
-            HashMap<ItemStackKey, List<InserterCardCache>> tempMap = new HashMap<>();
-            tempMap.put(key, nodes);
-            inserterCache.put(extractorCardCache, tempMap);
-            return nodes;
-        }
+
+        return inserterCache.computeIfAbsent(extractorCardCache, t -> new HashMap<>())
+                .computeIfAbsent(key, t ->
+                        filterPossibleInserters(extractorCardCache, inserterCardCache -> inserterCardCache.isStackValidForCard(stack))
+                );
     }
 
     /** Finds all inserters that can be extracted to **/
     public List<InserterCardCache> getPossibleInserters(ExtractorCardCache extractorCardCache, FluidStack stack) {
         FluidStackKey key = new FluidStackKey(stack, true);
-        if (inserterCacheFluid.containsKey(extractorCardCache)) { //If this extractor card is already in the cache
-            if (inserterCacheFluid.get(extractorCardCache).containsKey(key)) //If this extractor card AND itemKey are already in the cache
-                return inserterCacheFluid.get(extractorCardCache).get(key); //Return the cached results
-            else { //Find the list of items that can be extracted by this extractor and cache them
-                List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                                && (p.enabled)
-                                && (p.isStackValidForCard(stack))
-                                && (p.cardType.equals(extractorCardCache.cardType))
-                                && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                        .toList();
-                inserterCacheFluid.get(extractorCardCache).put(key, nodes);
-                return nodes;
-            }
-        } else { //Find the list of items that can be extracted by this extractor and cache them along with the extractor card
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                            && (p.enabled)
-                            && (p.isStackValidForCard(stack))
-                            && (p.cardType.equals(extractorCardCache.cardType))
-                            && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                    .toList();
-            HashMap<FluidStackKey, List<InserterCardCache>> tempMap = new HashMap<>();
-            tempMap.put(key, nodes);
-            inserterCacheFluid.put(extractorCardCache, tempMap);
-            return nodes;
-        }
+
+        return inserterCacheFluid.computeIfAbsent(extractorCardCache, t -> new HashMap<>())
+                .computeIfAbsent(key, t ->
+                        filterPossibleInserters(extractorCardCache, inserterCardCache -> inserterCardCache.isStackValidForCard(stack))
+                );
     }
 
     /** Finds all inserters that match the channel (Used for stockers) **/
     public List<InserterCardCache> getChannelMatchInserters(ExtractorCardCache extractorCardCache) {
-        if (channelOnlyCache.containsKey(extractorCardCache)) {
-            return channelOnlyCache.get(extractorCardCache);
-        } else {
-            List<InserterCardCache> nodes = inserterNodes.stream().filter(p -> (p.channel == extractorCardCache.channel)
-                            && (p.cardType.equals(extractorCardCache.cardType))
-                            && (p.enabled)
-                            && (!(p.relativePos.blockPos.equals(BlockPos.ZERO) && p.direction.equals(extractorCardCache.direction))))
-                    .toList();
-            channelOnlyCache.put(extractorCardCache, nodes);
-            return nodes;
-        }
+        return channelOnlyCache.computeIfAbsent(extractorCardCache, t ->
+                filterPossibleInserters(extractorCardCache)
+        );
     }
 
     public boolean chunksLoaded(DimBlockPos nodePos, BlockPos destinationPos) {
@@ -1529,9 +1492,9 @@ public class LaserNodeBE extends BaseLaserBE {
 
     /**
      * Trys to pull from the last place we found this item - checking the same slot first, then the rest of the inventory.
-     * Returns the TransferResult (Simulate enabled) that we found.
+     * Returns the TransferResult (Simulate enabled) that we found and adds to the set of checkedSources the DimBlockPos of the source checked.
      */
-    public TransferResult tryStockerCacheCount(StockerCardCache stockerCardCache, ItemStack itemStack, IItemHandler stockerInventory) {
+    public TransferResult tryStockerCacheCount(StockerCardCache stockerCardCache, ItemStack itemStack, IItemHandler stockerInventory, Set<DimBlockPos> checkedSources) {
         TransferResult extractResult = new TransferResult();
         ItemStackKey itemStackKey = new ItemStackKey(itemStack, stockerCardCache.isCompareNBT);
         StockerRequest stockerRequest = new StockerRequest(stockerCardCache, itemStackKey);
@@ -1540,6 +1503,7 @@ public class LaserNodeBE extends BaseLaserBE {
         int origItemsWanted = itemStack.getCount();
         int itemsStillNeeded = origItemsWanted;
         StockerSource checkSource = stockerDestinationCache.get(stockerRequest);
+        checkedSources.add(checkSource.inserterCardCache.relativePos);
         ItemStack stackInSlot = getStackAtStockerCachePosition(checkSource);
         if (stackInSlot == null) //Null means the inventory no longer exists or is unloaded
             return extractResult;
@@ -1706,7 +1670,8 @@ public class LaserNodeBE extends BaseLaserBE {
         for (ItemStack itemStack : filteredItemsList) {
             if (!isCount) itemStack.setCount(extractAmt); //If this isn't a counting card, we want the extractAmt value
             int origCountNeeded = itemStack.getCount();
-            TransferResult transferResult = tryStockerCacheCount(stockerCardCache, itemStack, stockerInventory);
+            Set<DimBlockPos> checkedSources = new HashSet<>();
+            TransferResult transferResult = tryStockerCacheCount(stockerCardCache, itemStack, stockerInventory, checkedSources);
             if (transferResult.getTotalItemCounts() == origCountNeeded) {//The item stack knows how many we need, so did we get enough?
                 itemStack.setCount(transferResult.getTotalItemCounts()); //Set the itemStack to how many items we got
                 ItemStack insertedStack = ItemHandlerHelper.insertItem(stockerInventory, itemStack, true);
@@ -1732,8 +1697,8 @@ public class LaserNodeBE extends BaseLaserBE {
             for (InserterCardCache inserterCardCache : getChannelMatchInserters(stockerCardCache)) { //Iterate through ALL inserter nodes on this channel only
                 if (!inserterCardCache.isStackValidForCard(itemStack))
                     continue;
-                if (transferResult.getTotalItemCounts() != 0 && inserterCardCache.equals(transferResult.results.get(0).extractorCardCache))  //If we found something in the cache chest, we have to skip that chest, because of the fake pullout
-                    continue;
+                if (!checkedSources.add(inserterCardCache.relativePos))
+                    continue; //Avoid counting multiple times the same source if there are multiple inserters (or if the cached source didn't have enough items)
 
                 LaserNodeItemHandler laserNodeItemHandler = getLaserNodeHandlerItem(inserterCardCache);
                 if (laserNodeItemHandler == null) continue;

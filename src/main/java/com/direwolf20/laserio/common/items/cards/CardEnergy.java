@@ -16,8 +16,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class CardEnergy extends BaseCard {
     public CardEnergy() {
-        super();
-        CARDTYPE = CardType.ENERGY;
+        super(CardType.ENERGY);
     }
 
     @Override

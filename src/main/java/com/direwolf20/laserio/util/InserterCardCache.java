@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Predicate;
+
 public class InserterCardCache extends BaseCardCache {
     public final DimBlockPos relativePos;
     public final short priority;
@@ -22,5 +24,16 @@ public class InserterCardCache extends BaseCardCache {
 
     public double getDistance() {
         return relativePos.blockPos.distSqr(BlockPos.ZERO);
+    }
+
+    public boolean isValidDestination(ExtractorCardCache extractorCardCache, Predicate<InserterCardCache> isCardValidForStack) {
+        return (channel == extractorCardCache.channel
+                && cardType == extractorCardCache.cardType
+                && enabled
+                && isCardValidForStack.test(this)
+                && (!relativePos.blockPos.equals(BlockPos.ZERO)
+                    || direction != extractorCardCache.direction
+                    || sneaky != extractorCardCache.sneaky)
+        );
     }
 }
