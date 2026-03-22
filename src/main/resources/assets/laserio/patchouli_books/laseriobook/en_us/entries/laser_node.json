@@ -45,7 +45,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Nodes can be connected together using the $(l:laserio:laser_wrench)Laser Wrench$(/l), allowing connections between distant inventories.  The maximum range between connections is 8 blocks.$(br2)If your nodes are father apart, it is recommended to use $(l:laserio:laser_connector)Laser Connectors$()."
+      "text": "Nodes can be connected together using the $(l:laserio:laser_wrench)Laser Wrench$(/l), allowing connections between distant inventories.  The maximum range between connections is 8 blocks.$(br2)If your nodes are farther apart, it is recommended to use $(l:laserio:laser_connector)Laser Connectors$()."
     },
     {
       "type": "patchouli:image",
