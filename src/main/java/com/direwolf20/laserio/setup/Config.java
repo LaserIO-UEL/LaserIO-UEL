@@ -24,6 +24,7 @@ public class Config {
     public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec.IntValue MAX_INTERACTION_RANGE;
     public static ForgeConfigSpec.IntValue MAX_NODES_DISTANCE;
+    public static ForgeConfigSpec.DoubleValue MAX_TICK_MS;
     public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MIN_TICKS_ITEM;
     public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_FLUID;
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
@@ -67,6 +68,8 @@ public class Config {
                 .defineInRange("max_interaction_range", 10, 1, Integer.MAX_VALUE);
         MAX_NODES_DISTANCE = COMMON_BUILDER.comment("Maximum distance between two connected Nodes")
                 .defineInRange("max_nodes_distance", 8, 2, Integer.MAX_VALUE);
+        MAX_TICK_MS = COMMON_BUILDER.comment("Maximum time in milliseconds to spend on Laser Node processing per tick per level")
+                .defineInRange("max_tick_ms", 2.0, 0.0, 50.0);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Card settings").push(CATEGORY_CARD);

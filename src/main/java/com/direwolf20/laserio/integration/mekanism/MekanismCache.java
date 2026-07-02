@@ -13,6 +13,7 @@ import com.direwolf20.laserio.common.items.filters.FilterTag;
 import com.direwolf20.laserio.integration.mekanism.client.particles.chemicalparticle.ChemicalFlowParticleData;
 import com.direwolf20.laserio.integration.mekanism.util.ChemicalStackKey;
 import com.direwolf20.laserio.integration.mekanism.util.MekanismStatics;
+import com.direwolf20.laserio.common.util.LaserScheduler;
 import com.direwolf20.laserio.integration.mekanism.util.ParticleDataChemical;
 import com.direwolf20.laserio.integration.mekanism.util.ParticleRenderDataChemical;
 import com.direwolf20.laserio.util.CardRender;
@@ -321,6 +322,9 @@ public class MekanismCache {
                         insertStack.setAmount(insertStack.getAmount() - amtReturned); //Change the stack to size to how much can fit
                         ChemicalStack<?> drainedStack = handler.extractChemical(insertStack, Action.EXECUTE);
                         stockerTank.insertChemical(drainedStack, Action.EXECUTE);
+                        if (laserNodeChemicalHandler.be != null) {
+                            LaserScheduler.requestWakeUp(laserNodeChemicalHandler.be);
+                        }
                         drawParticlesChemical(drainedStack, inserterCardCache.direction, inserterCardCache.be, stockerCardCache.be, stockerCardCache.direction, inserterCardCache.cardSlot, stockerCardCache.cardSlot);
                     }
                     return true;
@@ -427,6 +431,9 @@ public class MekanismCache {
             if (drainedStack.isEmpty()) continue; //If we didn't get anything for whatever reason
             foundAnything = true;
             handler.insertChemical(drainedStack, Action.EXECUTE);
+            if (laserNodeChemicalHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeChemicalHandler.be);
+            }
             drawParticlesChemical(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);            totalAmtNeeded -= drainedStack.getAmount();
             amtToExtract = totalAmtNeeded;
             if (extractorCardCache.roundRobin != 0) laserNodeBE.getNextRR(extractorCardCache, inserterCardCaches);
@@ -503,6 +510,9 @@ public class MekanismCache {
             extractStack.setAmount(entry.getValue());
             ChemicalStack<?> drainedStack = fromInventory.extractChemical(extractStack, Action.EXECUTE);
             handler.insertChemical(drainedStack, Action.EXECUTE);
+            if (laserNodeChemicalHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeChemicalHandler.be);
+            }
             drawParticlesChemical(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
 
