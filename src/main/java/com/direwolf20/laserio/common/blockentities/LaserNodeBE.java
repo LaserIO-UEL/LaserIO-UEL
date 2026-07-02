@@ -75,6 +75,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import com.direwolf20.laserio.common.util.LaserScheduler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.joml.Vector3f;
 
@@ -98,6 +99,45 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class LaserNodeBE extends BaseLaserBE {
+    public enum NodeState {
+        ACTIVE,
+        COOLDOWN,
+        IDLE
+    }
+
+    public record NodeWorkResult(boolean didWork, int cooldownTicks) {
+    }
+
+    private NodeState nodeState = NodeState.IDLE;
+    private long nextAvailableTime = 0;
+    private boolean wakeRequestedThisTick = false;
+    private int lastSideTicked = 0;
+    private int consecutiveNoWork = 0;
+
+    public NodeState getNodeState() {
+        return nodeState;
+    }
+
+    public void setNodeState(NodeState nodeState) {
+        this.nodeState = nodeState;
+    }
+
+    public long getNextAvailableTime() {
+        return nextAvailableTime;
+    }
+
+    public void setNextAvailableTime(long nextAvailableTime) {
+        this.nextAvailableTime = nextAvailableTime;
+    }
+
+    public boolean isWakeRequestedThisTick() {
+        return wakeRequestedThisTick;
+    }
+
+    public void setWakeRequestedThisTick(boolean wakeRequestedThisTick) {
+        this.wakeRequestedThisTick = wakeRequestedThisTick;
+    }
+
     /** A cache of this blocks sides - data we need to reference frequently **/
     public final NodeSideCache[] nodeSideCaches = new NodeSideCache[6];
     private final IItemHandler EMPTY = new ItemStackHandler(0);
@@ -239,77 +279,81 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     /** Loop through all the extractorCards/stockerCards and run the extractions **/
-    public void extract() {
-        for (Direction direction : Direction.values()) {
-            NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
-            int countCardsHandled = 0;
-            for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
-                if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
-                if (extractorCardCache.decrementSleep() == 0) {
-                    if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overclockers) continue;
-                    boolean cardHandled;
+    public boolean extract(Direction direction) {
+        NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
+        int countCardsHandled = 0;
+        boolean didWork = false;
+        for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
+            if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
+            if (extractorCardCache.remainingSleep <= 0) {
+                if (!extractorCardCache.enabled) continue;
+                if (countCardsHandled > nodeSideCache.overclockers) continue;
+                boolean cardHandled;
 
-                    if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
-                        cardHandled = switch(extractorCardCache.cardType) {
-                            case ITEM -> stockItems(stockerCardCache);
-                            case FLUID -> stockFluids(stockerCardCache);
-                            case ENERGY -> stockEnergy(stockerCardCache);
-                            case CHEMICAL -> mekanismCache.stockChemicals(stockerCardCache);
-                            default -> false;
-                        };
-                    } else {
-                        cardHandled = switch(extractorCardCache.cardType) {
-                            case ITEM -> sendItems(extractorCardCache);
-                            case FLUID -> sendFluids(extractorCardCache);
-                            case ENERGY -> sendEnergy(extractorCardCache);
-                            case CHEMICAL -> mekanismCache.sendChemicals(extractorCardCache);
-                            default -> false;
-                        };
-                    }
-                    if (cardHandled) {
-                        countCardsHandled++;
-                    } else {
-                        extractorCardCache.remainingSleep = 5;
-                    }
-                    if (extractorCardCache.remainingSleep <= 0) {
-                        extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
-                    }
+                if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
+                    cardHandled = switch (extractorCardCache.cardType) {
+                        case ITEM -> stockItems(stockerCardCache);
+                        case FLUID -> stockFluids(stockerCardCache);
+                        case ENERGY -> stockEnergy(stockerCardCache);
+                        case CHEMICAL -> mekanismCache.stockChemicals(stockerCardCache);
+                        default -> false;
+                    };
+                } else {
+                    cardHandled = switch (extractorCardCache.cardType) {
+                        case ITEM -> sendItems(extractorCardCache);
+                        case FLUID -> sendFluids(extractorCardCache);
+                        case ENERGY -> sendEnergy(extractorCardCache);
+                        case CHEMICAL -> mekanismCache.sendChemicals(extractorCardCache);
+                        default -> false;
+                    };
                 }
+                if (cardHandled) {
+                    countCardsHandled++;
+                    didWork = true;
+                } else {
+                    extractorCardCache.remainingSleep = 5;
+                }
+                if (extractorCardCache.remainingSleep <= 0) {
+                    extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
+                }
+                if (didWork) break; // Bounded to one card per side per tick
             }
         }
+        return didWork;
     }
 
     /** Loop through all the sensorCards and run the sensing **/
-    public void sense() {
-        for (Direction direction : Direction.values()) {
-            NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
-            int countCardsHandled = 0;
-            for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
-                if (!(extractorCardCache instanceof SensorCardCache sensorCardCache)) {
-                    continue; //Don't even try to operate on non-sensor cards
+    public boolean sense(Direction direction) {
+        NodeSideCache nodeSideCache = nodeSideCaches[direction.ordinal()];
+        int countCardsHandled = 0;
+        boolean didWork = false;
+        for (ExtractorCardCache extractorCardCache : nodeSideCache.extractorCardCaches) {
+            if (!(extractorCardCache instanceof SensorCardCache sensorCardCache)) {
+                continue; //Don't even try to operate on non-sensor cards
+            }
+            if (extractorCardCache.remainingSleep <= 0) {
+                if (!extractorCardCache.enabled) continue;
+                if (countCardsHandled > nodeSideCache.overclockers) continue;
+                boolean cardHandled = switch (extractorCardCache.cardType) {
+                    case ITEM -> senseItems(sensorCardCache);
+                    case FLUID -> senseFluids(sensorCardCache);
+                    case ENERGY -> senseEnergy(sensorCardCache);
+                    case CHEMICAL -> mekanismCache.senseChemicals(sensorCardCache);
+                    default -> false;
+                };
+                if (cardHandled) {
+                    countCardsHandled++;
+                    didWork = true;
+                } else {
+                    extractorCardCache.remainingSleep = 5;
                 }
-                if (extractorCardCache.decrementSleep() == 0) {
-                    if (!extractorCardCache.enabled) continue;
-                    if (countCardsHandled > nodeSideCache.overclockers) continue;
-                    boolean cardHandled = switch(extractorCardCache.cardType) {
-                        case ITEM -> senseItems(sensorCardCache);
-                        case FLUID -> senseFluids(sensorCardCache);
-                        case ENERGY -> senseEnergy(sensorCardCache);
-                        case CHEMICAL -> mekanismCache.senseChemicals(sensorCardCache);
-                        default -> false;
-                    };
-                    if (cardHandled) {
-                        countCardsHandled++;
-                    } else {
-                        extractorCardCache.remainingSleep = 5;
-                    }
-                    if (extractorCardCache.remainingSleep <= 0) {
-                        extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
-                    }
+                if (extractorCardCache.remainingSleep <= 0) {
+                    extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
                 }
+                if (didWork) break; // Bounded to one card per side per tick
             }
         }
+        return didWork;
     }
 
     public void tickClient() {
@@ -319,7 +363,7 @@ public class LaserNodeBE extends BaseLaserBE {
         particleRenderDataChemicals.clear();
     }
 
-    public void tickServer() {
+    public NodeWorkResult doNodeTick() {
         perTickInventoryCounts.clear();
         refreshedInvNodesThisTick = false;
         if (!discoveredNodes) { //On world / chunk reload, lets rediscover the network, including this block's extractor cards.
@@ -328,7 +372,6 @@ public class LaserNodeBE extends BaseLaserBE {
             updateOverclockers();
             discoveredNodes = true;
         }
-        sense();
         if (!redstoneChecked) {
             populateThisRedstoneNetwork(true);
             redstoneChecked = true;
@@ -337,7 +380,43 @@ public class LaserNodeBE extends BaseLaserBE {
             refreshRedstoneNetwork();
             redstoneRefreshed = true;
         }
-        extract(); //If this node has any extractors, do stuff with them
+
+        boolean anyCardReady = false;
+        int minRemainingSleep = Integer.MAX_VALUE;
+        for (Direction dir : Direction.values()) {
+            NodeSideCache nodeSideCache = nodeSideCaches[dir.ordinal()];
+            for (ExtractorCardCache card : nodeSideCache.extractorCardCaches) {
+                int sleep = card.decrementSleep();
+                if (sleep == 0) anyCardReady = true;
+                if (sleep < minRemainingSleep) minRemainingSleep = sleep;
+            }
+        }
+
+        boolean didWork = false;
+        Direction direction = Direction.values()[lastSideTicked];
+        if (sense(direction)) didWork = true;
+        if (extract(direction)) didWork = true;
+
+        lastSideTicked++;
+        if (lastSideTicked >= 6) lastSideTicked = 0;
+
+        if (didWork || anyCardReady) {
+            consecutiveNoWork = 0;
+            return new NodeWorkResult(true, 1);
+        } else {
+            consecutiveNoWork++;
+            if (consecutiveNoWork < 6) {
+                return new NodeWorkResult(false, 1); // Check next side next tick
+            } else {
+                consecutiveNoWork = 0;
+                int cooldown = (minRemainingSleep == Integer.MAX_VALUE) ? 0 : Math.min(minRemainingSleep, 20);
+                return new NodeWorkResult(false, cooldown);
+            }
+        }
+    }
+
+    public void tickServer() {
+        // No-op, handled by LaserScheduler
     }
 
     public void populateThisRedstoneNetwork(boolean notifyOthers) {
@@ -691,6 +770,9 @@ public class LaserNodeBE extends BaseLaserBE {
                 if (amtToExtract == 0) break;
             }
             result.insertHandler.insertItem(result.insertSlot, tempStack, false);
+            if (result.toBE != null) {
+                LaserScheduler.requestWakeUp(result.toBE);
+            }
             if (result.inserterCardCache != null) {
                 drawParticles(tempStack, extractorCardCache.direction, this, result.toBE, result.inserterCardCache.direction, extractorCardCache.cardSlot, result.inserterCardCache.cardSlot);
             }
@@ -1049,6 +1131,9 @@ public class LaserNodeBE extends BaseLaserBE {
             if (drainedStack.isEmpty()) continue; //If we didn't get anything for whatever reason
             foundAnything = true;
             handler.fill(drainedStack, IFluidHandler.FluidAction.EXECUTE);
+            if (laserNodeFluidHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeFluidHandler.be);
+            }
             drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
             totalAmtNeeded -= drainedStack.getAmount();
             amtToExtract = totalAmtNeeded;
@@ -1124,6 +1209,9 @@ public class LaserNodeBE extends BaseLaserBE {
             extractStack.setAmount(entry.getValue());
             FluidStack drainedStack = fromInventory.drain(extractStack, IFluidHandler.FluidAction.EXECUTE);
             handler.fill(drainedStack, IFluidHandler.FluidAction.EXECUTE);
+            if (laserNodeFluidHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeFluidHandler.be);
+            }
             drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
         return true;
@@ -1227,7 +1315,12 @@ public class LaserNodeBE extends BaseLaserBE {
             }
             totalAmtNeeded -= amtFit; //If we removed 100 and wanted to remove 1000, keep looking for other nodes to insert into
             totalFit += amtFit;
-            if (!simulate) energyStorage.receiveEnergy(amtFit, false); //Insert the amount we removed from the source
+            if (!simulate) {
+                energyStorage.receiveEnergy(amtFit, false); //Insert the amount we removed from the source
+                if (laserNodeEnergyHandler.be != null) {
+                    LaserScheduler.requestWakeUp(laserNodeEnergyHandler.be);
+                }
+            }
             //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
             if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
             if (totalAmtNeeded == 0) return totalFit;
@@ -1268,6 +1361,9 @@ public class LaserNodeBE extends BaseLaserBE {
             if (amtDrained == 0) continue; //If we didn't get anything, like the energy storage is empty
             foundAnything = true;
             energyStorage.receiveEnergy(amtDrained, false); //Insert the amount we removed from the source
+            if (laserNodeEnergyHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeEnergyHandler.be);
+            }
             //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
             totalAmtNeeded -= amtDrained; //If we removed 100 and wanted to remove 1000, keep looking for other nodes to insert into
             if (extractorCardCache.roundRobin != 0) getNextRR(extractorCardCache, inserterCardCaches);
@@ -1319,6 +1415,9 @@ public class LaserNodeBE extends BaseLaserBE {
             IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
             int actualRemoved = fromEnergyTank.extractEnergy(entry.getValue(), false);
             energyStorage.receiveEnergy(actualRemoved, false);
+            if (laserNodeEnergyHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeEnergyHandler.be);
+            }
             //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
         return true;
@@ -1588,6 +1687,9 @@ public class LaserNodeBE extends BaseLaserBE {
             IEnergyStorage energyStorage = laserNodeEnergyHandler.handler;
             int actualRemoved = energyStorage.extractEnergy(entry.getValue(), false);
             toEnergyTank.receiveEnergy(actualRemoved, false);
+            if (laserNodeEnergyHandler.be != null) {
+                LaserScheduler.requestWakeUp(laserNodeEnergyHandler.be);
+            }
             //drawParticlesFluid(drainedStack, extractorCardCache.direction, extractorCardCache.be, inserterCardCache.be, inserterCardCache.direction, extractorCardCache.cardSlot, inserterCardCache.cardSlot);
         }
 
@@ -1655,6 +1757,9 @@ public class LaserNodeBE extends BaseLaserBE {
                         insertStack.setAmount(amtFit); //Change the stack to size to how much can fit
                         FluidStack drainedStack = handler.drain(insertStack, IFluidHandler.FluidAction.EXECUTE);
                         stockerTank.fill(drainedStack, IFluidHandler.FluidAction.EXECUTE);
+                        if (laserNodeFluidHandler.be != null) {
+                            LaserScheduler.requestWakeUp(laserNodeFluidHandler.be);
+                        }
                         drawParticlesFluid(drainedStack, inserterCardCache.direction, inserterCardCache.be, stockerCardCache.be, stockerCardCache.direction, inserterCardCache.cardSlot, stockerCardCache.cardSlot);
                     }
                     return true;
@@ -1712,6 +1817,11 @@ public class LaserNodeBE extends BaseLaserBE {
                     }
                 }
                 transferResult.doIt(); //Move the items for real - we have both extractor/inserter caches from the above method
+        for (TransferResult.Result result : transferResult.results) {
+            if (result.toBE != null) {
+                LaserScheduler.requestWakeUp(result.toBE);
+            }
+        }
                 return true;
             }
             //If we got here, we still need (more of) this item
@@ -1752,6 +1862,11 @@ public class LaserNodeBE extends BaseLaserBE {
                         }
                     }
                     transferResult.doIt(); //Move the items for real - we have both extractor/inserter caches from the above method
+                    for (TransferResult.Result result : transferResult.results) {
+                        if (result.toBE != null) {
+                            LaserScheduler.requestWakeUp(result.toBE);
+                        }
+                    }
                     int lastSlot = transferResult.results.get(transferResult.results.size() - 1).extractSlot; //The last slot we pulled from in this inventory
                     if (lastSlot < laserNodeItemHandler.handler.getSlots() && !laserNodeItemHandler.handler.getStackInSlot(lastSlot).isEmpty()) //If its not empty now
                         stockerDestinationCache.put(new StockerRequest(stockerCardCache, new ItemStackKey(itemStack, stockerCardCache.isCompareNBT)), new StockerSource(inserterCardCache, lastSlot)); //Add to the cache
@@ -1779,6 +1894,11 @@ public class LaserNodeBE extends BaseLaserBE {
                     }
                 }
                 transferResult.doIt(); //Move the items for real - we have both extractor/inserter caches from the above method
+                for (TransferResult.Result result : transferResult.results) {
+                    if (result.toBE != null) {
+                        LaserScheduler.requestWakeUp(result.toBE);
+                    }
+                }
                 return true;
             }
         }
@@ -2024,6 +2144,7 @@ public class LaserNodeBE extends BaseLaserBE {
         updateOverclockers();
         Arrays.stream(nodeSideCaches).forEach(NodeSideCache::invalidateEnergy);
         //updateRedstoneOutputs();
+        LaserScheduler.requestWakeUp(this);
     }
 
     /** When this node changes, tell other nodes to refresh their cache of it **/
@@ -2037,6 +2158,7 @@ public class LaserNodeBE extends BaseLaserBE {
             node.checkInvNode(new DimBlockPos(this.level, this.getBlockPos()), true);
             //node.refreshRedstoneNetwork();
             node.redstoneRefreshed = false;
+            LaserScheduler.requestWakeUp(node);
         }
     }
 
@@ -2551,8 +2673,17 @@ public class LaserNodeBE extends BaseLaserBE {
     @Override
     public void setRemoved() {
         super.setRemoved();
+        LaserScheduler.removeNode(this);
         Arrays.stream(nodeSideCaches).forEach(e -> e.handlerLazyOptional.invalidate());
         Arrays.stream(nodeSideCaches).forEach(e -> e.laserEnergyStorage.invalidate());
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide) {
+            LaserScheduler.addNode(this);
+        }
     }
 
     public class LaserEnergyStorage implements IEnergyStorage {

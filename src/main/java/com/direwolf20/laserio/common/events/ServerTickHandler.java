@@ -3,12 +3,15 @@ package com.direwolf20.laserio.common.events;
 import com.direwolf20.laserio.common.network.PacketHandler;
 import com.direwolf20.laserio.common.network.packets.PacketNodeParticles;
 import com.direwolf20.laserio.common.network.packets.PacketNodeParticlesFluid;
+import com.direwolf20.laserio.common.util.LaserScheduler;
 import com.direwolf20.laserio.integration.mekanism.common.network.packets.PacketNodeParticlesChemical;
 import com.direwolf20.laserio.integration.mekanism.util.ParticleDataChemical;
 import com.direwolf20.laserio.util.ParticleData;
 import com.direwolf20.laserio.util.ParticleDataFluid;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -24,6 +27,9 @@ public class ServerTickHandler {
     @SubscribeEvent
     public static void handleTickEndEvent(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
+            for (ServerLevel level : event.getServer().getAllLevels()) {
+                LaserScheduler.tick(level);
+            }
             if (!particleList.isEmpty()) {
                 Set<Level> levels = new HashSet<>();
                 for (ParticleData data : particleList) {
@@ -69,5 +75,12 @@ public class ServerTickHandler {
     public static void addToListChemical(ParticleDataChemical particleData) {
         if (!particleData.chemicalStack.isEmpty())
             particleListChemical.add(particleData);
+    }
+
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof Level level) {
+            LaserScheduler.clear(level);
+        }
     }
 }

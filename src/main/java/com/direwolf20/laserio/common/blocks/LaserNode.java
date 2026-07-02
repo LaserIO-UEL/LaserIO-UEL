@@ -1,6 +1,7 @@
 package com.direwolf20.laserio.common.blocks;
 
 import com.direwolf20.laserio.common.blockentities.LaserNodeBE;
+import com.direwolf20.laserio.common.util.LaserScheduler;
 import com.direwolf20.laserio.common.blocks.baseblocks.BaseLaserBlock;
 import com.direwolf20.laserio.common.containers.LaserNodeContainer;
 import com.direwolf20.laserio.common.containers.customhandler.LaserNodeItemHandler;
@@ -174,11 +175,7 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
                 }
             };
         }
-        return (lvl, pos, blockState, t) -> {
-            if (t instanceof LaserNodeBE tile) {
-                tile.tickServer();
-            }
-        };
+        return null;
     }
 
     @Override
@@ -190,6 +187,9 @@ public class LaserNode extends BaseLaserBlock implements EntityBlock {
             laserNodeBE.clearCachedInventories();
             laserNodeBE.redstoneChecked = false;
             //laserNodeBE.populateThisRedstoneNetwork(true);
+            if (!level.isClientSide) {
+                LaserScheduler.requestWakeUp(laserNodeBE);
+            }
         }
     }
 
