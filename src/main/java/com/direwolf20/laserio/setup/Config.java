@@ -26,6 +26,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue MAX_NODES_DISTANCE;
     public static ForgeConfigSpec.DoubleValue MAX_TICK_MS;
     public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MIN_TICKS_ITEM;
+    public static ForgeConfigSpec.IntValue MAX_ITEMS_PER_TICK;
     public static ForgeConfigSpec.IntValue BASE_MILLI_BUCKETS_FLUID;
     public static ForgeConfigSpec.IntValue MULTIPLIER_MILLI_BUCKETS_FLUID;
     public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> MIN_TICKS_FLUID;
@@ -77,6 +78,8 @@ public class Config {
         COMMON_BUILDER.comment("Item Card").push(SUBCATEGORY_ITEM);
         MIN_TICKS_ITEM = COMMON_BUILDER.comment("Minimum ticks/operation, the first element is with no Logistic Overclockers, the last one is with all four")
                 .defineList("min_ticks_item", List.of(20, 16, 12, 8, 4), Config::positiveIntegerValidator);
+        MAX_ITEMS_PER_TICK = COMMON_BUILDER.comment("Maximum items transferred per successful item operation")
+                .defineInRange("max_items_per_tick", 64, 1, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Fluid Card").push(SUBCATEGORY_FLUID);

@@ -34,7 +34,11 @@ public class TransferResult {
     }
 
     public int getTotalItemCounts() {
-        return results.stream().mapToInt(i -> i.itemStack.getCount()).sum();
+        int total = 0;
+        for (Result result : results) {
+            total += result.itemStack.getCount();
+        }
+        return total;
     }
 
     public void addResult(TransferResult newResult) {

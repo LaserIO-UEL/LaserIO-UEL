@@ -7,14 +7,26 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.Objects;
 
 public class FluidStackKey {
-    public final Fluid fluid;
-    public final CompoundTag nbt;
-    private final int hash;
+    public Fluid fluid;
+    public CompoundTag nbt;
+    protected int hash;
+    protected static final CompoundTag EMPTY_TAG = new CompoundTag();
 
     public FluidStackKey(FluidStack stack, boolean compareNBT) {
         this.fluid = stack.getFluid();
-        this.nbt = compareNBT ? stack.getTag() : new CompoundTag();
+        CompoundTag tag = stack.getTag();
+        this.nbt = (compareNBT && tag != null) ? tag : EMPTY_TAG;
         this.hash = Objects.hash(fluid, nbt);
+    }
+
+    public FluidStackKey() {}
+
+    public FluidStackKey set(FluidStack stack, boolean compareNBT) {
+        this.fluid = stack.getFluid();
+        CompoundTag tag = stack.getTag();
+        this.nbt = (compareNBT && tag != null) ? tag : EMPTY_TAG;
+        this.hash = Objects.hash(fluid, nbt);
+        return this;
     }
 
     public FluidStack getStack() {
@@ -32,8 +44,8 @@ public class FluidStackKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FluidStackKey) {
-            return (((FluidStackKey) obj).fluid == this.fluid) && Objects.equals(((FluidStackKey) obj).nbt, this.nbt);
+        if (obj instanceof FluidStackKey other) {
+            return other.fluid == this.fluid && Objects.equals(other.nbt, this.nbt);
         }
         return false;
     }

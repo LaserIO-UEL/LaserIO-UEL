@@ -30,10 +30,12 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class BaseCardCache {
     public final Direction direction;
@@ -44,9 +46,11 @@ public class BaseCardCache {
     public final ItemStack filterCard;
     public final int cardSlot;
     public final List<ItemStack> filteredItems;
+    public final List<ItemStackKey> filteredItemsKeys;
     public final List<FluidStack> filteredFluids;
-    public final List<String> filterTags;
-    public final List<String> filterNBTs;
+    public final List<FluidStackKey> filteredFluidsKeys;
+    public final Set<String> filterTags;
+    public final Set<String> filterNBTs;
     public final byte sneaky;
     public final LaserNodeBE be;
     public final CardType cardType;
@@ -58,9 +62,11 @@ public class BaseCardCache {
     public final boolean isCompareNBT;
     public final Map<ItemStackKey, Boolean> filterCache = new Object2BooleanOpenHashMap<>();
     public final Map<ItemStackKey, Integer> filterCounts = new Object2IntOpenHashMap<>();
+    private final ItemStackKey lookupKey = new ItemStackKey();
     //Fluids
     public final Map<FluidStackKey, Boolean> filterCacheFluid = new Object2BooleanOpenHashMap<>();
     public final Map<FluidStackKey, Integer> filterCountsFluid = new Object2IntOpenHashMap<>();
+    private final FluidStackKey lookupKeyFluid = new FluidStackKey();
     //Mekanism chemicals
     public MekanismCardCache mekanismCardCache;
 
@@ -92,18 +98,28 @@ public class BaseCardCache {
         this.be = be;
         if (filterCard.isEmpty()) {
             filteredItems = new ArrayList<>();
+            filteredItemsKeys = new ArrayList<>();
             filteredFluids = new ArrayList<>();
-            filterTags = new ArrayList<>();
-            filterNBTs = new ArrayList<>();
+            filteredFluidsKeys = new ArrayList<>();
+            filterTags = new HashSet<>();
+            filterNBTs = new HashSet<>();
             isAllowList = false;
             isCompareNBT = false;
         } else {
-            this.filteredItems = getFilteredItems();
-            this.filteredFluids = getFilteredFluids();
-            this.filterTags = getFilterTags();
-            this.filterNBTs = getFilterNBTs();
-            isAllowList = BaseFilter.getAllowList(filterCard);
             isCompareNBT = BaseFilter.getCompareNBT(filterCard);
+            this.filteredItems = getFilteredItems();
+            this.filteredItemsKeys = new ArrayList<>();
+            for (ItemStack stack : filteredItems) {
+                filteredItemsKeys.add(new ItemStackKey(stack, isCompareNBT));
+            }
+            this.filteredFluids = getFilteredFluids();
+            this.filteredFluidsKeys = new ArrayList<>();
+            for (FluidStack stack : filteredFluids) {
+                filteredFluidsKeys.add(new FluidStackKey(stack, isCompareNBT));
+            }
+            this.filterTags = new HashSet<>(getFilterTags());
+            this.filterNBTs = new HashSet<>(getFilterNBTs());
+            isAllowList = BaseFilter.getAllowList(filterCard);
         }
         setEnabled();
     }
@@ -129,17 +145,20 @@ public class BaseCardCache {
         if (!(filterCard.getItem() instanceof FilterCount)) { //If this is a basic or tag Card return -1 which will mean infinite amount
             return -1;
         }
-        ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
-        Integer cachedCount = filterCounts.get(key);
+        lookupKey.set(testStack, isCompareNBT);
+        Integer cachedCount = filterCounts.get(lookupKey);
         if (cachedCount != null) //If we've already tested this, get it from the cache
             return cachedCount;
 
-        for (ItemStack stack : filteredItems) { //If the item is not in the cache, loop through filtered items list
-            if (ItemHandlerUtil.doItemsMatch(testStack, stack, isCompareNBT)) {
-                filterCounts.put(key, stack.getCount());
-                return stack.getCount();
+        for (int i = 0; i < filteredItemsKeys.size(); i++) {
+            if (filteredItemsKeys.get(i).equals(lookupKey)) {
+                ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
+                int count = filteredItems.get(i).getCount();
+                filterCounts.put(key, count);
+                return count;
             }
         }
+        ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
         filterCounts.put(key, 0);
         return 0; //Should never get here in theory
     }
@@ -150,8 +169,8 @@ public class BaseCardCache {
         if (!(filterCard.getItem() instanceof FilterCount)) { //If this is a basic or tag Card return -1 which will mean infinite amount
             return -1;
         }
-        FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
-        Integer cachedMbAmt = filterCountsFluid.get(key);
+        lookupKeyFluid.set(testStack, isCompareNBT);
+        Integer cachedMbAmt = filterCountsFluid.get(lookupKeyFluid);
         if (cachedMbAmt != null) //If we've already tested this, get it from the cache
             return cachedMbAmt;
 
@@ -164,14 +183,18 @@ public class BaseCardCache {
                 IFluidHandler fluidHandler = fluidHandlerOptional.resolve().get();
                 for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
                     FluidStack fluidStack = fluidHandler.getFluidInTank(tank);
-                    if (new FluidStackKey(fluidStack, isCompareNBT).equals(key)) {
+                    // Using a local lookup key for internal comparison to avoid allocation
+                    FluidStackKey innerLookup = new FluidStackKey();
+                    if (innerLookup.set(fluidStack, isCompareNBT).equals(lookupKeyFluid)) {
                         int mbAmt = FilterCount.getSlotAmount(filterCard, i);
+                        FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
                         filterCountsFluid.put(key, mbAmt);
                         return mbAmt;
                     }
                 }
             }
         }
+        FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
         filterCountsFluid.put(key, 0);
         return 0; //Should never get here in theory
     }
@@ -215,31 +238,30 @@ public class BaseCardCache {
     }
 
     public List<String> getFilterTags() {
-        List<String> filterTags = new ArrayList<>();
         if (filterCard.getItem() instanceof FilterTag) {
-            filterTags = FilterTag.getTags(filterCard);
+            return FilterTag.getTags(filterCard);
         }
-        return filterTags;
+        return new ArrayList<>();
     }
 
     public List<String> getFilterNBTs() {
-        List<String> filterNBTs = new ArrayList<>();
         if (filterCard.getItem() instanceof FilterNBT) {
-            filterNBTs = FilterTag.getTags(filterCard);
+            return FilterTag.getTags(filterCard);
         }
-        return filterNBTs;
+        return new ArrayList<>();
     }
 
     public boolean isStackValidForCard(ItemStack testStack) {
         if (filterCard.isEmpty()) return true; //If theres no filter in the card
-        ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
-        Boolean cachedResult = filterCache.get(key);
+        lookupKey.set(testStack, isCompareNBT);
+        Boolean cachedResult = filterCache.get(lookupKey);
         if (cachedResult != null) return cachedResult;
 
         if (filterCard.getItem() instanceof FilterMod) {
             String modId = testStack.getItem().getCreatorModId(testStack);
             for (ItemStack stack : filteredItems) {
                 if (stack.getItem().getCreatorModId(stack).equals(modId)) {
+                    ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
                     filterCache.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -249,6 +271,7 @@ public class BaseCardCache {
             for (TagKey<net.minecraft.world.item.Item> tagKey : tags) {
                 String tag = tagKey.location().toString().toLowerCase(Locale.ROOT);
                 if (filterTags.contains(tag)) {
+                    ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
                     filterCache.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -257,33 +280,37 @@ public class BaseCardCache {
             if (testStack.hasTag()) {
                 for (String tag : testStack.getTag().getAllKeys()) {
                     if (filterNBTs.contains(tag)) {
+                        ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
                         filterCache.put(key, isAllowList);
                         return isAllowList;
                     }
                 }
             }
         } else {
-            for (ItemStack stack : filteredItems) {
-                if (ItemHandlerUtil.doItemsMatch(testStack, stack, isCompareNBT)) {
+            for (ItemStackKey keyInFilter : filteredItemsKeys) {
+                if (keyInFilter.equals(lookupKey)) {
+                    ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
                     filterCache.put(key, isAllowList);
                     return isAllowList;
                 }
             }
         }
+        ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
         filterCache.put(key, !isAllowList);
         return !isAllowList;
     }
 
     public boolean isStackValidForCard(FluidStack testStack) {
         if (filterCard.isEmpty()) return true; //If theres no filter in the card
-        FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
-        Boolean cachedResult = filterCacheFluid.get(key);
+        lookupKeyFluid.set(testStack, isCompareNBT);
+        Boolean cachedResult = filterCacheFluid.get(lookupKeyFluid);
         if (cachedResult != null) return cachedResult;
 
         if (filterCard.getItem() instanceof FilterMod) {
             String modId = ForgeRegistries.FLUIDS.getKey(testStack.getFluid()).getNamespace();
             for (FluidStack stack : filteredFluids) {
                 if (ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getNamespace().equals(modId)) {
+                    FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
                     filterCacheFluid.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -292,18 +319,21 @@ public class BaseCardCache {
             for (TagKey tagKey : testStack.getFluid().builtInRegistryHolder().tags().toList()) {
                 String tag = tagKey.location().toString().toLowerCase(Locale.ROOT);
                 if (filterTags.contains(tag)) {
+                    FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
                     filterCacheFluid.put(key, isAllowList);
                     return isAllowList;
                 }
             }
         } else {
-            for (FluidStack stack : filteredFluids) {
-                if (new FluidStackKey(stack, isCompareNBT).equals(key)) {
+            for (FluidStackKey keyInFilter : filteredFluidsKeys) {
+                if (keyInFilter.equals(lookupKeyFluid)) {
+                    FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
                     filterCacheFluid.put(key, isAllowList);
                     return isAllowList;
                 }
             }
         }
+        FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
         filterCacheFluid.put(key, !isAllowList);
         return !isAllowList;
     }

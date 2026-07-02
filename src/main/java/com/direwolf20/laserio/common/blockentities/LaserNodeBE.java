@@ -7,6 +7,7 @@ import com.direwolf20.laserio.common.blockentities.basebe.BaseLaserBE;
 import com.direwolf20.laserio.common.blocks.LaserNode;
 import com.direwolf20.laserio.common.containers.LaserNodeContainer;
 import com.direwolf20.laserio.common.events.ServerTickHandler;
+import com.direwolf20.laserio.setup.Config;
 import com.direwolf20.laserio.common.items.cards.BaseCard;
 import com.direwolf20.laserio.common.items.cards.BaseCard.CardType;
 import com.direwolf20.laserio.common.items.cards.BaseCard.TransferMode;
@@ -188,6 +189,7 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     private final Map<StockerRequest, StockerSource> stockerDestinationCache = new HashMap<>();
+    private final Set<ExtractorCardCache> emptyCards = new HashSet<>();
 
     public boolean rendersChecked = false;
     public List<CardRender> cardRenders = new ArrayList<>();
@@ -287,6 +289,7 @@ public class LaserNodeBE extends BaseLaserBE {
             if (extractorCardCache instanceof SensorCardCache) continue; //Don't try to operate on SensorCards
             if (extractorCardCache.remainingSleep <= 0) {
                 if (!extractorCardCache.enabled) continue;
+                if (emptyCards.contains(extractorCardCache)) continue;
                 if (countCardsHandled > nodeSideCache.overclockers) continue;
                 boolean cardHandled;
 
@@ -311,6 +314,7 @@ public class LaserNodeBE extends BaseLaserBE {
                     countCardsHandled++;
                     didWork = true;
                 } else {
+                    emptyCards.add(extractorCardCache);
                     extractorCardCache.remainingSleep = 5;
                 }
                 if (extractorCardCache.remainingSleep <= 0) {
@@ -626,9 +630,13 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache, Predicate<InserterCardCache> isCardValidForStack) {
-        return inserterNodes.stream()
-                .filter(inserterCardCache -> inserterCardCache.isValidDestination(extractorCardCache, isCardValidForStack))
-                .toList();
+        List<InserterCardCache> list = new ArrayList<>();
+        for (InserterCardCache inserterCardCache : inserterNodes) {
+            if (inserterCardCache.isValidDestination(extractorCardCache, isCardValidForStack)) {
+                list.add(inserterCardCache);
+            }
+        }
+        return list;
     }
 
     public List<InserterCardCache> filterPossibleInserters(ExtractorCardCache extractorCardCache) {
@@ -695,13 +703,15 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public List<InserterCardCache> applyRR(ExtractorCardCache extractorCardCache, List<InserterCardCache> inserterCardCaches, int nextRR) {
-        List<List<InserterCardCache>> lists = new ArrayList<>(
-                inserterCardCaches.stream()
-                        .collect(Collectors.partitioningBy(
-                                s -> inserterCardCaches.indexOf(s) >= nextRR))
-                        .values());
-        lists.get(1).addAll(lists.get(0));
-        return lists.get(1);
+        int size = inserterCardCaches.size();
+        List<InserterCardCache> list = new ArrayList<>(size);
+        for (int i = nextRR; i < size; i++) {
+            list.add(inserterCardCaches.get(i));
+        }
+        for (int i = 0; i < nextRR; i++) {
+            list.add(inserterCardCaches.get(i));
+        }
+        return list;
     }
 
     public boolean extractItem(ExtractorCardCache extractorCardCache, IItemHandler fromInventory, ItemStack extractStack, int startSlot) {
@@ -823,9 +833,8 @@ public class LaserNodeBE extends BaseLaserBE {
         if (filter.getItem() instanceof FilterMod) {
             List<ItemStack> filteredItemsListOriginal = sensorCardCache.filteredItems;
             List<ItemStack> filteredItemsList = new ArrayList<>(filteredItemsListOriginal);
-            List<ItemStack> itemStacksInChest = inventoryCounts.getItemCounts().values().stream().toList();
             outloop:
-            for (ItemStack stack : itemStacksInChest) {
+            for (ItemStack stack : inventoryCounts.getItemCounts().values()) {
                 for (ItemStack testStack : filteredItemsListOriginal) {
                     if (stack.getItem().getCreatorModId(stack).equals(testStack.getItem().getCreatorModId(testStack))) {
                         filteredItemsList.remove(testStack);
@@ -882,12 +891,11 @@ public class LaserNodeBE extends BaseLaserBE {
                 filterMatched = allMatched;
             }
         } else if (filter.getItem() instanceof FilterTag) {
-            List<String> tags = sensorCardCache.filterTags;
+            Set<String> tags = new HashSet<>(sensorCardCache.filterTags);
             int tagsToMatch = tags.size();
-            List<ItemStack> itemStacksInChest = inventoryCounts.getItemCounts().values().stream().toList();
             outloop:
-            for (ItemStack itemStack : itemStacksInChest) {
-                for (TagKey tagKey : itemStack.getItem().builtInRegistryHolder().tags().toList()) {
+            for (ItemStack itemStack : inventoryCounts.getItemCounts().values()) {
+                for (TagKey<Item> tagKey : itemStack.getItem().builtInRegistryHolder().tags().toList()) {
                     String itemTag = tagKey.location().toString().toLowerCase(Locale.ROOT);
                     if (tags.contains(itemTag)) {
                         tags.remove(itemTag);
@@ -1057,6 +1065,7 @@ public class LaserNodeBE extends BaseLaserBE {
         assert level != null;
         if (!level.isLoaded(adjacentPos)) return false;
         IItemHandler adjacentInventory = getAttachedInventory(extractorCardCache.direction, extractorCardCache.sneaky).orElse(EMPTY);
+        if (adjacentInventory.getSlots() == 0) return false;
         ItemHandlerUtil.InventoryCounts inventoryCounts = null;
         if (extractorCardCache.filterCard.getItem() instanceof FilterCount) {
             Direction inventorySide = extractorCardCache.direction.getOpposite();
@@ -1064,11 +1073,14 @@ public class LaserNodeBE extends BaseLaserBE {
             SideConnection sideConnection = new SideConnection(extractorCardCache.direction, inventorySide);
             inventoryCounts = perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnection, extractorCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(adjacentInventory, extractorCardCache.isCompareNBT));
         }
+        int totalItemsMoved = 0;
+        int maxItems = Math.min(Config.MAX_ITEMS_PER_TICK.get(), extractorCardCache.extractAmt);
+        boolean movedAny = false;
         for (int slot = 0; slot < adjacentInventory.getSlots(); slot++) {
             ItemStack stackInSlot = adjacentInventory.getStackInSlot(slot);
             if (stackInSlot.isEmpty() || !(extractorCardCache.isStackValidForCard(stackInSlot))) continue;
             ItemStack extractStack = stackInSlot.copy();
-            extractStack.setCount(extractorCardCache.extractAmt);
+            extractStack.setCount(maxItems - totalItemsMoved);
             if (extractorCardCache.filterCard.getItem() instanceof FilterCount) { //If this is a count filter, only try to extract up to the amount in the filter
                 int filterCount = extractorCardCache.getFilterAmt(extractStack);
                 if (filterCount <= 0) continue; //This should never happen in theory...
@@ -1078,11 +1090,14 @@ public class LaserNodeBE extends BaseLaserBE {
                 int amtRemaining = Math.min(extractStack.getCount(), amtAllowedToRemove);
                 extractStack.setCount(amtRemaining);
             }
+            if (extractStack.isEmpty()) continue;
             if (extractItem(extractorCardCache, adjacentInventory, extractStack, slot)) {
-                return true;
+                totalItemsMoved += extractStack.getCount();
+                movedAny = true;
             }
+            if (totalItemsMoved >= maxItems) break;
         }
-        return false;
+        return movedAny;
     }
 
     public boolean extractFluidStack(ExtractorCardCache extractorCardCache, IFluidHandler fromInventory, FluidStack extractStack) {
@@ -2172,6 +2187,7 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         channelOnlyCache.clear();
         this.stockerDestinationCache.clear();
+        emptyCards.clear();
         this.redstoneNetwork.clear();
         if (level == null) return;
         for (DimBlockPos pos : otherNodesInNetwork) {
@@ -2205,6 +2221,7 @@ public class LaserNodeBE extends BaseLaserBE {
         }
         channelOnlyCache.clear();
         this.stockerDestinationCache.clear();
+        emptyCards.clear();
 
         /*for (Map.Entry<Byte, Byte> beRedstone: be.myRedstoneIn.entrySet()) {
             updateRedstoneNetwork(beRedstone.getKey(), beRedstone.getValue());
@@ -2449,6 +2466,7 @@ public class LaserNodeBE extends BaseLaserBE {
     /** Called when a neighbor updates to invalidate the inventory cache */
     public void clearCachedInventories(SideConnection sideConnection, ChemicalType chemicalType) {
         stockerDestinationCache.clear();
+        emptyCards.clear();
         this.facingHandlerItem.remove(sideConnection);
         this.facingHandlerFluid.remove(sideConnection);
         this.facingHandlerEnergy.remove(sideConnection);
@@ -2462,6 +2480,7 @@ public class LaserNodeBE extends BaseLaserBE {
     /** Called when a neighbor updates to invalidate the inventory cache */
     public void clearCachedInventories(SideConnection sideConnection) {
         stockerDestinationCache.clear();
+        emptyCards.clear();
         this.facingHandlerItem.remove(sideConnection);
         this.facingHandlerFluid.remove(sideConnection);
         this.facingHandlerEnergy.remove(sideConnection);
@@ -2473,6 +2492,7 @@ public class LaserNodeBE extends BaseLaserBE {
     /** Called when a neighbor updates to invalidate the inventory cache */
     public void clearCachedInventories() {
         stockerDestinationCache.clear();
+        emptyCards.clear();
         this.facingHandlerItem.clear();
         this.facingHandlerFluid.clear();
         this.facingHandlerEnergy.clear();
