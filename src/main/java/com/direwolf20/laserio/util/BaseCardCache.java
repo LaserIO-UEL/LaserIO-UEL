@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class BaseCardCache {
     public final Direction direction;
@@ -129,10 +130,12 @@ public class BaseCardCache {
             return -1;
         }
         ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
-        if (filterCounts.containsKey(key)) //If we've already tested this, get it from the cache
-            return filterCounts.get(key);
+        Integer cachedCount = filterCounts.get(key);
+        if (cachedCount != null) //If we've already tested this, get it from the cache
+            return cachedCount;
+
         for (ItemStack stack : filteredItems) { //If the item is not in the cache, loop through filtered items list
-            if (key.equals(new ItemStackKey(stack, isCompareNBT))) {
+            if (ItemHandlerUtil.doItemsMatch(testStack, stack, isCompareNBT)) {
                 filterCounts.put(key, stack.getCount());
                 return stack.getCount();
             }
@@ -148,8 +151,9 @@ public class BaseCardCache {
             return -1;
         }
         FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
-        if (filterCountsFluid.containsKey(key)) //If we've already tested this, get it from the cache
-            return filterCountsFluid.get(key);
+        Integer cachedMbAmt = filterCountsFluid.get(key);
+        if (cachedMbAmt != null) //If we've already tested this, get it from the cache
+            return cachedMbAmt;
 
         ItemStackHandler filterSlotHandler = FilterCount.getInventory(filterCard);
         for (int i = 0; i < filterSlotHandler.getSlots(); i++) { //Gotta iterate the card's NBT because of the way we store amounts (in the MBAmt tag)
@@ -160,7 +164,7 @@ public class BaseCardCache {
                 IFluidHandler fluidHandler = fluidHandlerOptional.resolve().get();
                 for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
                     FluidStack fluidStack = fluidHandler.getFluidInTank(tank);
-                    if (key.equals(new FluidStackKey(fluidStack, isCompareNBT))) {
+                    if (new FluidStackKey(fluidStack, isCompareNBT).equals(key)) {
                         int mbAmt = FilterCount.getSlotAmount(filterCard, i);
                         filterCountsFluid.put(key, mbAmt);
                         return mbAmt;
@@ -229,16 +233,20 @@ public class BaseCardCache {
     public boolean isStackValidForCard(ItemStack testStack) {
         if (filterCard.isEmpty()) return true; //If theres no filter in the card
         ItemStackKey key = new ItemStackKey(testStack, isCompareNBT);
-        if (filterCache.containsKey(key)) return filterCache.get(key);
+        Boolean cachedResult = filterCache.get(key);
+        if (cachedResult != null) return cachedResult;
+
         if (filterCard.getItem() instanceof FilterMod) {
+            String modId = testStack.getItem().getCreatorModId(testStack);
             for (ItemStack stack : filteredItems) {
-                if (stack.getItem().getCreatorModId(stack).equals(testStack.getItem().getCreatorModId(testStack))) {
+                if (stack.getItem().getCreatorModId(stack).equals(modId)) {
                     filterCache.put(key, isAllowList);
                     return isAllowList;
                 }
             }
         } else if (filterCard.getItem() instanceof FilterTag) {
-            for (TagKey tagKey : testStack.getItem().builtInRegistryHolder().tags().toList()) {
+            List<TagKey<net.minecraft.world.item.Item>> tags = testStack.getItem().builtInRegistryHolder().tags().toList();
+            for (TagKey<net.minecraft.world.item.Item> tagKey : tags) {
                 String tag = tagKey.location().toString().toLowerCase(Locale.ROOT);
                 if (filterTags.contains(tag)) {
                     filterCache.put(key, isAllowList);
@@ -256,7 +264,7 @@ public class BaseCardCache {
             }
         } else {
             for (ItemStack stack : filteredItems) {
-                if (key.equals(new ItemStackKey(stack, isCompareNBT))) {
+                if (ItemHandlerUtil.doItemsMatch(testStack, stack, isCompareNBT)) {
                     filterCache.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -269,10 +277,13 @@ public class BaseCardCache {
     public boolean isStackValidForCard(FluidStack testStack) {
         if (filterCard.isEmpty()) return true; //If theres no filter in the card
         FluidStackKey key = new FluidStackKey(testStack, isCompareNBT);
-        if (filterCacheFluid.containsKey(key)) return filterCacheFluid.get(key);
+        Boolean cachedResult = filterCacheFluid.get(key);
+        if (cachedResult != null) return cachedResult;
+
         if (filterCard.getItem() instanceof FilterMod) {
+            String modId = ForgeRegistries.FLUIDS.getKey(testStack.getFluid()).getNamespace();
             for (FluidStack stack : filteredFluids) {
-                if (ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getNamespace().equals(ForgeRegistries.FLUIDS.getKey(testStack.getFluid()).getNamespace())) {
+                if (ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getNamespace().equals(modId)) {
                     filterCacheFluid.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -287,7 +298,7 @@ public class BaseCardCache {
             }
         } else {
             for (FluidStack stack : filteredFluids) {
-                if (key.equals(new FluidStackKey(stack, isCompareNBT))) {
+                if (new FluidStackKey(stack, isCompareNBT).equals(key)) {
                     filterCacheFluid.put(key, isAllowList);
                     return isAllowList;
                 }
@@ -300,8 +311,16 @@ public class BaseCardCache {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BaseCardCache that) {
-            return that.be.equals(this.be) && that.direction == this.direction && that.cardSlot == this.cardSlot;
+            return that.be.getBlockPos().equals(this.be.getBlockPos()) &&
+                   Objects.equals(that.be.getLevel().dimension(), this.be.getLevel().dimension()) &&
+                   that.direction == this.direction &&
+                   that.cardSlot == this.cardSlot;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(be.getBlockPos(), be.getLevel().dimension(), direction, cardSlot);
     }
 }

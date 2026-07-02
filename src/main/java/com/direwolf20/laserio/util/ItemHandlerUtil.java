@@ -37,11 +37,10 @@ public class ItemHandlerUtil {
         if (source == null || incstack.isEmpty())
             return new ExtractResult(incstack, -1);
 
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
         ItemStack tempStack = ItemStack.EMPTY;
         for (int i = 0; i < source.getSlots(); i++) {
             ItemStack stackInSlot = source.getStackInSlot(i);
-            if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) {
+            if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) {
                 int extractAmt = Math.min(amount, stackInSlot.getCount());
                 tempStack = source.extractItem(i, extractAmt, simulate);
                 return new ExtractResult(tempStack, i); // If we found all we need, return the stack and the last slot we got it from
@@ -55,11 +54,10 @@ public class ItemHandlerUtil {
         if (source == null || incstack.isEmpty())
             return new ExtractResult(incstack, -1);
 
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
         ItemStack tempStack = ItemStack.EMPTY;
         for (int i = 0; i < source.getSlots(); i++) {
             ItemStack stackInSlot = source.getStackInSlot(i);
-            if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) {
+            if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) {
                 int extractAmt = Math.min(amount, stackInSlot.getCount());
                 if (tempStack.isEmpty()) //If this is our first pass, make the temp stack == the extracted stack
                     tempStack = source.extractItem(i, extractAmt, simulate);
@@ -82,11 +80,10 @@ public class ItemHandlerUtil {
         if (source == null || incstack.isEmpty())
             return new ExtractResult(incstack, -1);
 
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
         ItemStack tempStack = ItemStack.EMPTY;
         for (int i = source.getSlots() - 1; i >= 0; i--) {
             ItemStack stackInSlot = source.getStackInSlot(i);
-            if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) {
+            if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) {
                 int extractAmt = Math.min(amount, stackInSlot.getCount());
                 if (tempStack.isEmpty()) //If this is our first pass, make the temp stack == the extracted stack
                     tempStack = source.extractItem(i, extractAmt, simulate);
@@ -106,22 +103,28 @@ public class ItemHandlerUtil {
 
     @Nonnull
     public static TransferResult extractItemWithSlots(LaserNodeBE be, IItemHandler source, @Nonnull ItemStack incstack, int amount, boolean simulate, boolean isCompareNBT, BaseCardCache cardCache) {
+        return extractItemWithSlots(be, source, incstack, amount, simulate, isCompareNBT, cardCache, 0);
+    }
+
+    @Nonnull
+    public static TransferResult extractItemWithSlots(LaserNodeBE be, IItemHandler source, @Nonnull ItemStack incstack, int amount, boolean simulate, boolean isCompareNBT, BaseCardCache cardCache, int startSlot) {
         TransferResult extractResults = new TransferResult();
         if (source == null || incstack.isEmpty()) {
             return extractResults;
         }
         int amtRemaining = amount;
         ItemStack remainingStack = incstack.copy();
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
-        for (int i = 0; i < source.getSlots(); i++) {
-            ItemStack stackInSlot = source.getStackInSlot(i);
-            if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) {
+        int slots = source.getSlots();
+        for (int i = startSlot; i < slots + startSlot; i++) {
+            int slot = i % slots;
+            ItemStack stackInSlot = source.getStackInSlot(slot);
+            if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) {
                 int extractAmt = Math.min(amtRemaining, stackInSlot.getCount());
-                ItemStack extractStack = source.extractItem(i, extractAmt, simulate);
+                ItemStack extractStack = source.extractItem(slot, extractAmt, simulate);
                 if (extractStack.isEmpty())
                     continue; //This happens with some 'fake item' inventories like RFTools crafter
-                amtRemaining -= extractAmt;
-                extractResults.addResult(new TransferResult.Result(source, i, cardCache, extractStack, be, true));
+                amtRemaining -= extractStack.getCount();
+                extractResults.addResult(new TransferResult.Result(source, slot, cardCache, extractStack, be, true));
                 remainingStack.setCount(amtRemaining);
                 if (amtRemaining == 0)
                     return extractResults; // If we found all we need, return the stack and the last slot we got it from
@@ -140,13 +143,13 @@ public class ItemHandlerUtil {
         }
         int amtRemaining = amount;
         ItemStack remainingStack = incstack.copy();
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
         for (int i = source.getSlots() - 1; i >= 0; i--) {
             ItemStack stackInSlot = source.getStackInSlot(i);
-            if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) {
+            if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) {
                 int extractAmt = Math.min(amtRemaining, stackInSlot.getCount());
                 ItemStack extractStack = source.extractItem(i, extractAmt, simulate);
-                amtRemaining -= extractAmt;
+                if (extractStack.isEmpty()) continue;
+                amtRemaining -= extractStack.getCount();
                 extractResults.addResult(new TransferResult.Result(source, i, extractorCardCache, extractStack, be, true));
                 remainingStack.setCount(amtRemaining);
                 if (amtRemaining == 0)
@@ -185,13 +188,14 @@ public class ItemHandlerUtil {
             remainingStack.setCount(amtRemaining);
         }
 
-        ItemStackKey key = new ItemStackKey(incstack, isCompareNBT);
         if (stacksFirst) { //Loop through the slots looking for like item stacks first
             for (int i = startAt; i < source.getSlots(); i++) {
                 ItemStack stackInSlot = source.getStackInSlot(i);
-                if (stackInSlot.isEmpty())
+                if (stackInSlot.isEmpty()) {
                     emptySlots.add(i); //If this slot is empty, add to the list of empty slots first
-                if (key.equals(new ItemStackKey(stackInSlot, isCompareNBT))) { //Look for like itemstacks to add to first.
+                    continue;
+                }
+                if (doItemsMatch(incstack, stackInSlot, isCompareNBT)) { //Look for like itemstacks to add to first.
                     remainingStack = source.insertItem(i, remainingStack, simulate); //Insert as many as we can
                     int amtInserted = amtRemaining - remainingStack.getCount();
                     if (amtInserted <= 0) continue;
@@ -215,6 +219,8 @@ public class ItemHandlerUtil {
         } else {
             for (int i = 0; i < source.getSlots(); i++) { //Loop through all slots, who cares about matching item stacks anyway!
                 remainingStack = source.insertItem(i, remainingStack, simulate); //Insert as many as we can
+                if (remainingStack.getCount() == amtRemaining)
+                    continue;
                 insertResults.addResult(new TransferResult.Result(source, i, inserterCardCache, incstack.split(amtRemaining - remainingStack.getCount()), be, false)); //Add the amount that fit to the list //Add the amount that fit to the list
                 amtRemaining = remainingStack.getCount(); //Update amtRemaining
 
@@ -242,7 +248,8 @@ public class ItemHandlerUtil {
     }
 
     public static boolean doItemsMatch(ItemStack a, ItemStack b, boolean isCompareNBT) {
-        return isCompareNBT ? ItemHandlerHelper.canItemStacksStack(a, b) : ItemStack.isSameItem(a, b);
+        if (isCompareNBT) return ItemHandlerHelper.canItemStacksStack(a, b);
+        return ItemStack.isSameItem(a, b);
     }
 
     public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
@@ -270,7 +277,8 @@ public class ItemHandlerUtil {
 
         public InventoryCounts(IItemHandler handler, boolean compareNBT) {
             isCompareNBT = compareNBT;
-            for (int i = 0; i < handler.getSlots(); i++) {
+            int slots = handler.getSlots();
+            for (int i = 0; i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     setCount(stack);
@@ -301,7 +309,8 @@ public class ItemHandlerUtil {
         }
 
         public void addHandler(IItemHandler handler) {
-            for (int i = 0; i < handler.getSlots(); i++) {
+            int slots = handler.getSlots();
+            for (int i = 0; i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     setCount(stack);
@@ -310,7 +319,8 @@ public class ItemHandlerUtil {
         }
 
         public void addHandlerWithFilter(IItemHandler handler, BaseCardCache filterCard) {
-            for (int i = 0; i < handler.getSlots(); i++) {
+            int slots = handler.getSlots();
+            for (int i = 0; i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!stack.isEmpty() && filterCard.isStackValidForCard(stack)) {
                     setCount(stack);

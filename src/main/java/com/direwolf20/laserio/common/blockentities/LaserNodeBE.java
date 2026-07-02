@@ -106,6 +106,9 @@ public class LaserNodeBE extends BaseLaserBE {
     public record SideConnection(Direction nodeSide, Direction sneakySide) {
     }
 
+    public record InventoryCacheKey(SideConnection side, boolean isCompareNBT) {
+    }
+
     /** BE and ItemHandler used for checking if a note/container is valid **/
     private record LaserNodeItemHandler(LaserNodeBE be, IItemHandler handler) {
     }
@@ -118,6 +121,7 @@ public class LaserNodeBE extends BaseLaserBE {
 
     public Map<ExtractorCardCache, Integer> roundRobinMap = new Object2IntOpenHashMap<>();
 
+    private final Map<InventoryCacheKey, ItemHandlerUtil.InventoryCounts> perTickInventoryCounts = new HashMap<>();
     private final Map<SideConnection, LazyOptional<IItemHandler>> facingHandlerItem = new HashMap<>();
     private final Map<SideConnection, NonNullConsumer<LazyOptional<IItemHandler>>> connectionInvalidatorItem = new HashMap<>();
     private final Map<SideConnection, LazyOptional<IFluidHandler>> facingHandlerFluid = new HashMap<>();
@@ -245,6 +249,7 @@ public class LaserNodeBE extends BaseLaserBE {
                     if (!extractorCardCache.enabled) continue;
                     if (countCardsHandled > nodeSideCache.overclockers) continue;
                     boolean cardHandled;
+
                     if (extractorCardCache instanceof StockerCardCache stockerCardCache) {
                         cardHandled = switch(extractorCardCache.cardType) {
                             case ITEM -> stockItems(stockerCardCache);
@@ -264,6 +269,8 @@ public class LaserNodeBE extends BaseLaserBE {
                     }
                     if (cardHandled) {
                         countCardsHandled++;
+                    } else {
+                        extractorCardCache.remainingSleep = 5;
                     }
                     if (extractorCardCache.remainingSleep <= 0) {
                         extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
@@ -294,6 +301,8 @@ public class LaserNodeBE extends BaseLaserBE {
                     };
                     if (cardHandled) {
                         countCardsHandled++;
+                    } else {
+                        extractorCardCache.remainingSleep = 5;
                     }
                     if (extractorCardCache.remainingSleep <= 0) {
                         extractorCardCache.remainingSleep = extractorCardCache.tickSpeed;
@@ -311,6 +320,7 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public void tickServer() {
+        perTickInventoryCounts.clear();
         refreshedInvNodesThisTick = false;
         if (!discoveredNodes) { //On world / chunk reload, lets rediscover the network, including this block's extractor cards.
             discoverAllNodes();
@@ -615,8 +625,8 @@ public class LaserNodeBE extends BaseLaserBE {
         return lists.get(1);
     }
 
-    public boolean extractItem(ExtractorCardCache extractorCardCache, IItemHandler fromInventory, ItemStack extractStack) {
-        TransferResult extractResults = (ItemHandlerUtil.extractItemWithSlots(this, fromInventory, extractStack, extractStack.getCount(), true, true, extractorCardCache)); //Fake Extract
+    public boolean extractItem(ExtractorCardCache extractorCardCache, IItemHandler fromInventory, ItemStack extractStack, int startSlot) {
+        TransferResult extractResults = (ItemHandlerUtil.extractItemWithSlots(this, fromInventory, extractStack, extractStack.getCount(), true, true, extractorCardCache, startSlot)); //Fake Extract
         int amtNeeded = extractResults.getTotalItemCounts();
         boolean exactMode = extractorCardCache.exact;
         if (amtNeeded != extractorCardCache.extractAmt && exactMode) //Return if we didn't get what we needed and we are in exact mode
@@ -723,7 +733,10 @@ public class LaserNodeBE extends BaseLaserBE {
         }
 
         IItemHandler adjacentInventory = getAttachedInventory(sensorCardCache.direction, sensorCardCache.sneaky).orElse(EMPTY);
-        ItemHandlerUtil.InventoryCounts inventoryCounts = new ItemHandlerUtil.InventoryCounts(adjacentInventory, sensorCardCache.isCompareNBT);
+        Direction inventorySide = sensorCardCache.direction.getOpposite();
+        if (sensorCardCache.sneaky != -1) inventorySide = Direction.values()[sensorCardCache.sneaky];
+        SideConnection sideConnection = new SideConnection(sensorCardCache.direction, inventorySide);
+        ItemHandlerUtil.InventoryCounts inventoryCounts = perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnection, sensorCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(adjacentInventory, sensorCardCache.isCompareNBT));
 
         if (filter.getItem() instanceof FilterMod) {
             List<ItemStack> filteredItemsListOriginal = sensorCardCache.filteredItems;
@@ -962,9 +975,12 @@ public class LaserNodeBE extends BaseLaserBE {
         assert level != null;
         if (!level.isLoaded(adjacentPos)) return false;
         IItemHandler adjacentInventory = getAttachedInventory(extractorCardCache.direction, extractorCardCache.sneaky).orElse(EMPTY);
-        ItemHandlerUtil.InventoryCounts inventoryCounts = new ItemHandlerUtil.InventoryCounts();
+        ItemHandlerUtil.InventoryCounts inventoryCounts = null;
         if (extractorCardCache.filterCard.getItem() instanceof FilterCount) {
-            inventoryCounts = new ItemHandlerUtil.InventoryCounts(adjacentInventory, extractorCardCache.isCompareNBT);
+            Direction inventorySide = extractorCardCache.direction.getOpposite();
+            if (extractorCardCache.sneaky != -1) inventorySide = Direction.values()[extractorCardCache.sneaky];
+            SideConnection sideConnection = new SideConnection(extractorCardCache.direction, inventorySide);
+            inventoryCounts = perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnection, extractorCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(adjacentInventory, extractorCardCache.isCompareNBT));
         }
         for (int slot = 0; slot < adjacentInventory.getSlots(); slot++) {
             ItemStack stackInSlot = adjacentInventory.getStackInSlot(slot);
@@ -980,7 +996,7 @@ public class LaserNodeBE extends BaseLaserBE {
                 int amtRemaining = Math.min(extractStack.getCount(), amtAllowedToRemove);
                 extractStack.setCount(amtRemaining);
             }
-            if (extractItem(extractorCardCache, adjacentInventory, extractStack)) {
+            if (extractItem(extractorCardCache, adjacentInventory, extractStack, slot)) {
                 return true;
             }
         }
@@ -1355,14 +1371,17 @@ public class LaserNodeBE extends BaseLaserBE {
     }
 
     public boolean regulateItemStocker(StockerCardCache stockerCardCache, IItemHandler stockerInventory) {
-        ItemHandlerUtil.InventoryCounts stockerInventoryCount = new ItemHandlerUtil.InventoryCounts(stockerInventory, stockerCardCache.isCompareNBT);
+        Direction inventorySide = stockerCardCache.direction.getOpposite();
+        if (stockerCardCache.sneaky != -1) inventorySide = Direction.values()[stockerCardCache.sneaky];
+        SideConnection sideConnection = new SideConnection(stockerCardCache.direction, inventorySide);
+        ItemHandlerUtil.InventoryCounts stockerInventoryCount = perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnection, stockerCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(stockerInventory, stockerCardCache.isCompareNBT));
         List<ItemStack> filteredItemsList = stockerCardCache.getFilteredItems();
         for (ItemStack itemStack : filteredItemsList) { //Remove all the items from the list that we already have enough of
             int amtHad = stockerInventoryCount.getCount(itemStack);
             if (amtHad > itemStack.getCount()) { //if we have enough, move onto the next stack after removing this one from the list
                 ItemStack extractStack = itemStack.copy();
                 extractStack.setCount(Math.min(amtHad - itemStack.getCount(), stockerCardCache.extractAmt));
-                if (extractItem(stockerCardCache, stockerInventory, extractStack)) {
+                if (extractItem(stockerCardCache, stockerInventory, extractStack, 0)) {
                     return true;
                 }
             }
@@ -1651,7 +1670,10 @@ public class LaserNodeBE extends BaseLaserBE {
 
         List<ItemStack> filteredItemsList = stockerCardCache.getFilteredItems();
         if (isCount) { //If this is a filter count, prune the list of items to search for to just what we need
-            ItemHandlerUtil.InventoryCounts stockerInventoryCount = new ItemHandlerUtil.InventoryCounts(stockerInventory, stockerCardCache.isCompareNBT);
+            Direction stockerSide = stockerCardCache.direction.getOpposite();
+            if (stockerCardCache.sneaky != -1) stockerSide = Direction.values()[stockerCardCache.sneaky];
+            SideConnection sideConnectionStocker = new SideConnection(stockerCardCache.direction, stockerSide);
+            ItemHandlerUtil.InventoryCounts stockerInventoryCount = perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnectionStocker, stockerCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(stockerInventory, stockerCardCache.isCompareNBT));
             List<ItemStack> tempList = new ArrayList<>(filteredItemsList);
             for (ItemStack itemStack : filteredItemsList) { //Remove all the items from the list that we already have enough of
                 int amtHad = stockerInventoryCount.getCount(itemStack);
@@ -1703,12 +1725,10 @@ public class LaserNodeBE extends BaseLaserBE {
                 LaserNodeItemHandler laserNodeItemHandler = getLaserNodeHandlerItem(inserterCardCache);
                 if (laserNodeItemHandler == null) continue;
                 ItemHandlerUtil.InventoryCounts inventoryCounts;
-                if (stockerInvCaches.containsKey(inserterCardCache)) { //Count the items in the inventory once -then re-use this for future iterations
-                    inventoryCounts = stockerInvCaches.get(inserterCardCache);
-                } else {
-                    inventoryCounts = new ItemHandlerUtil.InventoryCounts(laserNodeItemHandler.handler, stockerCardCache.isCompareNBT);
-                    stockerInvCaches.put(inserterCardCache, inventoryCounts);
-                }
+                Direction inventorySide = inserterCardCache.direction.getOpposite();
+                if (inserterCardCache.sneaky != -1) inventorySide = Direction.values()[inserterCardCache.sneaky];
+                SideConnection sideConnection = new SideConnection(inserterCardCache.direction, inventorySide);
+                inventoryCounts = laserNodeItemHandler.be.perTickInventoryCounts.computeIfAbsent(new InventoryCacheKey(sideConnection, stockerCardCache.isCompareNBT), k -> new ItemHandlerUtil.InventoryCounts(laserNodeItemHandler.handler, stockerCardCache.isCompareNBT));
                 if (inventoryCounts.getCount(itemStack) == 0)
                     continue; //Move on if this inventory doesn't have any of this item
 
