@@ -103,6 +103,8 @@ public class LaserIOLanguage extends LanguageProvider {
         add("screen.laserio.nbttrue", "Match NBT");
         add("screen.laserio.nbtfalse", "Ignore NBT");
 
+        add("screen.laserio.clearcards", "Clear Card Data");
+
         //General tooltips
         add("laserio.tooltip.item.show_details", "Hold shift to show details");
         add("laserio.tooltip.item.show_settings.shift_key", "Hold shift to show settings");

@@ -2,6 +2,7 @@ package com.direwolf20.laserio.common.network;
 
 import com.direwolf20.laserio.common.LaserIO;
 import com.direwolf20.laserio.common.network.packets.PacketChangeColor;
+import com.direwolf20.laserio.common.network.packets.PacketClearCards;
 import com.direwolf20.laserio.common.network.packets.PacketCopyPasteCard;
 import com.direwolf20.laserio.common.network.packets.PacketGhostSlot;
 import com.direwolf20.laserio.common.network.packets.PacketNodeParticles;
@@ -58,6 +59,7 @@ public class PacketHandler {
         //Client Side
         HANDLER.registerMessage(id++, PacketNodeParticles.class, PacketNodeParticles::encode, PacketNodeParticles::decode, PacketNodeParticles.Handler::handle);
         HANDLER.registerMessage(id++, PacketNodeParticlesFluid.class, PacketNodeParticlesFluid::encode, PacketNodeParticlesFluid::decode, PacketNodeParticlesFluid.Handler::handle);
+        HANDLER.registerMessage(id++, PacketClearCards.class, PacketClearCards::encode, PacketClearCards::decode, PacketClearCards.Handler::handle);
 
         //Mekanism packets
         if (ModIntegration.MEKANISM.isLoaded()) {
