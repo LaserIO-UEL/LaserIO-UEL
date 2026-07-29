@@ -103,6 +103,14 @@ minecraft {
             }
         }
 
+        guide {
+            // Use client run configuration
+            parent runs.client
+
+            // Enable GuideME live-preview
+            property "guideme.${mod_id}.guide.sources", file("src/main/resources/assets/${mod_id}/${mod_id}_guidebook").absolutePath
+        }
+
         server {
             workingDirectory project.file('run')
 
@@ -191,6 +199,7 @@ def replaceProperties = [
         mod_description        : mod_description, mod_logo: mod_logo,
         curios_version_range   : curios_version_range,
         patchouli_version_range: patchouli_version_range,
+        guideme_version_range  : guideme_version_range,
         jei_version_range      : jei_version_range,
         mekanism_version_range : mekanism_version_range
 ]

@@ -35,6 +35,8 @@ import com.direwolf20.laserio.common.items.upgrades.OverclockerCard;
 import com.direwolf20.laserio.common.items.upgrades.OverclockerNode;
 import com.direwolf20.laserio.datagen.customrecipes.CardClearRecipe;
 import com.direwolf20.laserio.integration.ModIntegration;
+import com.direwolf20.laserio.integration.guideme.GuideMEIntegration;
+import com.direwolf20.laserio.integration.guideme.common.items.Guidebook;
 import com.direwolf20.laserio.integration.mekanism.common.containers.CardChemicalContainer;
 import com.direwolf20.laserio.integration.mekanism.common.items.cards.CardChemical;
 import net.minecraft.world.inventory.MenuType;
@@ -69,6 +71,9 @@ public class Registration {
     public static final DeferredRegister<Item> MEKANISM_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<MenuType<?>> MEKANISM_CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
 
+    //DeferredRegister dedicated to GuideME (registered only if GuideME is loaded)
+    public static final DeferredRegister<Item> GUIDE_ME_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+
     public static void init() {
         IntStream.range(1, Config.MAX_FE_TIERS.get().size() + 1)
                 .forEach(i -> ENERGY_OVERCLOCKER_CARDS.add(
@@ -82,6 +87,10 @@ public class Registration {
             MEKANISM_ITEMS.register(bus);
             MEKANISM_CONTAINERS.register(bus);
             MEKANISM_PARTICLE_TYPES.register(bus);
+        }
+        if (ModIntegration.GUIDE_ME.isLoaded()) {
+            GuideMEIntegration.createGuide();
+            GUIDE_ME_ITEMS.register(bus);
         }
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
@@ -133,6 +142,9 @@ public class Registration {
     //Crafting components
     public static final RegistryObject<Item> LOGIC_CHIP_RAW = ITEMS.register("logic_chip_raw", LogicChipRaw::new);
     public static final RegistryObject<Item> LOGIC_CHIP = ITEMS.register("logic_chip", LogicChip::new);
+
+    //Guidebook (registered only if GuideME is loaded)
+    public static final RegistryObject<Item> GUIDEBOOK = GUIDE_ME_ITEMS.register("guidebook", Guidebook::new);
 
     //Containers
     public static final RegistryObject<MenuType<LaserNodeContainer>> LASER_NODE_CONTAINER = CONTAINERS.register("lasernode",

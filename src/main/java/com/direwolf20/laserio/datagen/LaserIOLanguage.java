@@ -35,6 +35,7 @@ public class LaserIOLanguage extends LanguageProvider {
         add(Registration.LOGIC_CHIP_RAW.get(), "Raw Logic Chip");
         add(Registration.OVERCLOCKER_NODE.get(), "Node Overclocker");
         add(Registration.LOGISTIC_OVERCLOCKER_CARD.get(), "Logistic Overclocker");
+        add(Registration.GUIDEBOOK.get(), "LaserIO 101");
 
         //Screens informations
         add("screen.laserio.extractamt", "Transfer Amount");
@@ -165,6 +166,9 @@ public class LaserIOLanguage extends LanguageProvider {
         //Energy Overclockers tooltip
         add("laserio.tooltip.item.energy_overclocker.max_fe", "Max %d FE/operation");
 
+        //Guidebook tooltip
+        add("laserio.tooltip.item.guidebook.description", "Thinking with Lasers(IO)!");
+
         //Laser Wrench client messages
         add("message.laserio.laser_wrench.exceeded_maximum_connection_range", "Connection exceeds maximum range of %d!");
 
@@ -190,7 +194,5 @@ public class LaserIOLanguage extends LanguageProvider {
 
         //Curios Card Holder slot
         add("curios.identifier.card_holder", "Card Holder");
-
-        //add("", "");
     }
 }

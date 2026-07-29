@@ -44,6 +44,13 @@ description='''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
+    modId="guideme"
+    mandatory=false
+    versionRange="${guideme_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
     modId="jei"
     mandatory=false
     versionRange="${jei_version_range}"
